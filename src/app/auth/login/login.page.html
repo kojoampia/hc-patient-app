@@ -1,0 +1,90 @@
+<!--
+  A single full-bleed ion-content. No ion-header: a sign-in screen has nothing to navigate back to,
+  and a toolbar on it would imply otherwise.
+
+  Every string comes from the existing i18n bundles — login.* and global.form.* — so this screen
+  needs no new keys in three locales. The merge gate would fail the build if it did and they were
+  not all added.
+-->
+<ion-content class="ion-padding hpm-login" [fullscreen]="true">
+  <div class="hpm-login__inner">
+    <div class="hpm-login__brand">
+      <span class="hpm-login__mark">BridgeCare</span>
+    </div>
+
+    <h1 class="hc-auth-title">{{ 'login.title' | translate }}</h1>
+    <p class="hc-auth-lede hc-muted">Health Connect · Abofonsa</p>
+
+    @if (authenticationError()) {
+      <!--
+        Plain text, not [innerHTML]. The web renders this key's <strong> tag through innerHTML;
+        doing that here would put an HTML sink on the one screen that handles credentials, to bold
+        two words. The key's markup is simply not rendered.
+      -->
+      <div class="hc-auth-error" role="alert">
+        {{ 'login.messages.error.authentication' | translate }}
+      </div>
+    }
+
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
+      <div class="hc-field">
+        <label for="username">{{ 'global.form.username.label' | translate }}</label>
+        <ion-input
+          id="username"
+          formControlName="username"
+          type="text"
+          inputmode="email"
+          autocomplete="username"
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck="false"
+          fill="outline"
+          [placeholder]="'global.form.username.placeholder' | translate"
+        ></ion-input>
+      </div>
+
+      <div class="hc-field">
+        <label for="password">{{ 'login.form.password' | translate }}</label>
+        <ion-input
+          id="password"
+          formControlName="password"
+          type="password"
+          autocomplete="current-password"
+          fill="outline"
+          [placeholder]="'login.form.password.placeholder' | translate"
+        >
+          <!-- Ionic's own toggle: a password field on a phone keyboard is typed blind otherwise. -->
+          <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+        </ion-input>
+      </div>
+
+      <!--
+        NO "remember me" checkbox. rememberMe is forced true — §6 decision 5. Rendering a control
+        whose value is ignored would be worse than not offering the choice.
+      -->
+
+      <ion-button expand="block" type="submit" color="primary" [disabled]="loginForm.invalid || submitting()">
+        @if (submitting()) {
+          <ion-spinner name="crescent" slot="start"></ion-spinner>
+        }
+        {{ 'login.form.button' | translate }}
+      </ion-button>
+    </form>
+
+    @if (!willNotPersist()) {
+      <!--
+        Shown only when the secure store refused the token (§7.6). Saying nothing here would leave
+        the user signed out on next launch with no explanation, which reads as the app losing their
+        session at random.
+      -->
+      <div class="hc-auth-note">
+        This device has no screen lock, so your sign-in will not be kept. You will need to sign in
+        again each time you open the app.
+      </div>
+    }
+
+    <p class="hc-auth-foot hc-muted hc-sm">
+      {{ 'login.password.forgot' | translate }}
+    </p>
+  </div>
+</ion-content>

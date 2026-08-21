@@ -1,0 +1,47 @@
+/**
+ * Layout only. Colour, radius and shadow come from the theme — a hex here would be the first
+ * violation of the property patient-mobile.md §7 exists to protect.
+ */
+
+.hpm-login {
+  --background: var(--hc-bg);
+}
+
+.hpm-login__inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 420px;
+  min-height: 100%;
+  margin: 0 auto;
+}
+
+.hpm-login__brand {
+  margin-bottom: 28px;
+}
+
+.hpm-login__mark {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--hc-navy);
+  text-transform: uppercase;
+}
+
+/*
+ * ion-input renders its own control inside shadow DOM, so `.hc-field input` in _components.scss
+ * cannot reach it. Rather than fight that, the field keeps its label from .hc-field and lets Ionic
+ * own the control — themed through --ion-* by the bridge, which is the seam that exists for this.
+ */
+.hc-field ion-input {
+  --background: var(--hc-card);
+  --border-radius: var(--hc-r-sm);
+  --padding-start: 14px;
+  --padding-end: 14px;
+
+  margin-top: 2px;
+}
+
+form + .hc-auth-note {
+  margin-top: 18px;
+}
