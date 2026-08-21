@@ -37,6 +37,9 @@ node_modules/
 /android/app/release/
 /ios/App/Pods/
 /ios/App/App/capacitor.config.json
+# Xcode writes these on first open: per-user window state and breakpoints, never shared.
+**/xcuserdata/
+/ios/App/App.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
 
 # --- signing ----------------------------------------------------------------
 # Never commit a keystore or its passwords. See patient-mobile.md §7 for where they live.

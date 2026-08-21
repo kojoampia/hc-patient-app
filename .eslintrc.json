@@ -13,7 +13,10 @@
     "www/**",
     "dist/**",
     "coverage/**",
+    // Committed native output. Neither tree is TypeScript this project owns, and neither is in any
+    // tsconfig, which the type-aware parser treats as an error rather than as "not mine".
     "android/**",
+    "ios/**",
     "src/assets/i18n/*.json",
     "src/environments/i18n-hash.ts"
   ],

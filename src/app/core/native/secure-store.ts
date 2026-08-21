@@ -43,6 +43,18 @@ class CapacitorSecureStore implements SecureStore {
     })();
   }
 
+  /**
+   * AWAITING `ready` IS LOAD-BEARING ON iOS, and phase 8 verified why against the plugin's source.
+   *
+   * `setDefaultKeychainAccess` sets a field on the JS proxy; `setItem` then forwards that field
+   * with every call, and the native side maps it to `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`.
+   * But the proxy's own default is `whenUnlocked` — WITHOUT `ThisDeviceOnly` — so a `setItem` that
+   * raced the constructor would write the token under an attribute that MIGRATES TO A NEW DEVICE in
+   * an encrypted backup. That is the trap §7.6 names, arriving through a race rather than a typo.
+   *
+   * Hence every method below awaits `ready` first. It is not defensive tidiness.
+   */
+
   async getItem(key: string): Promise<string | null> {
     await this.ready;
     return SecureStorage.getItem(key);

@@ -6,8 +6,10 @@ The BridgeCare patient portal as an Android app — Ionic Angular + Capacitor.
 §7–§8 the port. `PROVENANCE.md` indexes every file copied out of `hc-patient-dashboard`. Read the
 plan before starting a phase; where it and the code disagree, the code wins.
 
-**Status: phase 7 of 8.** The portal is built — sign-in, the acting-as fork, the shell, the data
-layer, all thirteen screens, and the lock. Phase 8 (iOS) remains.
+**Status: phase 8 of 8, Android verified and iOS unverified.** The portal is built — sign-in, the
+acting-as fork, the shell, the data layer, all thirteen screens, the lock and the release path. The
+Android app has been built, installed and driven on a physical handset. **The iOS project is
+configured but has never been compiled** — see "iOS" below before trusting any of it.
 
 ## Toolchain — pin these two or lose an afternoon
 
@@ -145,3 +147,45 @@ because `CapacitorHttp` patches XHR onto the native client, where CORS does not 
 
 Point development at a local gateway when running one: `http://10.0.2.2:5505/` from the Android
 emulator, `http://<your-lan-ip>:5505/` from a physical device.
+
+## iOS — configured, not verified
+
+**Nothing in `ios/` has ever been built or run.** It was generated and configured on a Linux
+machine with no Xcode, so every claim in this section is a claim about configuration, not about a
+working app. Treat the first real build as a debugging session, not a formality.
+
+Capacitor 8 uses **Swift Package Manager**, not CocoaPods, so there is no `pod install` step.
+
+```bash
+npm run build:prod && npx cap sync ios
+npx cap open ios          # needs macOS + Xcode
+```
+
+### What is configured
+
+| Concern | Where | Note |
+| --- | --- | --- |
+| Face ID prompt | `NSFaceIDUsageDescription` | **Required.** iOS *terminates* the app the first time it touches Face ID without it — its absence is a crash, not a missing prompt. |
+| Cleartext | `NSAppTransportSecurity` | `NSAllowsArbitraryLoads: false`. `NSAllowsLocalNetworking: true` so a dev build can reach `patient.healthconnect.local` over http **without** weakening ATS for the public internet — the narrow tool Android could not offer (see `network_security_config.xml`). |
+| Export compliance | `ITSAppUsesNonExemptEncryption: false` | Avoids the prompt on every App Store submission. |
+| Keychain accessibility | `core/native/secure-store.ts` | `whenUnlockedThisDeviceOnly` → `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`. Verified against the plugin's Swift: the JS proxy forwards it on every `setItem`, and its own default is `whenUnlocked` — so awaiting the store's `ready` promise is what stops a race writing a token that migrates to a new device in an encrypted backup. |
+| Keychain surviving uninstall | `SessionTokenService.clearIfFirstRun` | Detected with a Preferences flag. Verified: Capacitor Preferences on iOS is `UserDefaults.standard`, which **is** cleared on uninstall while the Keychain is not — which is exactly what makes the detection work. |
+| Icon and splash | `Assets.xcassets` | Generated from the BridgeCare seal. The icon is deliberately **RGB with no alpha** — the App Store rejects a transparent icon. |
+
+### What still needs a Mac, and a person
+
+1. **Wire `App.entitlements` into the target.** The file exists with the associated-domains entry
+   for `patient.abofonsa.com`, but `CODE_SIGN_ENTITLEMENTS` is not set in `project.pbxproj`. That
+   edit was left undone on purpose: `project.pbxproj` is a fragile format and editing it blind, with
+   no way to open the project afterwards, is how you get a repository that no longer builds. In
+   Xcode it is one checkbox — Signing & Capabilities → + Capability → Associated Domains.
+2. **Publish `apple-app-site-association`** on `patient.abofonsa.com`, carrying the Team ID. This is
+   the iOS counterpart of the `assetlinks.json` Android is already waiting on, and like it, it
+   cannot be produced before the signing identity exists.
+3. **Run §8.3's five fork outcomes on a device.** They are phase 8's stated acceptance and none of
+   them has been exercised on iOS.
+4. **Check the safe areas on a notched device.** The acting-as banner owns the top inset and
+   `--ion-safe-area-top` is zeroed *scoped to `ion-tabs`* (§7.4.1); if that is wrong the inset
+   doubles, and it is invisible anywhere but a real notched screen.
+5. **CI does not build iOS.** The workflow's Android job runs on `ubuntu-latest`; an iOS job needs a
+   `macos-latest` runner, which is a cost decision rather than a technical one.
