@@ -130,6 +130,45 @@
 }
 
 /**
+ * IONIC'S FORM CONTROLS RENDER THEIR OWN `<label>`, IN THE LIGHT DOM.
+ *
+ * This is the collision §7.2 warns about — "markup does not copy between them untranslated" — and
+ * it is worth reading once, because nothing about it is visible in either file on its own.
+ *
+ * The web's `.hc-field` contains a bare `<label>` and a bare `<input>` as siblings, so
+ * `.hc-field label { text-transform: uppercase; font-size: 12px; font-weight: 700; … }` styles
+ * exactly what it means to. On Ionic, `<ion-input>` renders `<label class="input-wrapper">`
+ * WRAPPING the native input — not in a shadow root, in the light DOM — so that same rule matches
+ * Ionic's label too, and Ionic's `.native-input { text-transform: inherit }` carries it down.
+ *
+ * Measured on a device before this rule existed, the sign-in field rendered its placeholder and the
+ * user's typed text at 12px / weight 700 / 0.66px tracking / grey / UPPERCASE. An input styled like
+ * a label. On the password field that is worse than ugly: it shows the patient capitals they did not
+ * type, so a correct password looks wrong and gets retyped. (The submitted VALUE was always correct
+ * — `text-transform` is presentational — which is exactly why no test caught it.)
+ *
+ * Scoped to Ionic's own class names and matched at higher specificity than `.hc-field label`, so it
+ * wins regardless of import order and so a real `<label>` written beside a control keeps its
+ * intended styling. A label INSIDE an Ionic form control is always Ionic's, never ours.
+ */
+ion-input,
+ion-textarea,
+ion-select,
+ion-searchbar {
+  label.input-wrapper,
+  label.textarea-wrapper,
+  label.select-wrapper,
+  label.searchbar-wrapper {
+    margin: 0;
+    font-size: initial;
+    font-weight: initial;
+    letter-spacing: normal;
+    color: initial;
+    text-transform: none;
+  }
+}
+
+/**
  * Dark mode is deliberately out of scope for v1 (patient-mobile.md §6, "Still open").
  *
  * Do NOT import @ionic/angular/css/palettes/dark.*.css. Ionic's dark palette would invert every
