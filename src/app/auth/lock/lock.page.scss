@@ -12,11 +12,23 @@
   text-align: center;
 }
 
-.hpm-lock__icon {
+/* The seal, with the padlock badged over its lower edge. */
+.hpm-lock__brand {
+  position: relative;
   align-self: center;
-  margin-bottom: 18px;
-  font-size: 56px;
-  color: var(--hc-navy);
+  margin-bottom: 20px;
+}
+
+.hpm-lock__icon {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  padding: 7px;
+  font-size: 22px;
+  color: #fff;
+  background: var(--hc-navy);
+  border: 3px solid var(--hc-bg);
+  border-radius: 50%;
 }
 
 .hpm-lock__inner ion-button { margin-top: 8px; }

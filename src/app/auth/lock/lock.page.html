@@ -3,9 +3,16 @@
 -->
 <ion-content class="ion-padding hpm-lock" [fullscreen]="true">
   <div class="hpm-lock__inner">
-    <ion-icon class="hpm-lock__icon" name="lock-closed-outline" aria-hidden="true"></ion-icon>
+    <!--
+      The seal, with the padlock badged on it. Someone returning to a locked app should recognise
+      what they are returning to before they read why they cannot get in.
+    -->
+    <div class="hpm-lock__brand">
+      <hpm-brandmark [size]="104" />
+      <ion-icon class="hpm-lock__icon" name="lock-closed" aria-hidden="true"></ion-icon>
+    </div>
 
-    <h1 class="hc-auth-title">BridgeCare is locked</h1>
+    <h1 class="hc-auth-title">Abofonsa BridgeCare is locked</h1>
     <p class="hc-auth-lede hc-muted">
       You have been away for a while. Unlock to see your health record again.
     </p>

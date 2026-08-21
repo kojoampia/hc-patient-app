@@ -4,11 +4,18 @@
 -->
 <ion-content class="ion-padding hpm-deadend" [fullscreen]="true">
   <div class="hpm-deadend__inner">
-    <ion-icon
-      class="hpm-deadend__icon"
-      [name]="isOnboarding() ? 'clipboard-outline' : 'mail-open-outline'"
-      aria-hidden="true"
-    ></ion-icon>
+    <!--
+      These two screens are a patient's first impression when the app cannot show them anything.
+      Naming the product they are being sent to finish signing up for is the least it can do.
+    -->
+    <div class="hpm-deadend__brand">
+      <hpm-brandmark [size]="96" />
+      <ion-icon
+        class="hpm-deadend__icon"
+        [name]="isOnboarding() ? 'clipboard-outline' : 'mail-open-outline'"
+        aria-hidden="true"
+      ></ion-icon>
+    </div>
 
     <h1 class="hc-auth-title">{{ copy().title }}</h1>
     <p class="hc-auth-lede hc-muted">{{ copy().body }}</p>

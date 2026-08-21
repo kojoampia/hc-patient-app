@@ -8,22 +8,30 @@
 -->
 <ion-content class="ion-padding hpm-login" [fullscreen]="true">
   <div class="hpm-login__inner">
-    <div class="hpm-login__brand">
-      <span class="hpm-login__mark">BridgeCare</span>
-    </div>
+    <!--
+      The seal, at the top of the one screen every patient sees before they see anything of ours.
+      The wordmark below it stays: the artwork carries "Abofonsa BridgeCare" but at 120px the
+      strapline around the rim is not readable, and the product should be legible in text too.
+    -->
+    <hpm-brandmark class="hpm-login__brand" [size]="120" />
 
     <h1 class="hc-auth-title">{{ 'login.title' | translate }}</h1>
-    <p class="hc-auth-lede hc-muted">Health Connect · Abofonsa</p>
+    <p class="hc-auth-lede hc-muted">Abofonsa BridgeCare · Health Connect</p>
 
     @if (authenticationError()) {
       <!--
-        Plain text, not [innerHTML]. The web renders this key's <strong> tag through innerHTML;
-        doing that here would put an HTML sink on the one screen that handles credentials, to bold
-        two words. The key's markup is simply not rendered.
+        Rendered through hpmTranslate, which sets innerHTML — because this key's value CONTAINS
+        markup by design ("<strong>Failed to sign in!</strong> Please check your credentials…"),
+        as do nineteen other JHipster message keys.
+        An earlier version interpolated it as plain text to avoid an HTML sink on the screen that
+        handles credentials. That reasoning was wrong in effect: the user saw the literal characters
+        `<strong>` in the error, which is worse than the risk it avoided. The strings reaching this
+        directive are our own bundled i18n assets — developer-authored, shipped in the APK, never
+        user input and never server-supplied — so there is no sink here to speak of.
+        If a message ever needs to carry a value a user typed, it must be interpolated as a
+        translate PARAMETER, never concatenated into the string.
       -->
-      <div class="hc-auth-error" role="alert">
-        {{ 'login.messages.error.authentication' | translate }}
-      </div>
+      <div class="hc-auth-error" role="alert" hpmTranslate="login.messages.error.authentication"></div>
     }
 
     <form [formGroup]="loginForm" (ngSubmit)="login()">

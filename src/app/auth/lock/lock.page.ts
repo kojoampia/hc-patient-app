@@ -10,11 +10,12 @@ import { IonButton, IonContent, IonIcon, IonSpinner } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { AppLockService } from 'app/core/native/app-lock.service';
+import { BrandmarkComponent } from 'app/shared/ui/brandmark/brandmark.component';
 
 @Component({
   selector: 'hpm-lock',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslateModule, IonContent, IonButton, IonIcon, IonSpinner],
+  imports: [TranslateModule, BrandmarkComponent, IonContent, IonButton, IonIcon, IonSpinner],
   templateUrl: './lock.page.html',
   styleUrl: './lock.page.scss',
 })

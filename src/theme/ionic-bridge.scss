@@ -169,6 +169,32 @@ ion-searchbar {
 }
 
 /**
+ * A FIELD DOES NOT TURN GREEN FOR BEING NON-EMPTY.
+ *
+ * Ionic's Material inputs paint three highlight colours: focused, valid and invalid. `valid` wins
+ * over `focused` once Angular marks the control `ng-valid ng-touched` — and because
+ * `--ion-color-success` is mapped from `$hc-ok` above, the focused sign-in field drew a GREEN
+ * outline. Measured on a device: `--border-color` computed `rgb(40, 109, 79)` while
+ * `--highlight-color-focused` sat unused at navy.
+ *
+ * Green is not a colour this brand uses for chrome, and worse, it is telling the user nothing: on
+ * a sign-in form "valid" means the box is not empty. Colouring that is noise on the one screen
+ * where the user has no idea what the app wants from them.
+ *
+ * So `valid` is folded into `focused` — a focused field is navy, an unfocused one keeps its normal
+ * border. `invalid` KEEPS the danger colour, which matches the web's own rule in `.hc-field`:
+ * "Angular marks an invalid, touched control; only then is red honest."
+ */
+ion-input,
+ion-textarea,
+ion-select,
+ion-searchbar {
+  --highlight-color-focused: #{$hc-navy};
+  --highlight-color-valid: #{$hc-navy};
+  --highlight-color-invalid: #{$hc-danger};
+}
+
+/**
  * Dark mode is deliberately out of scope for v1 (patient-mobile.md §6, "Still open").
  *
  * Do NOT import @ionic/angular/css/palettes/dark.*.css. Ionic's dark palette would invert every

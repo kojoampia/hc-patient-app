@@ -9,6 +9,7 @@ import { IonButton, IonContent, IonIcon } from '@ionic/angular';
 
 import { LoginService } from 'app/login/login.service';
 import { NativePromptGuard, withPrompt } from 'app/core/native/with-prompt';
+import { BrandmarkComponent } from 'app/shared/ui/brandmark/brandmark.component';
 
 /**
  * Which dead end this is. §3.2's fourth row exists precisely because these two are DIFFERENT
@@ -24,7 +25,7 @@ const PORTAL_URL = 'https://patient.abofonsa.com';
   selector: 'hpm-dead-end',
   templateUrl: './dead-end.page.html',
   styleUrl: './dead-end.page.scss',
-  imports: [IonContent, IonButton, IonIcon],
+  imports: [IonContent, IonButton, IonIcon, BrandmarkComponent],
 })
 export class DeadEndPage {
   private readonly loginService = inject(LoginService);

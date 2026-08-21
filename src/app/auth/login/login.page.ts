@@ -14,12 +14,14 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AccountService } from 'app/core/auth/account.service';
 import { LoginService } from 'app/login/login.service';
 import { SessionTokenService } from 'app/core/native/session-token.service';
+import { BrandmarkComponent } from 'app/shared/ui/brandmark/brandmark.component';
+import TranslateDirective from 'app/shared/language/translate.directive';
 
 @Component({
   selector: 'hpm-login',
   templateUrl: './login.page.html',
   styleUrl: './login.page.scss',
-  imports: [ReactiveFormsModule, TranslateModule, IonContent, IonInput, IonInputPasswordToggle, IonButton, IonSpinner],
+  imports: [ReactiveFormsModule, TranslateModule, TranslateDirective, BrandmarkComponent, IonContent, IonInput, IonInputPasswordToggle, IonButton, IonSpinner],
 })
 export class LoginPage {
   private readonly accountService = inject(AccountService);
