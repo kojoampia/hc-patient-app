@@ -1,0 +1,79 @@
+<hpm-portal-page titleKey="patientPortal.nav.plans">
+  <hpm-stream
+    [resource]="carePlan()"
+    emptyTitleKey="patientPortal.plans.emptyDiet"
+    emptyMessageKey="patientPortal.plans.emptyHint"
+    emptyIcon="leaf-outline"
+    [skeletonRowHeight]="56"
+  >
+    <!-- Diet -->
+    <section>
+      <div class="hc-sec-head">
+        <div>
+          <h3 hpmTranslate="patientPortal.plans.diet">Diet plan</h3>
+          <p>{{ 'patientPortal.plans.progress' | translate: { done: dietDone(), total: diet().length } }}</p>
+        </div>
+        <!--
+          Rendered only when the figure is real. A 0% bar produced by a failed fetch is a claim about
+          how the patient is doing that nothing supports.
+        -->
+        @if (dietPercent(); as pct) {
+          <span class="hc-pill hc-pill--gold hc-num">{{ pct }}%</span>
+        }
+      </div>
+
+      @if (dietPercent(); as pct) {
+        <div class="hc-bar" role="progressbar" [attr.aria-valuenow]="pct" aria-valuemin="0" aria-valuemax="100">
+          <div class="hc-bar__fill" [style.width.%]="pct"></div>
+        </div>
+      }
+
+      <div class="hc-grid hc-mt-16 hpm-plans__list">
+        @for (item of diet(); track item.id) {
+          <button type="button" class="hc-opt" [class.is-done]="item.done" (click)="toggle(item)" [attr.aria-pressed]="item.done">
+            <span class="hc-opt__check"><hpm-icon name="check" [size]="13" [strokeWidth]="3" /></span>
+            <span class="hc-grow">
+              <span class="hc-opt__title">{{ item.label }}</span>
+              @if (item.detail ?? item.cadence; as sub) {
+                <span class="hc-opt__sub">{{ sub }}</span>
+              }
+            </span>
+          </button>
+        }
+      </div>
+    </section>
+
+    <!-- Exercise -->
+    <section class="hc-mt-16">
+      <div class="hc-sec-head">
+        <div>
+          <h3 hpmTranslate="patientPortal.plans.exercise">Exercise plan</h3>
+          <p>{{ 'patientPortal.plans.progress' | translate: { done: exerciseDone(), total: exercise().length } }}</p>
+        </div>
+        @if (exercisePercent(); as pct) {
+          <span class="hc-pill hc-pill--gold hc-num">{{ pct }}%</span>
+        }
+      </div>
+
+      @if (exercisePercent(); as pct) {
+        <div class="hc-bar" role="progressbar" [attr.aria-valuenow]="pct" aria-valuemin="0" aria-valuemax="100">
+          <div class="hc-bar__fill" [style.width.%]="pct"></div>
+        </div>
+      }
+
+      <div class="hc-grid hc-mt-16 hpm-plans__list">
+        @for (item of exercise(); track item.id) {
+          <button type="button" class="hc-opt" [class.is-done]="item.done" (click)="toggle(item)" [attr.aria-pressed]="item.done">
+            <span class="hc-opt__check"><hpm-icon name="check" [size]="13" [strokeWidth]="3" /></span>
+            <span class="hc-grow">
+              <span class="hc-opt__title">{{ item.label }}</span>
+              @if (item.detail ?? item.cadence; as sub) {
+                <span class="hc-opt__sub">{{ sub }}</span>
+              }
+            </span>
+          </button>
+        }
+      </div>
+    </section>
+  </hpm-stream>
+</hpm-portal-page>

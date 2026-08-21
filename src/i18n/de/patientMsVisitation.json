@@ -1,0 +1,34 @@
+{
+  "patientDashboardApp": {
+    "patientMsVisitation": {
+      "home": {
+        "title": "Visitations",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Visitation erstellen",
+        "createOrEditLabel": "Visitation erstellen oder bearbeiten",
+        "notFound": "Keine Visitations gefunden"
+      },
+      "created": "Visitation erstellt mit ID {{ param }}",
+      "updated": "Visitation aktualisiert mit ID {{ param }}",
+      "deleted": "Visitation gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Visitation {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Visitation"
+      },
+      "id": "Id",
+      "patientId": "Patient Id",
+      "caseId": "Case Id",
+      "professionalId": "Professional Id",
+      "visitedAt": "Visited At",
+      "purpose": "Purpose",
+      "location": "Location",
+      "notes": "Notes",
+      "createdDate": "Created Date",
+      "modifiedDate": "Modified Date",
+      "createdBy": "Created By",
+      "modifiedBy": "Modified By"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "patientDashboardApp": {
+    "patientMsEmergency": {
+      "home": {
+        "title": "Emergencies",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Emergency erstellen",
+        "createOrEditLabel": "Emergency erstellen oder bearbeiten",
+        "notFound": "Keine Emergencies gefunden"
+      },
+      "created": "Emergency erstellt mit ID {{ param }}",
+      "updated": "Emergency aktualisiert mit ID {{ param }}",
+      "deleted": "Emergency gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Emergency {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Emergency"
+      },
+      "id": "Id",
+      "patientId": "Patient Id",
+      "caseId": "Case Id",
+      "raisedAt": "Raised At",
+      "resolvedAt": "Resolved At",
+      "brief": "Brief",
+      "detail": "Detail",
+      "severity": "Severity",
+      "status": "Status",
+      "outcome": "Outcome",
+      "location": "Location",
+      "respondentId": "Respondent Id",
+      "createdDate": "Created Date",
+      "modifiedDate": "Modified Date",
+      "createdBy": "Created By",
+      "modifiedBy": "Modified By"
+    }
+  }
+}

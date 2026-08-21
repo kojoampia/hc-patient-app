@@ -1,0 +1,26 @@
+{
+  "patientDashboardApp": {
+    "patientMsRecommendation": {
+      "home": {
+        "title": "Recommendations",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Recommendation erstellen",
+        "createOrEditLabel": "Recommendation erstellen oder bearbeiten",
+        "notFound": "Keine Recommendations gefunden"
+      },
+      "created": "Recommendation erstellt mit ID {{ param }}",
+      "updated": "Recommendation aktualisiert mit ID {{ param }}",
+      "deleted": "Recommendation gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Recommendation {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Recommendation"
+      },
+      "id": "Id",
+      "label": "Label",
+      "category": "Category",
+      "clinicalCase": "Clinical Case"
+    }
+  }
+}

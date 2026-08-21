@@ -1,0 +1,39 @@
+<!--
+  No ion-header and no back affordance: there is nowhere to go from here except through.
+-->
+<ion-content class="ion-padding hpm-lock" [fullscreen]="true">
+  <div class="hpm-lock__inner">
+    <!--
+      The seal, with the padlock badged on it. Someone returning to a locked app should recognise
+      what they are returning to before they read why they cannot get in.
+    -->
+    <div class="hpm-lock__brand">
+      <hpm-brandmark [size]="104" />
+      <ion-icon class="hpm-lock__icon" name="lock-closed" aria-hidden="true"></ion-icon>
+    </div>
+
+    <h1 class="hc-auth-title">Abofonsa BridgeCare is locked</h1>
+    <p class="hc-auth-lede hc-muted">
+      You have been away for a while. Unlock to see your health record again.
+    </p>
+
+    @if (message(); as msg) {
+      <div class="hc-auth-error" role="alert">{{ msg }}</div>
+    }
+
+    @if (canRetry()) {
+      <ion-button expand="block" color="primary" [disabled]="busy()" (click)="attempt()">
+        @if (busy()) {
+          <ion-spinner name="crescent" slot="start"></ion-spinner>
+        }
+        Unlock
+      </ion-button>
+    }
+
+    <!--
+      Always offered, not only on failure. If the fingerprint reader has stopped working there must
+      be a way to a patient's own record that does not depend on it.
+    -->
+    <ion-button expand="block" fill="clear" color="dark" (click)="usePassword()">Use password</ion-button>
+  </div>
+</ion-content>

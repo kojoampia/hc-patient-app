@@ -1,0 +1,27 @@
+/*
+ * Exists purely so ESLint can type-aware-lint the repo's own tooling.
+ *
+ * The type-checked rules this project inherits from
+ * `plugin:@typescript-eslint/recommended-requiring-type-checking` need `parserServices`, which the
+ * parser only produces for files covered by a tsconfig in `parserOptions.project`. Without this
+ * file, `npm run lint` does not report a lint problem — it dies outright on the first uncovered
+ * file with "You have used a rule which requires parserServices to be generated".
+ *
+ * An `overrides` block in .eslintrc.json cannot fix that: overrides merge, so the inherited
+ * type-aware rules still apply and still demand parserServices. Covering the files is the fix;
+ * turning off a dozen rules one by one is not.
+ *
+ * Nothing is emitted from here — it is a lint input only.
+ */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "allowJs": true,
+    "checkJs": false,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["node"]
+  },
+  "include": ["tools/**/*.mjs", "jest.config.js", "capacitor.config.ts"]
+}

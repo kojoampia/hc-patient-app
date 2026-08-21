@@ -1,0 +1,28 @@
+/** Layout only. */
+
+.hpm-more {
+  --background: var(--hc-bg);
+}
+
+.hpm-more ion-list {
+  background: transparent;
+}
+
+.hpm-more ion-list-header {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.055em;
+  color: var(--hc-grey);
+  text-transform: uppercase;
+}
+
+.hpm-more ion-item {
+  --background: var(--hc-card);
+  --border-radius: var(--hc-r-sm);
+
+  margin: 0 12px 8px;
+}
+
+.hpm-more ion-icon {
+  color: var(--hc-navy);
+}

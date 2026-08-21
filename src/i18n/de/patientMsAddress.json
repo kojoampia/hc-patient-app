@@ -1,0 +1,36 @@
+{
+  "patientDashboardApp": {
+    "patientMsAddress": {
+      "home": {
+        "title": "Addresses",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Address erstellen",
+        "createOrEditLabel": "Address erstellen oder bearbeiten",
+        "notFound": "Keine Addresses gefunden"
+      },
+      "created": "Address erstellt mit ID {{ param }}",
+      "updated": "Address aktualisiert mit ID {{ param }}",
+      "deleted": "Address gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Address {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Address"
+      },
+      "id": "Id",
+      "digitalAddress": "Digital Address",
+      "streetAddress": "Street Address",
+      "areaCode": "Area Code",
+      "town": "Town",
+      "city": "City",
+      "district": "District",
+      "state": "State",
+      "region": "Region",
+      "country": "Country",
+      "createdDate": "Created Date",
+      "modifiedDate": "Modified Date",
+      "createdBy": "Created By",
+      "modifiedBy": "Modified By"
+    }
+  }
+}

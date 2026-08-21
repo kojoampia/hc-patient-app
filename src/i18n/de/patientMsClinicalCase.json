@@ -1,0 +1,35 @@
+{
+  "patientDashboardApp": {
+    "patientMsClinicalCase": {
+      "home": {
+        "title": "Clinical Cases",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Clinical Case erstellen",
+        "createOrEditLabel": "Clinical Case erstellen oder bearbeiten",
+        "notFound": "Keine Clinical Cases gefunden"
+      },
+      "created": "Clinical Case erstellt mit ID {{ param }}",
+      "updated": "Clinical Case aktualisiert mit ID {{ param }}",
+      "deleted": "Clinical Case gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Clinical Case {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Clinical Case"
+      },
+      "id": "Id",
+      "patientId": "Patient Id",
+      "caseNumber": "Case Number",
+      "title": "Title",
+      "openedAt": "Opened At",
+      "closedAt": "Closed At",
+      "brief": "Brief",
+      "status": "Status",
+      "symptoms": "Symptoms",
+      "diagnosis": "Diagnosis",
+      "assignedProfessionalId": "Assigned Professional Id",
+      "assignedRosterId": "Assigned Roster Id",
+      "recommendation": "Recommendation"
+    }
+  }
+}

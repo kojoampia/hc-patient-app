@@ -1,0 +1,37 @@
+{
+  "patientDashboardApp": {
+    "patientMsStat": {
+      "home": {
+        "title": "Stats",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Stat",
+        "createOrEditLabel": "Create or edit a Stat",
+        "notFound": "No Stats found"
+      },
+      "created": "A new Stat is created with identifier {{ param }}",
+      "updated": "A Stat is updated with identifier {{ param }}",
+      "deleted": "A Stat is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Stat {{ id }}?"
+      },
+      "detail": {
+        "title": "Stat"
+      },
+      "id": "Id",
+      "patientId": "Patient Id",
+      "type": "Type",
+      "name": "Name",
+      "description": "Description",
+      "value": "Value",
+      "secondaryValue": "Secondary Value",
+      "unit": "Unit",
+      "referenceLow": "Reference Low",
+      "referenceHigh": "Reference High",
+      "flag": "Flag",
+      "note": "Note",
+      "recordedAt": "Recorded At",
+      "createdDate": "Created Date",
+      "createdBy": "Created By"
+    }
+  }
+}

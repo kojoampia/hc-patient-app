@@ -1,0 +1,67 @@
+/**
+ * Ported from the web's `.hc-shell__acting-as` (layouts/shell/shell.component.scss @ 12e418c), with
+ * one deliberate change and one mobile-only responsibility.
+ *
+ * THE COLOUR. The web hardcodes `#7a3b00`, a brown that appears nowhere in _tokens.scss. Copying it
+ * would be the first hex in this app that no token backs — the exact property §7 says to protect.
+ * `$hc-warn` (#8f5c14, already darkened here for AA) is the same hue family and carries white at
+ * 5.66:1, so the alarm state is token-derived. The web's 8.56:1 is higher; 5.66:1 clears AA at every
+ * size and the bar is 15px semibold, so the trade buys tokenisation for no practical legibility.
+ *
+ * THE TOP INSET is this component's job — see the TabsPage template for why.
+ */
+
+.hpm-banner {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+
+  /*
+   * §7.4.1. The banner sits ABOVE ion-tabs and is therefore the topmost element in the shell, so it
+   * owns the status-bar inset. `--ion-safe-area-top` is zeroed *scoped to ion-tabs* in the TabsPage
+   * stylesheet — not globally, because login and lock sit outside the shell and still need it.
+   * Without the scoping the inset is applied twice and the bar is a status-bar's height too tall.
+   * Only visible on a real notched device.
+   */
+  padding: calc(var(--ion-safe-area-top, 0px) + 10px) 16px 10px;
+
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+
+  /* Deliberately loud: it is the only thing on screen saying that none of this is yours. */
+  background: var(--hc-warn);
+}
+
+/**
+ * The same bar while viewing your own record: still there, because it carries the way back to the
+ * patient's record, but not shouting. Only the acting-for-somebody case is a safety warning; this
+ * one is a statement of fact.
+ */
+.hpm-banner.is-own {
+  font-weight: 500;
+  color: var(--hc-ink);
+  background: var(--hc-line);
+}
+
+.hpm-banner__text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hpm-banner__switch {
+  --color: #fff;
+  --padding-start: 10px;
+  --padding-end: 10px;
+
+  flex: none;
+  margin: 0;
+  font-weight: 700;
+}
+
+.hpm-banner.is-own .hpm-banner__switch {
+  --color: var(--hc-navy);
+}

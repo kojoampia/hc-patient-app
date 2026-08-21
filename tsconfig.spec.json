@@ -1,0 +1,48 @@
+/*
+ * Jest's TypeScript configuration.
+ *
+ * `useDefineForClassFields: true` here, against `false` in tsconfig.json, is the one deliberate
+ * asymmetry in this project. It is not a preference and it is worth understanding before changing.
+ *
+ * WHY: `allowJs` is on because ts-jest has to transpile the ESM that @ionic/angular, @ionic/core,
+ * ionicons and the Capacitor packages ship — that is what transformIgnorePatterns in jest.config.js
+ * exempts. So TypeScript is compiling Stencil's ALREADY-COMPILED output, not just our source. With
+ * `useDefineForClassFields: false`, TypeScript rewrites class fields into constructor assignments,
+ * and that rewrite corrupts Stencil's generated constructors: rendering a single <ion-skeleton-text>
+ * throws
+ *
+ *     ReferenceError: Must call super constructor in derived class before accessing 'this'
+ *
+ * from inside node_modules, which reads as an Ionic bug and is not one. `true` is the standard
+ * ES2022 semantics the Stencil output was compiled for, so the classes pass through unrewritten.
+ *
+ * WHAT IT COSTS, AND WHAT PHASE 4 DID ABOUT IT. Our own code compiles under [[Define]] semantics in
+ * specs and [[Set]] semantics in the app build. That is invisible for ordinary Angular code, but it
+ * is NOT invisible for a class that initialises a field from a constructor parameter property:
+ *
+ *     protected resourceUrl = this.applicationConfigService.getEndpointFor(...);
+ *     constructor(protected applicationConfigService: ApplicationConfigService) {}
+ *
+ * which is exactly how JHipster generates every entity service. Under [[Define]] the initialiser
+ * runs before the constructor body assigns the parameter, so the service is built with an undefined
+ * config. The 15 lifted entity services were therefore converted to `inject()` with the injected
+ * fields declared above `resourceUrl` — a form that is correct under BOTH semantics, and the one
+ * the @typescript-eslint/member-ordering rule exists to enforce. Write new code that way and this
+ * asymmetry cannot reach it.
+ *
+ * A per-path transform split (vendor ESM under one tsconfig, our code under another) was tried and
+ * abandoned: Jest reported both entries in --showConfig but never invoked the vendor one, verified
+ * by pointing it at a nonexistent tsconfig and getting no error.
+ */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/spec",
+    "module": "commonjs",
+    "types": ["jest", "node"],
+    "esModuleInterop": true,
+    "allowJs": true,
+    "useDefineForClassFields": true
+  },
+  "include": ["src/**/*.spec.ts", "src/**/*.d.ts", "setup-jest.ts"]
+}

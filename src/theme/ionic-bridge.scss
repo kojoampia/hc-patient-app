@@ -1,0 +1,204 @@
+/**
+ * New in hc-patient-app — no origin in the web repo.
+ *
+ * Maps the BridgeCare brand onto Ionic's CSS variables (patient-mobile.md §7.3). Import order in
+ * global.scss is load-bearing: _tokens.scss, then this, then _components.scss. This file reads the
+ * `$hc-*` SCSS variables and writes `--ion-*`; it must never introduce a colour of its own, because
+ * the property that makes this port tractable is that nothing downstream hardcodes a hex.
+ *
+ * Ionic owns the shell — tabs, transitions, back gesture, safe areas, pull-to-refresh, keyboard.
+ * The `hc-*` classes own everything inside a page. This file is the seam between them, and it is
+ * the only place the two vocabularies are allowed to meet.
+ */
+
+@use 'sass:color';
+@use 'sass:string';
+
+/**
+ * Dart Sass 1.90 keeps full channel precision through color.mix(), so an un-rounded mix serialises
+ * as `rgb(11.44, 42.24, 77.44)`. Fractional rgb() is legal CSS Color 4 and modern Android WebView
+ * accepts it, but it is unreadable in devtools and needlessly at the mercy of the WebView version
+ * on whatever handset a patient actually owns. Round to integers and let Sass emit hex.
+ */
+@function hpm-hex($c) {
+  @return rgb(
+    round(color.channel($c, 'red', $space: rgb)),
+    round(color.channel($c, 'green', $space: rgb)),
+    round(color.channel($c, 'blue', $space: rgb))
+  );
+}
+
+/**
+ * The bare `r, g, b` triple Ionic's *-rgb variables expect, as one unquoted string.
+ *
+ * Built as a string rather than a comma list on purpose: interpolating a multi-line SCSS expression
+ * emits the newlines into the declaration, which is valid CSS but produces a variable that reads as
+ * truncated in every inspector.
+ */
+@function hpm-rgb($c) {
+  @return string.unquote(
+    '#{round(color.channel($c, "red", $space: rgb))}, #{round(color.channel($c, "green", $space: rgb))}, #{round(color.channel($c, "blue", $space: rgb))}'
+  );
+}
+
+/**
+ * Ionic expects six variables per named colour. Emitting them by hand nine times is how one of them
+ * ends up inconsistent with its base, so they are generated.
+ *
+ * `-shade` and `-tint` follow Ionic's own convention: 12% toward black, 10% toward white.
+ */
+@mixin hpm-ion-color($name, $base, $contrast) {
+  --ion-color-#{$name}: #{hpm-hex($base)};
+  --ion-color-#{$name}-rgb: #{hpm-rgb($base)};
+  --ion-color-#{$name}-contrast: #{hpm-hex($contrast)};
+  --ion-color-#{$name}-contrast-rgb: #{hpm-rgb($contrast)};
+  --ion-color-#{$name}-shade: #{hpm-hex(color.mix(#000000, $base, 12%))};
+  --ion-color-#{$name}-tint: #{hpm-hex(color.mix(#ffffff, $base, 10%))};
+}
+
+:root {
+  /* ------------------------------------------------------------ named colours
+   *
+   * Contrast ratios are measured, not assumed. The secondary row is the one that matters:
+   *
+   *   $hc-gold #c59437 on white is 2.74:1 and fails AA at every size.
+   *
+   * So `--ion-color-secondary-contrast` is $hc-ink (6.00:1), NOT white. An
+   * `<ion-button color="secondary">` therefore renders dark text on gold, which is the only
+   * accessible way to render that pair. Do not "fix" this to white to match the navy button.
+   * Gold on navy is 4.85:1 — fine at >=18.66px, so auth accents use $hc-gold-300 (7.04:1) or size up.
+   */
+  @include hpm-ion-color('primary', $hc-navy, #ffffff); //  13.28:1
+  @include hpm-ion-color('secondary', $hc-gold, $hc-ink); //  6.00:1  <- never white
+  @include hpm-ion-color('tertiary', $hc-navy-700, #ffffff); // 10.56:1
+  @include hpm-ion-color('success', $hc-ok, #ffffff); //   6.19:1
+  @include hpm-ion-color('warning', $hc-warn, #ffffff); //   5.66:1
+  @include hpm-ion-color('danger', $hc-danger, #ffffff); //   5.69:1
+  @include hpm-ion-color('dark', $hc-ink, #ffffff); //  16.44:1
+  @include hpm-ion-color('medium', $hc-grey, #ffffff); //   6.00:1
+  @include hpm-ion-color('light', $hc-line, $hc-ink); //  12.72:1
+
+  /* ------------------------------------------------------------ stepped neutrals
+   *
+   * Ionic's 19 steps drive placeholder text, dividers, disabled states and — the visible one —
+   * `ion-skeleton-text`, which every loading state in §7.5 renders. Leaving these on Ionic's
+   * default grey is the single most obvious way an app announces itself as unthemed: the skeletons
+   * would shimmer in a grey that appears nowhere else in the design.
+   *
+   * Step N is N/10 percent of the ink colour over the background, which is Ionic's own definition.
+   */
+  @for $i from 1 through 19 {
+    --ion-color-step-#{$i * 50}: #{hpm-hex(color.mix($hc-ink, $hc-bg, $i * 5%))};
+  }
+
+  /* ------------------------------------------------------------ surfaces */
+  --ion-background-color: #{$hc-bg};
+  --ion-background-color-rgb: #{hpm-rgb($hc-bg)};
+
+  --ion-text-color: #{$hc-ink};
+  --ion-text-color-rgb: #{hpm-rgb($hc-ink)};
+
+  --ion-border-color: #{$hc-line};
+  --ion-item-background: #{$hc-card};
+  --ion-card-background: #{$hc-card};
+  --ion-placeholder-color: #{$hc-grey-400};
+
+  /* ------------------------------------------------------------ chrome
+   *
+   * The tab bar is $hc-card rather than the page background, so it reads as a raised surface
+   * against the content behind it — the same relationship .hc-card has to the page on the web.
+   */
+  --ion-toolbar-background: #{$hc-card};
+  --ion-toolbar-color: #{$hc-ink};
+  --ion-toolbar-border-color: #{$hc-line};
+
+  --ion-tab-bar-background: #{$hc-card};
+  --ion-tab-bar-border-color: #{$hc-line};
+  --ion-tab-bar-color: #{$hc-grey};
+  --ion-tab-bar-color-selected: #{$hc-navy};
+
+  /* ------------------------------------------------------------ type */
+  --ion-font-family: #{$hc-font-sans};
+}
+
+/**
+ * Ionic's own radii are squarer than this brand. Aligning them here rather than per-component is
+ * what keeps an `ion-card` and an `.hc-card` from sitting side by side with different corners.
+ */
+:root {
+  --ion-card-radius: #{$hc-radius};
+}
+
+/**
+ * IONIC'S FORM CONTROLS RENDER THEIR OWN `<label>`, IN THE LIGHT DOM.
+ *
+ * This is the collision §7.2 warns about — "markup does not copy between them untranslated" — and
+ * it is worth reading once, because nothing about it is visible in either file on its own.
+ *
+ * The web's `.hc-field` contains a bare `<label>` and a bare `<input>` as siblings, so
+ * `.hc-field label { text-transform: uppercase; font-size: 12px; font-weight: 700; … }` styles
+ * exactly what it means to. On Ionic, `<ion-input>` renders `<label class="input-wrapper">`
+ * WRAPPING the native input — not in a shadow root, in the light DOM — so that same rule matches
+ * Ionic's label too, and Ionic's `.native-input { text-transform: inherit }` carries it down.
+ *
+ * Measured on a device before this rule existed, the sign-in field rendered its placeholder and the
+ * user's typed text at 12px / weight 700 / 0.66px tracking / grey / UPPERCASE. An input styled like
+ * a label. On the password field that is worse than ugly: it shows the patient capitals they did not
+ * type, so a correct password looks wrong and gets retyped. (The submitted VALUE was always correct
+ * — `text-transform` is presentational — which is exactly why no test caught it.)
+ *
+ * Scoped to Ionic's own class names and matched at higher specificity than `.hc-field label`, so it
+ * wins regardless of import order and so a real `<label>` written beside a control keeps its
+ * intended styling. A label INSIDE an Ionic form control is always Ionic's, never ours.
+ */
+ion-input,
+ion-textarea,
+ion-select,
+ion-searchbar {
+  label.input-wrapper,
+  label.textarea-wrapper,
+  label.select-wrapper,
+  label.searchbar-wrapper {
+    margin: 0;
+    font-size: initial;
+    font-weight: initial;
+    letter-spacing: normal;
+    color: initial;
+    text-transform: none;
+  }
+}
+
+/**
+ * A FIELD DOES NOT TURN GREEN FOR BEING NON-EMPTY.
+ *
+ * Ionic's Material inputs paint three highlight colours: focused, valid and invalid. `valid` wins
+ * over `focused` once Angular marks the control `ng-valid ng-touched` — and because
+ * `--ion-color-success` is mapped from `$hc-ok` above, the focused sign-in field drew a GREEN
+ * outline. Measured on a device: `--border-color` computed `rgb(40, 109, 79)` while
+ * `--highlight-color-focused` sat unused at navy.
+ *
+ * Green is not a colour this brand uses for chrome, and worse, it is telling the user nothing: on
+ * a sign-in form "valid" means the box is not empty. Colouring that is noise on the one screen
+ * where the user has no idea what the app wants from them.
+ *
+ * So `valid` is folded into `focused` — a focused field is navy, an unfocused one keeps its normal
+ * border. `invalid` KEEPS the danger colour, which matches the web's own rule in `.hc-field`:
+ * "Angular marks an invalid, touched control; only then is red honest."
+ */
+ion-input,
+ion-textarea,
+ion-select,
+ion-searchbar {
+  --highlight-color-focused: #{$hc-navy};
+  --highlight-color-valid: #{$hc-navy};
+  --highlight-color-invalid: #{$hc-danger};
+}
+
+/**
+ * Dark mode is deliberately out of scope for v1 (patient-mobile.md §6, "Still open").
+ *
+ * Do NOT import @ionic/angular/css/palettes/dark.*.css. Ionic's dark palette would invert every
+ * `--ion-*` surface above while the `hc-*` classes in _components.scss — which hardcode
+ * var(--hc-card), var(--hc-ink) and friends — would stay light. The result is not a dark app; it is
+ * half a dark app, and the half that stays light is every page's content.
+ */

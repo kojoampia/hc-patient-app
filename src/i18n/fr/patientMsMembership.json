@@ -1,0 +1,35 @@
+{
+  "patientDashboardApp": {
+    "patientMsMembership": {
+      "home": {
+        "title": "Memberships",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Membership",
+        "createOrEditLabel": "Créer ou éditer un Membership",
+        "notFound": "Aucun Membership trouvé"
+      },
+      "created": "Un nouveau Membership a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Membership avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Membership avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Membership {{ id }} ?"
+      },
+      "detail": {
+        "title": "Membership"
+      },
+      "id": "Id",
+      "patientId": "Patient Id",
+      "name": "Name",
+      "description": "Description",
+      "status": "Status",
+      "memberNumber": "Member Number",
+      "plan": "Plan",
+      "startDate": "Start Date",
+      "renewalDate": "Renewal Date",
+      "createdDate": "Created Date",
+      "modifiedDate": "Modified Date",
+      "createdBy": "Created By",
+      "modifiedBy": "Modified By"
+    }
+  }
+}

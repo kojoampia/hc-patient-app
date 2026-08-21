@@ -1,0 +1,39 @@
+{
+  "patientDashboardApp": {
+    "patientMsTask": {
+      "home": {
+        "title": "Tasks",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Task",
+        "createOrEditLabel": "Create or edit a Task",
+        "notFound": "No Tasks found"
+      },
+      "created": "A new Task is created with identifier {{ param }}",
+      "updated": "A Task is updated with identifier {{ param }}",
+      "deleted": "A Task is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Task {{ id }}?"
+      },
+      "detail": {
+        "title": "Task"
+      },
+      "id": "Id",
+      "name": "Name",
+      "description": "Description",
+      "schedule": "Schedule",
+      "scheduledAt": "Scheduled At",
+      "duration": "Duration",
+      "status": "Status",
+      "location": "Location",
+      "caseId": "Case Id",
+      "attendantId": "Attendant Id",
+      "teamId": "Team Id",
+      "patientId": "Patient Id",
+      "attendant": "Attendant",
+      "createdDate": "Created Date",
+      "modifiedDate": "Modified Date",
+      "createdBy": "Created By",
+      "modifiedBy": "Modified By"
+    }
+  }
+}

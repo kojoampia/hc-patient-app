@@ -1,0 +1,58 @@
+<hpm-portal-page titleKey="patientPortal.nav.cases">
+  <div class="hc-tools">
+    <hpm-search-box inputId="q_cases" placeholderKey="patientPortal.cases.search" [value]="query()" (queryChange)="query.set($event)" />
+    <hpm-person-filter [people]="careTeam()" [value]="professional()" (valueChange)="professional.set($event)" />
+  </div>
+
+  <div class="hpm-cases__statuses">
+    @for (option of statuses; track option) {
+      <button type="button" class="hc-toggle" [class.is-on]="status() === option" (click)="setStatus(option)">
+        {{ option | hpmStatus }}
+      </button>
+    }
+  </div>
+
+  <hpm-stream
+    class="hc-mt-16"
+    [resource]="cases()"
+    emptyTitleKey="patientPortal.cases.empty"
+    emptyMessageKey="patientPortal.cases.emptyHint"
+    emptyIcon="briefcase-outline"
+    [skeletonRowHeight]="96"
+  >
+    <div class="hc-grid">
+      @for (item of filtered(); track item.id) {
+        <!--
+          The whole card is the tap target, not a 16px chevron in a table's last column. The chevron
+          stays as an affordance so it still reads as "this opens something".
+        -->
+        <article
+          class="hc-card hc-card-pad hpm-cases__row"
+          role="button"
+          tabindex="0"
+          (click)="open(item.id)"
+          (keydown.enter)="open(item.id)"
+          [attr.aria-label]="'patientPortal.cases.openCase' | translate: { name: item.title ?? item.brief }"
+        >
+          <div class="hc-row hc-between hc-gap-8 hc-wrap">
+            <b class="hc-grow">{{ item.title ?? item.brief }}</b>
+            <span class="hc-pill" [class]="pill(item.status)">{{ item.status | hpmStatus }}</span>
+          </div>
+
+          @if (item.title && item.brief) {
+            <div class="hc-muted hc-tiny hpm-cases__brief">{{ item.brief }}</div>
+          }
+
+          <div class="hc-row hc-between hc-gap-8 hc-wrap hpm-cases__meta">
+            <span class="hc-muted hc-tiny">
+              <span class="hc-num">{{ item.caseNumber ?? '—' }}</span>
+              · <span class="hc-num">{{ formatInstantDay(item.openedAt) }}</span>
+              · {{ memberOf(item.assignedProfessionalId).name }}
+            </span>
+            <hpm-icon name="chev" [size]="16" [strokeWidth]="2.2" />
+          </div>
+        </article>
+      }
+    </div>
+  </hpm-stream>
+</hpm-portal-page>

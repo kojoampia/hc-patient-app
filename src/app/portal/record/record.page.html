@@ -1,0 +1,152 @@
+<hpm-portal-page titleKey="patientPortal.nav.record">
+  <!-- Who the patient is. Driven by profileState$, whose 404 is loaded(null) — a real state. -->
+  <!--
+    The profile is one record, not a collection, so it does not go through hpm-stream (which types on
+    readonly T[]). The three states are handled inline — and `loaded(null)` genuinely means "you have
+    no profile", which is why the empty branch is a sentence rather than a retry.
+  -->
+  @if (profileState().state === 'loading') {
+    <div class="hc-card hc-card-pad"><ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text></div>
+  } @else if (profileState().state === 'failed') {
+    <div class="hc-card hc-card-pad" role="alert">
+      <p class="hc-muted hc-sm">{{ 'patientPortal.stream.generic' | translate }}</p>
+    </div>
+  } @else {
+    @if (profile(); as p) {
+      <section class="hc-card hc-card-pad">
+        <b class="hpm-record__name">{{ fullName() }}</b>
+        <dl class="hc-kv hc-mt-16">
+          <span class="hc-kv__k" hpmTranslate="patientPortal.record.born">Born</span>
+          <span class="hc-kv__v">{{ formatDay(p.birthDate) }}</span>
+
+          <span class="hc-kv__k" hpmTranslate="patientPortal.record.phone">Phone</span>
+          <span class="hc-kv__v">{{ p.mobilePhone ?? p.phoneNumber ?? '—' }}</span>
+
+          <!-- formatAddress, never interpolation — the address is a document (§8.4.2). -->
+          <span class="hc-kv__k" hpmTranslate="patientPortal.record.address">Address</span>
+          <span class="hc-kv__v">{{ address() }}</span>
+        </dl>
+      </section>
+    }
+  }
+
+  <!-- Vitals: one chart shown well beats four shown small. -->
+  <hpm-panel class="hc-mt-16" titleKey="patientPortal.record.vitals" icon="heart">
+    <hpm-stream [resource]="vitalsState()" emptyTitleKey="patientPortal.record.noVitals" emptyIcon="pulse-outline" [skeletonRows]="2">
+      <div class="hpm-record__vitals">
+        @for (vital of vitals(); track vital.key) {
+          <button
+            type="button"
+            class="hc-vital"
+            [class.is-on]="selected()?.key === vital.key"
+            (click)="selectedKey.set(vital.key)"
+            [attr.aria-pressed]="selected()?.key === vital.key"
+          >
+            <span class="hc-vital__label">{{ vital.label }}</span>
+            <b class="hc-num">{{ vital.display }}</b>
+            <span class="hc-tiny hc-muted">{{ vital.unit }}</span>
+            <span class="hc-pill" [class]="vitalPill(vital.flag)">{{ vital.flag | hpmStatus }}</span>
+          </button>
+        }
+      </div>
+
+      @if (selected(); as vital) {
+        <div class="hc-mt-16">
+          <div class="hc-row hc-between hc-gap-8 hc-wrap">
+            <span class="hc-muted hc-tiny">
+              {{ 'patientPortal.overview.recordedBy' | translate: { name: recorderOf(vital) } }}
+            </span>
+            <button type="button" class="hc-toggle" [class.is-on]="showTable()" (click)="showTable.set(!showTable())">
+              {{ 'patientPortal.chart.table' | translate }}
+            </button>
+          </div>
+
+          @if (showTable()) {
+            <div class="hc-tbl-wrap hc-mt-16">
+              <table class="hc-tbl">
+                <tbody>
+                  @for (row of vital.history; track row.when) {
+                    <tr>
+                      <td>{{ row.when }}</td>
+                      <td class="hc-num">{{ row.value }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          } @else {
+            <hpm-trend-chart [data]="vital.trend" [unit]="vital.unit" [showTable]="false" />
+          }
+        </div>
+      }
+    </hpm-stream>
+  </hpm-panel>
+
+  <!--
+    The five collections, newest three each, with a way into the full screen. The web pages these
+    because its panels sit side by side; here each panel's own screen is one tap away.
+  -->
+  <hpm-panel class="hc-mt-16" titleKey="patientPortal.nav.cases" icon="case">
+    <hpm-stream [resource]="casesState()" emptyTitleKey="patientPortal.cases.empty" emptyIcon="briefcase-outline" [skeletonRows]="2">
+      @for (item of cases(); track item.id) {
+        <div class="hc-drow" role="button" tabindex="0" (click)="openCase(item.id)" (keydown.enter)="openCase(item.id)">
+          <span class="hc-drow__date">{{ formatInstantDay(item.openedAt) }}</span>
+          <span class="hc-drow__text">{{ item.title ?? item.brief }}</span>
+        </div>
+      }
+      <button type="button" class="hc-toggle hc-mt-16" (click)="go('cases')">{{ 'patientPortal.action.viewAll' | translate }}</button>
+    </hpm-stream>
+  </hpm-panel>
+
+  <hpm-panel class="hc-mt-16" titleKey="patientPortal.nav.medications" icon="pill">
+    <hpm-stream [resource]="medicationsState()" emptyTitleKey="patientPortal.medications.empty" emptyIcon="medkit-outline" [skeletonRows]="2">
+      @for (item of medications(); track item.id) {
+        <div class="hc-drow">
+          <span class="hc-drow__date">{{ formatDay(item.startedOn ?? item.createdDate) }}</span>
+          <span class="hc-drow__text">{{ item.name }}<span class="hc-drow__sub">{{ item.dosage }}</span></span>
+        </div>
+      }
+      <button type="button" class="hc-toggle hc-mt-16" (click)="go('medications')">
+        {{ 'patientPortal.action.viewAll' | translate }}
+      </button>
+    </hpm-stream>
+  </hpm-panel>
+
+  <hpm-panel class="hc-mt-16" titleKey="patientPortal.nav.visitations" icon="pin">
+    <hpm-stream [resource]="visitationsState()" emptyTitleKey="patientPortal.visitations.empty" emptyIcon="location-outline" [skeletonRows]="2">
+      @for (item of visits(); track item.id) {
+        <div class="hc-drow">
+          <span class="hc-drow__date">{{ formatInstantDay(item.visitedAt) }}</span>
+          <span class="hc-drow__text">{{ item.purpose }}<span class="hc-drow__sub">{{ memberOf(item.professionalId).name }}</span></span>
+        </div>
+      }
+      <button type="button" class="hc-toggle hc-mt-16" (click)="go('visitations')">
+        {{ 'patientPortal.action.viewAll' | translate }}
+      </button>
+    </hpm-stream>
+  </hpm-panel>
+
+  <hpm-panel class="hc-mt-16" titleKey="patientPortal.nav.reports" icon="report">
+    <hpm-stream [resource]="reportsState()" emptyTitleKey="patientPortal.reports.empty" emptyIcon="document-text-outline" [skeletonRows]="2">
+      @for (item of reports(); track item.id) {
+        <div class="hc-drow">
+          <span class="hc-drow__date">{{ formatDay(item.reportDate ?? item.createdDate) }}</span>
+          <span class="hc-drow__text">{{ item.name }}</span>
+        </div>
+      }
+      <button type="button" class="hc-toggle hc-mt-16" (click)="go('reports')">{{ 'patientPortal.action.viewAll' | translate }}</button>
+    </hpm-stream>
+  </hpm-panel>
+
+  <hpm-panel class="hc-mt-16" titleKey="patientPortal.nav.activity" icon="note">
+    <hpm-stream [resource]="activityState()" emptyTitleKey="patientPortal.activity.empty" emptyIcon="document-text-outline" [skeletonRows]="2">
+      @for (item of activity(); track item.id) {
+        <div class="hc-drow">
+          <span class="hc-drow__date">{{ formatInstantDay(item.loggedAt, item.createdDate) }}</span>
+          <span class="hc-drow__text">{{ item.summary }}<span class="hc-drow__sub">{{ authorName(item) }}</span></span>
+        </div>
+      }
+      <button type="button" class="hc-toggle hc-mt-16" (click)="go('activity')">{{ 'patientPortal.action.viewAll' | translate }}</button>
+    </hpm-stream>
+  </hpm-panel>
+</hpm-portal-page>

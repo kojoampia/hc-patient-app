@@ -1,0 +1,109 @@
+# ONE workflow, per patient-mobile.md §7.7.
+#
+# Deliberately NOT copied from the web repo:
+#
+#   - docker-publish.yml — has been failing since 2026-07-30 against a Dockerfile that lives in
+#     another repository. Copying a red workflow teaches everyone to ignore a red tick.
+#   - release.yml — publishes an nginx image. This app has no server and no image.
+#
+# The Android job needs the node job because it packages what the node job built, and because a
+# lint or test failure should stop before spending five minutes on Gradle.
+
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  node:
+    name: lint, test, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Matches the engines field, and the version the app is developed on.
+          node-version: '24'
+          cache: npm
+
+      - run: npm ci
+
+      # BEFORE lint and test, deliberately. It is a build step — it generates the merged bundles
+      # and the hash translation.config.ts reads — and it is also the i18n key-equality gate, which
+      # should fail fast rather than after a full test run.
+      - name: Merge i18n and check key equality
+        run: npm run i18n
+
+      # Separate steps, not `npm test` with a pretest hook. On the web that hook is why `npm test`
+      # has been failing for months on pre-existing lint problems while the tests themselves pass.
+      - run: npm run lint
+
+      - run: npm run test:ci
+
+      # LAST, and it is the gate that matters most. Jest only compiles what a spec imports;
+      # tsconfig.app.json compiles everything, so a lifted-but-unwired file is caught here and
+      # nowhere else. This has already caught two failures that lint and 194 passing tests did not.
+      - run: npm run build:prod
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: www
+          path: www/
+          retention-days: 7
+
+  android:
+    name: assembleDebug
+    needs: node
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      # TEMURIN 21, and this is not a preference. The workspace's JDK trap reaches here through
+      # Gradle: java-25-openjdk is a JRE with no javac, and Gradle's failure reads "does not provide
+      # the required capabilities: [JAVA_COMPILER]" rather than anything about a missing compiler.
+      # Pinning the distribution and version is what stops a runner image change reintroducing it.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: android-actions/setup-android@v3
+
+      - run: npm ci
+      - run: npm run i18n
+      - run: npm run build:prod
+
+      - run: npx cap sync android
+
+      # `clean` first. A warm Gradle build still installs a STALE APK, which is the part of the JDK
+      # trap that wastes an afternoon — and on CI a stale artifact is worse, because it is the one
+      # somebody downloads to test.
+      - name: Assemble debug APK
+        working-directory: android
+        run: ./gradlew clean assembleDebug --no-daemon
+
+      # assembleRelease runs Android lint, which assembleDebug does not — it is what caught a
+      # malformed network_security_config that several debug builds had accepted. It produces an
+      # UNSIGNED artifact here: the keystore is a credential and is not available to CI.
+      - name: Assemble release (unsigned — verifies the release path and runs Android lint)
+        working-directory: android
+        run: ./gradlew assembleRelease --no-daemon
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 7

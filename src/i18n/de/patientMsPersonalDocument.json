@@ -1,0 +1,29 @@
+{
+  "patientDashboardApp": {
+    "patientMsPersonalDocument": {
+      "home": {
+        "title": "Personal Documents",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Personal Document erstellen",
+        "createOrEditLabel": "Personal Document erstellen oder bearbeiten",
+        "notFound": "Keine Personal Documents gefunden"
+      },
+      "created": "Personal Document erstellt mit ID {{ param }}",
+      "updated": "Personal Document aktualisiert mit ID {{ param }}",
+      "deleted": "Personal Document gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Personal Document {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Personal Document"
+      },
+      "id": "Id",
+      "name": "Name",
+      "category": "Category",
+      "url": "Url",
+      "patientId": "Patient Id",
+      "issuedOn": "Issued On",
+      "expiresOn": "Expires On"
+    }
+  }
+}

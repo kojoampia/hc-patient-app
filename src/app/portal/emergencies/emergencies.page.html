@@ -1,0 +1,89 @@
+<hpm-portal-page titleKey="patientPortal.nav.emergencies">
+  <!--
+    The care line first, above the list and above the search. It is the only actionable thing on
+    this screen, and a patient opening it during an emergency should not have to scroll past their
+    own history to find the number.
+  -->
+  <section class="hc-card hc-card-pad hpm-emergencies__careline">
+    <div class="hc-grow">
+      <b hpmTranslate="patientPortal.emergencies.careLineTitle">Need help now?</b>
+      <p class="hc-muted hc-sm" hpmTranslate="patientPortal.emergencies.careLineBlurb"></p>
+    </div>
+
+    <!--
+      A real tel: link, not a click handler. The dialler is the one native surface that should not
+      go through Capacitor here — an anchor is what a long-press "copy number" and an accessibility
+      "call" action both understand.
+    -->
+    <a class="hc-btn hc-btn--danger" href="tel:+233302000000">
+      <hpm-icon name="phone" [size]="16" [strokeWidth]="2.2" />
+      <span hpmTranslate="patientPortal.emergencies.callCareLine">Call the care line</span>
+    </a>
+  </section>
+
+  <div class="hc-tools hc-mt-16">
+    <hpm-search-box
+      inputId="q_emergencies"
+      placeholderKey="patientPortal.emergencies.search"
+      [value]="query()"
+      (queryChange)="query.set($event)"
+    />
+  </div>
+
+  <!--
+    The Resource goes to hpm-stream, never unwrapped here. On a dropped connection this renders the
+    failure card with a Try again — not "No emergencies on record", which on THIS screen would be
+    the most dangerous empty state in the app.
+  -->
+  <hpm-stream
+    class="hc-mt-16"
+    [resource]="emergencies()"
+    emptyTitleKey="patientPortal.emergencies.empty"
+    emptyMessageKey="patientPortal.emergencies.emptyHint"
+    emptyIcon="shield-outline"
+    [skeletonRowHeight]="104"
+  >
+    <div class="hc-grid">
+      @for (item of filtered(); track item.id) {
+        <article class="hc-card hc-card-pad">
+          <div class="hc-row hc-between hc-gap-8 hc-wrap">
+            <b class="hc-grow">{{ item.brief }}</b>
+            <span class="hc-pill" [class]="severityPill(item.severity)">{{ item.severity | hpmStatus }}</span>
+            <span class="hc-pill" [class]="statusPill(item.status)">{{ item.status | hpmStatus }}</span>
+          </div>
+
+          <div class="hc-row hc-gap-8 hc-muted hc-tiny hc-wrap hpm-emergencies__meta">
+            <span class="hc-num">{{ formatDayTime(item.raisedAt) }}</span>
+            @if (item.location) {
+              <span>· {{ item.location }}</span>
+            }
+            @if (item.respondentId) {
+              <span>· {{ memberOf(item.respondentId).name }}</span>
+            }
+            @if (caseLabel(item.caseId); as label) {
+              <!--
+                Routed through PortalNavService, not a hardcoded /tabs/... URL (§8.1). case/:id is
+                registered under all five tabs, and opening it from here must keep the reader on the
+                Overview stack rather than throwing them into Cases.
+              -->
+              <span>· <a (click)="openCase(item.caseId)">{{ label }}</a></span>
+            }
+          </div>
+
+          @if (item.detail) {
+            <div class="hc-prose hpm-emergencies__detail">
+              <p>{{ item.detail }}</p>
+            </div>
+          }
+
+          @if (item.outcome) {
+            <div class="hc-kv hpm-emergencies__outcome">
+              <span class="hc-kv__k" hpmTranslate="patientPortal.emergencies.outcome">Outcome</span>
+              <span class="hc-kv__v">{{ item.outcome }}</span>
+            </div>
+          }
+        </article>
+      }
+    </div>
+  </hpm-stream>
+</hpm-portal-page>

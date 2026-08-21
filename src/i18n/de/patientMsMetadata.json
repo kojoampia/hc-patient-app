@@ -1,0 +1,28 @@
+{
+  "patientDashboardApp": {
+    "patientMsMetadata": {
+      "home": {
+        "title": "Metadata",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Metadata erstellen",
+        "createOrEditLabel": "Metadata erstellen oder bearbeiten",
+        "notFound": "Keine Metadata gefunden"
+      },
+      "created": "Metadata erstellt mit ID {{ param }}",
+      "updated": "Metadata aktualisiert mit ID {{ param }}",
+      "deleted": "Metadata gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Metadata {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Metadata"
+      },
+      "id": "Id",
+      "createdBy": "Created By",
+      "modifiedBy": "Modified By",
+      "createdDate": "Created Date",
+      "modifiedDate": "Modified Date",
+      "data": "Data"
+    }
+  }
+}

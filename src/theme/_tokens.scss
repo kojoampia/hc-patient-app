@@ -1,0 +1,148 @@
+/**
+ * Lifted from hc-patient-dashboard
+ *   src/main/webapp/content/scss/_tokens.scss @ 12e418c
+ * Divergence: two status foregrounds darkened for AA — $hc-warn #b4741a -> #8f5c14 and
+ *   $hc-ok #2e7d5b -> #286d4f. Both keep the hue. See patient-mobile.md §7.3; both defects are
+ *   inherited from the web and are worse at phone pill sizes. Raise them on the web repo.
+ * Re-sync: see PROVENANCE.md.
+ */
+
+/**
+ * Design tokens for the patient portal.
+ *
+ * Two representations of the same palette, deliberately:
+ *  - SCSS variables, because Bootstrap's own maps are compile-time and cannot read a custom property
+ *  - CSS custom properties, because component styles and the charts read them at runtime
+ *
+ * Change a colour here and both follow. Nothing downstream should hardcode a hex value.
+ */
+
+// ---------------------------------------------------------------- brand
+$hc-navy: #0d3058;
+$hc-navy-700: #12406f;
+$hc-navy-900: #092239;
+
+$hc-gold: #c59437;
+$hc-gold-300: #ddb868;
+$hc-gold-050: #fbf4e6;
+
+$hc-cream: #f7f4ee;
+
+// ---------------------------------------------------------------- neutrals
+$hc-ink: #16202c;
+$hc-grey: #5b6470;
+$hc-grey-400: #8b939e;
+$hc-line: #e6e2d9;
+$hc-bg: #f2f0ea;
+$hc-card: #ffffff;
+
+// ---------------------------------------------------------------- status
+// Each status is a foreground/background pair; the background is only ever used behind its own
+// foreground, so the contrast ratio is fixed at design time rather than per usage.
+// DIVERGENCE from web @ 12e418c, per patient-mobile.md §7.3. Each foreground is only ever used on
+// its own background, so these ratios are fixed at design time — and both failed there:
+//   $hc-ok   #2e7d5b on #e7f3ed = 4.39:1 (marginal) -> #286d4f = 5.44:1
+//   $hc-warn #b4741a on #fdf3e2 = 3.50:1 (fails AA) -> #8f5c14 = 5.15:1
+// ($hc-danger #b3402f on #fbedea is 4.99:1 and needs no change.)
+// Hue preserved in both. A status pill on a 390px viewport is smaller than anywhere on the web,
+// so "marginal" there is "fails" here.
+$hc-ok: #286d4f;
+$hc-ok-bg: #e7f3ed;
+$hc-warn: #8f5c14;
+$hc-warn-bg: #fdf3e2;
+$hc-danger: #b3402f;
+$hc-danger-bg: #fbedea;
+
+// ---------------------------------------------------------------- shape
+$hc-radius-sm: 8px;
+$hc-radius: 14px;
+$hc-radius-lg: 20px;
+$hc-radius-xl: 28px;
+
+$hc-shadow-sm:
+  0 1px 2px rgba(13, 48, 88, 0.06),
+  0 1px 3px rgba(13, 48, 88, 0.05);
+$hc-shadow:
+  0 2px 6px rgba(13, 48, 88, 0.06),
+  0 8px 24px rgba(13, 48, 88, 0.07);
+$hc-shadow-lg: 0 12px 40px rgba(13, 48, 88, 0.16);
+
+// ---------------------------------------------------------------- type
+$hc-font-sans:
+  'Inter',
+  'Lato',
+  -apple-system,
+  BlinkMacSystemFont,
+  'Segoe UI',
+  Roboto,
+  Helvetica,
+  Arial,
+  sans-serif;
+
+// ---------------------------------------------------------------- layout
+$hc-sidebar-width: 248px;
+
+/** The collapsed sidebar: wide enough for a 18px icon and its tap target, and nothing else. */
+$hc-sidebar-rail-width: 50px;
+// Below this the sidebar becomes a drawer and the bottom tab bar appears. Referenced by the
+// shell component's own media queries — keep them in step.
+$hc-shell-breakpoint: 940px;
+
+:root {
+  --hc-navy: #{$hc-navy};
+  --hc-navy-700: #{$hc-navy-700};
+  --hc-navy-900: #{$hc-navy-900};
+
+  --hc-gold: #{$hc-gold};
+  --hc-gold-300: #{$hc-gold-300};
+  --hc-gold-050: #{$hc-gold-050};
+
+  --hc-cream: #{$hc-cream};
+
+  --hc-ink: #{$hc-ink};
+  --hc-grey: #{$hc-grey};
+  --hc-grey-400: #{$hc-grey-400};
+  --hc-line: #{$hc-line};
+  --hc-bg: #{$hc-bg};
+  --hc-card: #{$hc-card};
+
+  --hc-ok: #{$hc-ok};
+  --hc-ok-bg: #{$hc-ok-bg};
+  --hc-warn: #{$hc-warn};
+  --hc-warn-bg: #{$hc-warn-bg};
+  --hc-danger: #{$hc-danger};
+  --hc-danger-bg: #{$hc-danger-bg};
+
+  --hc-r-sm: #{$hc-radius-sm};
+  --hc-r: #{$hc-radius};
+  --hc-r-lg: #{$hc-radius-lg};
+  --hc-r-xl: #{$hc-radius-xl};
+
+  --hc-sh-sm: #{$hc-shadow-sm};
+  --hc-sh: #{$hc-shadow};
+  --hc-sh-lg: #{$hc-shadow-lg};
+
+  --hc-sans: #{$hc-font-sans};
+  --hc-sidebar-w: #{$hc-sidebar-width};
+  --hc-sidebar-rail-w: #{$hc-sidebar-rail-width};
+
+  /**
+   * A cap on the portal's content column, unset on purpose.
+   *
+   * The shell centres its content when this is a length, so setting it here is the one change needed
+   * if long-line readability ever argues for a cap on an ultra-wide display. It was a hard 1240px
+   * until 2026-08-19, which made wide tables scroll inside a box narrower than the screen.
+   */
+  --hc-content-max: none;
+
+  /**
+   * Data-visualisation roles. These are NOT the brand colours: series colours have to hold their
+   * own against each other and against the card background, which the navy/gold pair does not do
+   * at small mark sizes. Slots are ordered — a one-series chart uses slot 1, never slot 2.
+   */
+  --hc-surface-1: #ffffff;
+  --hc-grid: #e9e5dc;
+  --hc-series-1: #256abf; // blue
+  --hc-series-2: #eda100; // gold
+  --hc-series-3: #1baf7a; // aqua
+}

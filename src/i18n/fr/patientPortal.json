@@ -1,0 +1,508 @@
+{
+  "patientPortal": {
+    "brand": {
+      "suffix": "BridgeCare",
+      "tagline": "Portail patient"
+    },
+    "nav": {
+      "aria": "Sections du portail",
+      "ariaPrimary": "Sections principales",
+      "openMenu": "Ouvrir le menu",
+      "signOut": "Se déconnecter",
+      "roleLine": "Patient",
+      "overview": "Vue d'ensemble",
+      "record": "Mon dossier",
+      "recordShort": "Dossier",
+      "schedules": "Rendez-vous",
+      "schedulesShort": "Agenda",
+      "emergencies": "Urgences",
+      "cases": "Dossiers cliniques",
+      "medications": "Médicaments",
+      "reports": "Comptes rendus",
+      "plans": "Régime et exercice",
+      "allergies": "Allergies",
+      "profile": "Profil",
+      "group": {
+        "overview": "Vue d'ensemble",
+        "health": "Ma santé",
+        "clinical": "Clinique",
+        "account": "Compte",
+        "session": "Session"
+      },
+      "collapseMenu": "Réduire le menu",
+      "expandMenu": "Développer le menu"
+    },
+    "title": {
+      "overview": "Contexte patient",
+      "record": "Mon dossier",
+      "schedules": "Rendez-vous",
+      "emergencies": "Urgences",
+      "cases": "Dossiers cliniques",
+      "case": "Détail du dossier",
+      "medications": "Médicaments",
+      "reports": "Comptes rendus",
+      "plans": "Plan de régime et d'exercice",
+      "allergies": "Allergies",
+      "visitations": "Visites",
+      "activity": "Journal d'activité",
+      "profile": "Profil"
+    },
+    "action": {
+      "print": "Imprimer cet écran",
+      "careLine": "Ligne d'assistance",
+      "seeAll": "Tout voir",
+      "viewRecord": "Dossier complet",
+      "viewProfile": "Profil",
+      "backToCases": "Tous les dossiers",
+      "printShort": "Imprimer",
+      "close": "Fermer",
+      "view": "Voir",
+      "openCase": "Ouvrir le dossier",
+      "copy": "Copier",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…"
+    },
+    "auth": {
+      "eyebrow": "Abofonsa BridgeCare · Portail patient",
+      "headlineLead": "Tout votre dossier de santé,",
+      "headlineAccent": "en un seul endroit serein.",
+      "blurb": "Chaque dossier, visite, médicament et compte rendu enregistré par votre équipe soignante — visible par vous, en langage clair, où que vous soyez.",
+      "signInLede": "Accédez à votre dossier de santé personnel.",
+      "or": "ou",
+      "stat": {
+        "cases": "Dossiers enregistrés",
+        "casesValue": "12",
+        "visits": "Visites consignées",
+        "visitsValue": "41",
+        "team": "Professionnels",
+        "teamValue": "6",
+        "careLine": "Ligne d'assistance",
+        "careLineValue": "24/7"
+      }
+    },
+    "pager": {
+      "aria": "Pagination",
+      "prev": "Précédent",
+      "next": "Suivant"
+    },
+    "chart": {
+      "table": "Tableau",
+      "when": "Quand",
+      "glance": "Votre suivi en un coup d’œil",
+      "glanceSub": "Chaque graphique a une vue tableau — appuyez sur Tableau pour lire les chiffres.",
+      "visitsOverTime": "Visites au fil du temps",
+      "visitsOverTimeSub": "Vos visites enregistrées, mois par mois.",
+      "caseDistribution": "Répartition des dossiers",
+      "caseDistributionSub": "Où en sont vos {{ total }} dossiers aujourd’hui.",
+      "perProfessional": "Dossiers et visites par professionnel",
+      "perProfessionalSub": "Qui participe à vos soins.",
+      "month": "Mois",
+      "cases": "Dossiers",
+      "visits": "Visites",
+      "status": "Statut",
+      "count": "Dossiers",
+      "share": "Part",
+      "who": "Professionnel",
+      "case": "Dossier"
+    },
+    "overview": {
+      "greeting": "Votre santé, en un coup d'œil",
+      "greetingNamed": "Bonjour {{ name }}",
+      "heroBlurb": "Tout ce que votre équipe soignante a enregistré — dossiers, visites, médicaments et comptes rendus — au même endroit.",
+      "vitals": "Dernières mesures",
+      "vitalsSub": "La mesure la plus récente enregistrée par votre équipe soignante.",
+      "noVitals": "Aucune mesure pour l'instant",
+      "noVitalsHint": "Les constantes apparaissent ici dès que votre équipe soignante les enregistre.",
+      "nextUp": "À venir",
+      "openCases": "Dossiers récents",
+      "activity": "Activité récente",
+      "lastAlert": "Alerte la plus récente",
+      "tile": {
+        "openCases": "Dossiers ouverts",
+        "upcoming": "Visites à venir",
+        "activeMeds": "Médicaments en cours",
+        "reports": "Comptes rendus",
+        "emergencies": "Urgences",
+        "allergies": "Allergies",
+        "diet": "Plan alimentaire",
+        "exercise": "Plan d’exercice"
+      },
+      "heroNext": "Votre prochain rendez-vous est le {{ when }} avec {{ clinician }}. {{ open }} de vos {{ total }} dossiers sont encore ouverts.",
+      "openRecord": "Ouvrir mon dossier",
+      "onFile": "Dans votre dossier",
+      "onFileSub": "Touchez une tuile pour l’ouvrir.",
+      "viewVital": "Voir {{ name }} en détail",
+      "lastReadings": "Les mesures derrière cette courbe",
+      "recordedBy": "relevé le {{ when }} par {{ who }}",
+      "recordedByYou": "vous"
+    },
+    "record": {
+      "vitals": "Constantes",
+      "vitalsSub": "Choisissez une mesure pour voir son évolution.",
+      "history": "Historique des mesures",
+      "visits": "Visites",
+      "activity": "Journal d’activité",
+      "careTeam": "Votre équipe soignante",
+      "noCareTeam": "Aucune équipe soignante enregistrée",
+      "noCareTeamHint": "Les professionnels qui vous suivent seront listés ici.",
+      "cases": "Dossiers",
+      "medications": "Médicaments",
+      "reports": "Rapports",
+      "lists": "Dans ce dossier",
+      "listsSub": "Trois à la fois — parcourez ici, ou ouvrez la liste complète.",
+      "openAll": {
+        "cases": "Ouvrir tous les dossiers",
+        "visits": "Ouvrir toutes les visites",
+        "activity": "Ouvrir le journal complet",
+        "medications": "Ouvrir tous les médicaments",
+        "reports": "Ouvrir tous les rapports"
+      }
+    },
+    "cases": {
+      "search": "Rechercher dossiers, symptômes, diagnostics…",
+      "empty": "Aucun dossier enregistré",
+      "emptyHint": "Un dossier est ouvert chaque fois que votre équipe soignante examine quelque chose.",
+      "openCase": "Ouvrir le dossier {{ name }}",
+      "column": {
+        "number": "N°",
+        "title": "Dossier",
+        "opened": "Ouvert le",
+        "clinician": "Clinicien",
+        "status": "Statut",
+        "open": "Ouvrir"
+      }
+    },
+    "case": {
+      "openedOn": "Ouvert le {{ date }}",
+      "symptoms": "Ce qui a été signalé",
+      "noSymptoms": "Aucun symptôme n'a été consigné pour ce dossier.",
+      "diagnosis": "Ce qui a été constaté",
+      "noDiagnosis": "Aucun diagnostic n'a encore été consigné.",
+      "recommendations": "Recommandations",
+      "noRecommendations": "Aucune recommandation consignée pour ce dossier.",
+      "visits": "Visites",
+      "noVisits": "Aucune visite consignée pour ce dossier",
+      "medications": "Médicaments",
+      "noMedications": "Aucun médicament prescrit pour ce dossier",
+      "reports": "Comptes rendus",
+      "noReports": "Aucun compte rendu déposé pour ce dossier",
+      "timeline": "Chronologie",
+      "noTimeline": "Rien n'a été consigné pour ce dossier",
+      "notFound": "Dossier introuvable",
+      "notFoundHint": "Il a peut-être été clôturé, ou le lien n'est plus à jour.",
+      "logActivity": "Noter un événement",
+      "logActivityBlurb": "Ajoutez ce que vous avez remarqué — un symptôme, une dose oubliée, votre sommeil. C’est classé dans ce dossier et votre équipe le voit.",
+      "noteTitle": "Titre de l’événement",
+      "noteTitleHint": "ex. Vertige en me levant",
+      "noteDetail": "Ce qui s’est passé",
+      "noteDetailHint": "Quand cela a commencé, combien de temps, ce qui a aidé…",
+      "noteFailed": "Votre note n’a pas été enregistrée. Vérifiez votre connexion et réessayez — votre texte est toujours là.",
+      "filedUnder": "Tout ce qui est classé au dossier {{ number }}",
+      "filedUnderSub": "Vos propres notes y figurent aussi.",
+      "seeAppointments": "Voir les rendez-vous"
+    },
+    "schedules": {
+      "search": "Rechercher par date, professionnel ou rendez-vous…",
+      "upcoming": "À venir",
+      "upcomingSub": "Rendez-vous encore à honorer.",
+      "past": "Déjà honorés",
+      "pastSub": "Rendez-vous qui ont déjà eu lieu.",
+      "empty": "Aucun rendez-vous prévu",
+      "emptyHint": "Les nouveaux rendez-vous apparaissent ici dès que votre équipe soignante les planifie.",
+      "emptyPast": "Aucun rendez-vous passé pour l'instant",
+      "column": {
+        "when": "Quand",
+        "what": "Rendez-vous",
+        "who": "Avec",
+        "where": "Où",
+        "status": "Statut"
+      },
+      "viewOne": "Voir {{ name }}",
+      "detail": "Rendez-vous"
+    },
+    "emergencies": {
+      "search": "Rechercher alertes, détails ou résultat…",
+      "careLineTitle": "Besoin d'aide maintenant ?",
+      "careLineBlurb": "La ligne d’assistance est ouverte 24 h/24 et votre ange gardien est appelé en même temps. En cas de danger vital, appelez d’abord votre numéro d’urgence local.",
+      "callCareLine": "Appeler la ligne d'assistance",
+      "outcome": "Issue",
+      "empty": "Aucune urgence enregistrée",
+      "emptyHint": "Les alertes déclenchées sur votre dossier apparaissent ici, avec leur issue."
+    },
+    "medications": {
+      "search": "Rechercher médicaments, doses ou instructions…",
+      "empty": "Aucun médicament enregistré",
+      "emptyHint": "Tout ce qui vous est prescrit apparaît ici, en cours comme passé.",
+      "column": {
+        "started": "Débuté le",
+        "name": "Médicament",
+        "dosage": "Comment le prendre",
+        "prescriber": "Prescrit par",
+        "status": "Statut"
+      },
+      "count": {
+        "active": "En cours",
+        "completed": "Traitements terminés",
+        "withheld": "Non administré — allergie"
+      },
+      "viewOne": "Voir {{ name }}",
+      "withheldTitle": "Non administré.",
+      "withheldBody": "Ce médicament n’a pas été donné en raison d’une allergie inscrite à votre dossier."
+    },
+    "reports": {
+      "search": "Rechercher rapports, résultats ou type…",
+      "openFile": "Ouvrir le fichier",
+      "empty": "Aucun compte rendu enregistré",
+      "emptyHint": "Les comptes rendus de laboratoire, d'imagerie et cliniques apparaissent ici une fois déposés.",
+      "upload": "Téléverser un rapport",
+      "uploading": "Envoi…",
+      "uploadBlurb": "Un résultat reçu sur papier, ou un PDF d’une clinique. Votre équipe le voit sur votre dossier.",
+      "file": "Le fichier",
+      "fileHint": "PDF ou photographie, jusqu’à 10 Mo.",
+      "name": "De quoi s’agit-il",
+      "nameHint": "ex. Résultats HbA1c, 12 août",
+      "attachCase": "Rattacher à un dossier (facultatif)",
+      "noCase": "Sans rapport avec un dossier",
+      "tooLarge": "Ce fichier dépasse 10 Mo. Une photographie de résolution plus basse conviendra.",
+      "uploadFailed": "Votre rapport n’a pas été envoyé. Vérifiez votre connexion et réessayez — votre saisie est toujours là.",
+      "opening": "Ouverture…"
+    },
+    "plans": {
+      "diet": "Plan alimentaire",
+      "exercise": "Plan d'exercice",
+      "progress": "{{ done }} sur {{ total }} effectués",
+      "emptyDiet": "Aucun plan alimentaire pour l'instant",
+      "emptyExercise": "Aucun plan d'exercice pour l'instant",
+      "emptyHint": "Votre équipe soignante pourra en mettre un en place à votre prochain rendez-vous."
+    },
+    "allergies": {
+      "category": "Type",
+      "reaction": "Réaction",
+      "noted": "Consignée",
+      "conditions": "Affections en cours",
+      "noConditions": "Aucune affection enregistrée",
+      "empty": "Aucune allergie enregistrée",
+      "emptyHint": "Signalez toute réaction à votre équipe soignante afin qu'elle soit consignée ici.",
+      "onRecord": "{{ count }} allergies dans votre dossier",
+      "onRecordBlurb": "Chaque professionnel qui ouvre votre dossier voit d’abord ce panneau, et toute prescription est bloquée en conséquence.",
+      "blocked": "Bloqué par ce dossier",
+      "blockedSub": "Prescriptions retenues par votre équipe en raison d’une allergie."
+    },
+    "visitations": {
+      "search": "Rechercher visites, lieux ou notes…",
+      "empty": "Aucune visite consignée",
+      "emptyHint": "Chaque visite consignée par votre équipe soignante apparaîtra ici.",
+      "column": {
+        "when": "Quand",
+        "purpose": "Motif",
+        "who": "Vu par",
+        "where": "Où",
+        "case": "Dossier"
+      }
+    },
+    "activity": {
+      "search": "Rechercher entrées ou détails…",
+      "empty": "Rien de consigné pour l'instant",
+      "emptyHint": "Tout ce qui est déposé sur votre dossier apparaît ici, du plus récent au plus ancien."
+    },
+    "profile": {
+      "editAccount": "Paramètres du compte",
+      "noProfile": "Aucun profil enregistré",
+      "noProfileHint": "Votre équipe soignante le crée lors de votre inscription.",
+      "noMembership": "Aucune adhésion enregistrée",
+      "noMembershipHint": "Parlez-en à votre équipe soignante pour rejoindre un forfait.",
+      "tab": {
+        "about": "À propos",
+        "contact": "Contact",
+        "membership": "Adhésion",
+        "careTeam": "Équipe soignante",
+        "careAngel": "Ange gardien"
+      },
+      "field": {
+        "birthDate": "Né(e) le",
+        "sex": "Sexe",
+        "bloodGroup": "Groupe sanguin",
+        "cardType": "Carte",
+        "cardNumber": "Numéro de carte",
+        "social": "Réseaux sociaux",
+        "email": "E-mail",
+        "mobile": "Mobile",
+        "phone": "Téléphone",
+        "address": "Adresse",
+        "careAngel": "Ange gardien",
+        "careAngelPhone": "Téléphone de l'ange",
+        "plan": "Forfait",
+        "memberNumber": "Numéro d'adhérent",
+        "status": "Statut",
+        "since": "Adhérent depuis",
+        "renews": "Renouvellement"
+      },
+      "careAngel": {
+        "explainer": "Un ange gardien peut consulter et mettre à jour votre dossier de santé, et agir en votre nom si vous n'en êtes jamais capable. Rien ne se produit avant son acceptation, et vous pouvez le retirer à tout moment.",
+        "none": "Aucun ange gardien",
+        "noneHint": "Personne ne peut actuellement agir en votre nom.",
+        "status": {
+          "STANDBY": "Suppléant — inactif jusqu'à activation par un clinicien",
+          "AWAITING_COUNTERSIGNATURE": "En attente de l'accord d'un second clinicien",
+          "PENDING": "En attente de son acceptation",
+          "ACTIVE": "Peut agir en votre nom",
+          "DECLINED": "Refusé",
+          "REVOKED": "Terminé"
+        },
+        "action": {
+          "revoke": "Retirer"
+        },
+        "error": {
+          "revokeFailed": "Le retrait a échoué. Réessayez."
+        }
+      },
+      "plan": {
+        "choose": "Choisir une formule",
+        "select": "Choisir",
+        "unavailable": "Les formules ne peuvent pas être affichées pour le moment. Votre dossier n'est pas affecté.",
+        "error": {
+          "failed": "Cette formule n'a pas pu être sélectionnée. Réessayez."
+        }
+      }
+    },
+    "filter": {
+      "professional": "Filtrer par professionnel",
+      "allProfessionals": "Tous les professionnels"
+    },
+    "status": {
+      "URGENT": "Urgent",
+      "OPEN": "Ouvert",
+      "TREATMENT": "En traitement",
+      "CLOSED": "Clos",
+      "ACTIVE": "En cours",
+      "COMPLETED": "Terminé",
+      "WITHHELD": "Non administré",
+      "CONFIRMED": "Confirmé",
+      "PENDING": "En attente de confirmation",
+      "ATTENDED": "Honoré",
+      "CANCELLED": "Annulé",
+      "LOW": "Faible",
+      "MODERATE": "Modéré",
+      "HIGH": "Urgent",
+      "RAISED": "Signalé",
+      "ACKNOWLEDGED": "Pris en charge",
+      "RESOLVED": "Résolu",
+      "MILD": "Léger",
+      "SEVERE": "Sévère",
+      "OK": "Dans la norme",
+      "WARN": "À surveiller",
+      "DANGER": "Hors norme",
+      "DIET": "Alimentation",
+      "EXERCISE": "Exercice",
+      "MEDICATION": "Médicament",
+      "FOOD": "Aliment",
+      "ENVIRONMENTAL": "Environnement",
+      "OTHER": "Autre",
+      "membership": {
+        "ACTIVE": "Actif",
+        "CANCELLED": "Annulé",
+        "EXPIRED": "Expiré",
+        "PENDING": "En attente",
+        "SUSPENDED": "Suspendu"
+      }
+    },
+    "onboarding": {
+      "title": "Configurer votre dossier",
+      "heading": "Configurons votre dossier",
+      "intro": "Chaque étape est enregistrée au fur et à mesure ; vous pouvez vous arrêter et revenir.",
+      "step": {
+        "identity": "À propos de vous",
+        "careAngel": "Ange gardien",
+        "baseline": "Référence",
+        "currentState": "Votre santé",
+        "identification": "Identification"
+      },
+      "field": {
+        "firstName": "Prénom",
+        "middleNames": "Autres prénoms",
+        "lastName": "Nom",
+        "birthDate": "Date de naissance",
+        "sex": "Sexe",
+        "mobilePhone": "Téléphone mobile",
+        "phoneNumber": "Autre téléphone",
+        "address": "Où vous habitez",
+        "streetAddress": "Rue",
+        "digitalAddress": "Adresse numérique",
+        "town": "Ville",
+        "city": "Grande ville",
+        "district": "District",
+        "region": "Région",
+        "country": "Pays",
+        "phone": "Téléphone",
+        "email": "E-mail",
+        "emailConfirm": "Confirmer l'e-mail",
+        "contacts": "Quelqu'un d'autre à contacter",
+        "heightCm": "Taille (cm)",
+        "weightKg": "Poids (kg)",
+        "systolic": "Tension, supérieure",
+        "diastolic": "Tension, inférieure",
+        "heartRateBpm": "Fréquence cardiaque au repos (facultatif)",
+        "bloodSugar": "Glycémie (facultatif)",
+        "bloodGroup": "Groupe sanguin",
+        "conditions": "Affections en cours, une par ligne",
+        "noConditions": "Je n'en ai aucune",
+        "allergies": "Allergies, une par ligne",
+        "noAllergies": "Je n'en ai aucune",
+        "medications": "Médicaments que vous prenez, un par ligne",
+        "noMedications": "Je n'en prends aucun",
+        "cardType": "Type de pièce d'identité",
+        "cardNumber": "Numéro de pièce d'identité"
+      },
+      "careAngel": {
+        "explainer": "Un ange gardien peut consulter et mettre à jour votre dossier de santé, et agir en votre nom si vous n'en êtes jamais capable. Il doit accepter, et vous pouvez retirer cela à tout moment."
+      },
+      "standby": {
+        "heading": "Si vous êtes un jour incapable de décider",
+        "explainer": "Vous pouvez désigner quelqu'un à l'avance. Cette personne n'est prévenue de rien pour l'instant. Si un clinicien déclare un jour que vous ne pouvez plus décider, deux d'entre eux doivent être d'accord avant qu'elle ne soit sollicitée — et elle peut encore refuser.",
+        "consent": "Si je suis un jour incapable de décider par moi-même, un clinicien peut activer mon suppléant."
+      },
+      "action": {
+        "next": "Continuer",
+        "back": "Retour",
+        "finish": "Terminer"
+      },
+      "error": {
+        "emailMismatch": "Les deux adresses e-mail ne correspondent pas.",
+        "consentRequired": "Cochez la case de consentement pour désigner un suppléant, ou laissez ses coordonnées vides.",
+        "saveFailed": "Cela n'a pas pu être enregistré. Rien de ce que vous avez déjà répondu n'est perdu — réessayez."
+      }
+    },
+    "actingAs": {
+      "banner": "Vous consultez le dossier de {{name}}",
+      "bannerOwn": "Vous consultez votre propre dossier",
+      "switch": "Changer de dossier",
+      "chooseTitle": "Quel dossier souhaitez-vous ouvrir ?",
+      "chooseOwn": "Mon propre dossier",
+      "chooseFor": "Au nom de {{name}}"
+    },
+    "invitations": {
+      "title": "Nominations d'accompagnement",
+      "heading": "Nominations d'accompagnement",
+      "empty": "Aucune nomination en attente. Si quelqu'un vient de vous désigner, consultez le lien dans l'e-mail qui lui a été envoyé.",
+      "from": "{{name}} vous a demandé d'être son ange gardien",
+      "explainer": "En acceptant, vous pourrez consulter et mettre à jour son dossier de santé, et agir en son nom si elle n'en est un jour plus capable. Vous pouvez vous retirer à tout moment, et elle peut le retirer à tout moment.",
+      "action": {
+        "accept": "Accepter",
+        "decline": "Refuser"
+      },
+      "error": {
+        "failed": "Cela n'a pas pu être enregistré. Réessayez."
+      }
+    },
+    "empty": {
+      "title": "Rien d’enregistré pour le moment"
+    },
+    "stream": {
+      "offline": "Impossible de joindre Health Connect. Vérifiez votre connexion et réessayez.",
+      "forbidden": "Vous n’avez pas accès à cette partie du dossier.",
+      "generic": "Une erreur est survenue lors du chargement. Veuillez réessayer.",
+      "retry": "Réessayer"
+    }
+  }
+}

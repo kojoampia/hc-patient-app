@@ -1,0 +1,37 @@
+{
+  "patientDashboardApp": {
+    "patientMsProfessional": {
+      "home": {
+        "title": "Professionals",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Professional erstellen",
+        "createOrEditLabel": "Professional erstellen oder bearbeiten",
+        "notFound": "Keine Professionals gefunden"
+      },
+      "created": "Professional erstellt mit ID {{ param }}",
+      "updated": "Professional aktualisiert mit ID {{ param }}",
+      "deleted": "Professional gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Professional {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Professional"
+      },
+      "id": "Id",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "role": "Role",
+      "specialty": "Specialty",
+      "email": "Email",
+      "phoneNumber": "Phone Number",
+      "imageUrl": "Image Url",
+      "initials": "Initials",
+      "location": "Location",
+      "teamId": "Team Id",
+      "createdDate": "Created Date",
+      "modifiedDate": "Modified Date",
+      "createdBy": "Created By",
+      "modifiedBy": "Modified By"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "patientDashboardApp": {
+    "patientMsEmergency": {
+      "home": {
+        "title": "Emergencies",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Emergency",
+        "createOrEditLabel": "Créer ou éditer un Emergency",
+        "notFound": "Aucun Emergency trouvé"
+      },
+      "created": "Un nouveau Emergency a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Emergency avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Emergency avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Emergency {{ id }} ?"
+      },
+      "detail": {
+        "title": "Emergency"
+      },
+      "id": "Id",
+      "patientId": "Patient Id",
+      "caseId": "Case Id",
+      "raisedAt": "Raised At",
+      "resolvedAt": "Resolved At",
+      "brief": "Brief",
+      "detail": "Detail",
+      "severity": "Severity",
+      "status": "Status",
+      "outcome": "Outcome",
+      "location": "Location",
+      "respondentId": "Respondent Id",
+      "createdDate": "Created Date",
+      "modifiedDate": "Modified Date",
+      "createdBy": "Created By",
+      "modifiedBy": "Modified By"
+    }
+  }
+}

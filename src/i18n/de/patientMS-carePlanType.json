@@ -1,0 +1,9 @@
+{
+  "patientDashboardApp": {
+    "CarePlanType": {
+      "null": "",
+      "DIET": "DIET",
+      "EXERCISE": "EXERCISE"
+    }
+  }
+}

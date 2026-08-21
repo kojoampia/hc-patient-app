@@ -1,0 +1,37 @@
+<!--
+  No ion-header. There is nowhere to go back to — that is what makes this a dead end — and a back
+  arrow would promise otherwise.
+-->
+<ion-content class="ion-padding hpm-deadend" [fullscreen]="true">
+  <div class="hpm-deadend__inner">
+    <!--
+      These two screens are a patient's first impression when the app cannot show them anything.
+      Naming the product they are being sent to finish signing up for is the least it can do.
+    -->
+    <div class="hpm-deadend__brand">
+      <hpm-brandmark [size]="96" />
+      <ion-icon
+        class="hpm-deadend__icon"
+        [name]="isOnboarding() ? 'clipboard-outline' : 'mail-open-outline'"
+        aria-hidden="true"
+      ></ion-icon>
+    </div>
+
+    <h1 class="hc-auth-title">{{ copy().title }}</h1>
+    <p class="hc-auth-lede hc-muted">{{ copy().body }}</p>
+
+    <ion-button expand="block" color="primary" (click)="openPortal()">
+      {{ copy().action }}
+    </ion-button>
+
+    <!--
+      Gold on cream carries dark text. This is the secondary action, and it must not compete with
+      the primary one above.
+    -->
+    <ion-button expand="block" fill="clear" color="dark" (click)="signOut()"> Sign in as someone else </ion-button>
+
+    <p class="hc-auth-foot hc-muted hc-sm">
+      The link opens in your browser, so your saved password is available there.
+    </p>
+  </div>
+</ion-content>

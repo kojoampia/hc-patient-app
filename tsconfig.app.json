@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app",
+    "types": []
+  },
+  /*
+   * `include` over `files: [src/main.ts]`, which is what the Ionic starter shipped.
+   *
+   * With `files`, the TypeScript program is only what is reachable from main.ts — so a file that
+   * nothing imports yet is never type-checked and ESLint refuses to lint it at all ("none of those
+   * TSConfigs include this file"). That matters more here than in an ordinary app: decision 3 lifts
+   * files out of hc-patient-dashboard AHEAD of the phase that wires them up, so at any moment there
+   * are correct-looking files in the tree that no import reaches. request-util.ts and
+   * request.model.ts arrived in phase 2 and are not used until phase 4.
+   *
+   * The web repo has the same hazard from the other direction — its CLAUDE.md warns that `tsc`
+   * alone is not a sufficient gate because unrouted generated entity code is never checked. Widening
+   * the program is the fix on both sides.
+   */
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"]
+}

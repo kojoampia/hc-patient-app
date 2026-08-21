@@ -1,0 +1,34 @@
+{
+  "patientDashboardApp": {
+    "patientMsCarePlanItem": {
+      "home": {
+        "title": "Care Plan Items",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Care Plan Item erstellen",
+        "createOrEditLabel": "Care Plan Item erstellen oder bearbeiten",
+        "notFound": "Keine Care Plan Items gefunden"
+      },
+      "created": "Care Plan Item erstellt mit ID {{ param }}",
+      "updated": "Care Plan Item aktualisiert mit ID {{ param }}",
+      "deleted": "Care Plan Item gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Care Plan Item {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Care Plan Item"
+      },
+      "id": "Id",
+      "patientId": "Patient Id",
+      "planType": "Plan Type",
+      "label": "Label",
+      "detail": "Detail",
+      "cadence": "Cadence",
+      "completed": "Completed",
+      "sortOrder": "Sort Order",
+      "createdDate": "Created Date",
+      "modifiedDate": "Modified Date",
+      "createdBy": "Created By",
+      "modifiedBy": "Modified By"
+    }
+  }
+}

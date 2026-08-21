@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    @if (backHref(); as href) {
+      <ion-buttons slot="start">
+        <!--
+          A plain back button with an explicit defaultHref, not ion-back-button's history guess:
+          case/:id is registered under all five tabs (§8.1) and is reached from eight screens, so
+          "back" has to mean the list this reader came from.
+        -->
+        <ion-button [routerLink]="href" [attr.aria-label]="'entity.action.back' | translate">
+          <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    }
+
+    <ion-title>{{ titleKey() | translate }}</ion-title>
+
+    <ion-buttons slot="end">
+      <!-- Five tabs cannot reach ten destinations. Every screen carries the way to the other five. -->
+      <ion-button (click)="openMore()" [attr.aria-label]="'patientPortal.nav.openMenu' | translate">
+        <ion-icon slot="icon-only" name="ellipsis-horizontal"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding hpm-page">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($any($event))">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ng-content />
+</ion-content>

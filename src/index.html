@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>BridgeCare</title>
+
+    <base href="/" />
+
+    <!--
+      `light`, not the starter's `light dark`.
+
+      Dark mode is out of scope for v1 (patient-mobile.md §6) and theme/ionic-bridge.scss defines
+      only a light palette. Advertising `dark` here lets the WebView apply its own dark styling to
+      form controls and scrollbars, which would put UA-inverted inputs on light cards — the same
+      half-dark result that importing Ionic's dark palette would produce, arriving by a different
+      route.
+    -->
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#0d3058" />
+
+    <!-- viewport-fit=cover is what makes the safe-area insets available; the banner owns the top
+         inset and scopes --ion-safe-area-top to ion-tabs (§7.4.1). -->
+    <meta
+      name="viewport"
+      content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+
+    <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
+
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  </head>
+
+  <body>
+    <hpm-root></hpm-root>
+  </body>
+</html>

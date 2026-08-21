@@ -1,0 +1,134 @@
+<hpm-portal-page titleKey="patientPortal.nav.reports">
+  <ion-button expand="block" color="primary" (click)="openUpload()">
+    <hpm-icon name="plus" [size]="16" [strokeWidth]="2.2" />
+    <span class="hpm-reports__uploadLabel" hpmTranslate="patientPortal.reports.upload">Upload a report</span>
+  </ion-button>
+
+  <div class="hc-tools hc-mt-16">
+    <hpm-search-box inputId="q_reports" placeholderKey="patientPortal.reports.search" [value]="query()" (queryChange)="query.set($event)" />
+    <hpm-person-filter [people]="careTeam()" [value]="professional()" (valueChange)="professional.set($event)" />
+  </div>
+
+  <hpm-stream
+    class="hc-mt-16"
+    [resource]="reports()"
+    emptyTitleKey="patientPortal.reports.empty"
+    emptyMessageKey="patientPortal.reports.emptyHint"
+    emptyIcon="document-text-outline"
+    [skeletonRowHeight]="92"
+  >
+    <div class="hc-grid">
+      @for (item of filtered(); track item.id) {
+        <article class="hc-card hc-card-pad">
+          <div class="hc-row hc-between hc-gap-8 hc-wrap">
+            <b class="hc-grow">{{ item.name }}</b>
+            @if (item.category) {
+              <span class="hc-pill hc-pill--navy">{{ item.category }}</span>
+            }
+          </div>
+
+          @if (item.summary) {
+            <div class="hc-sm hpm-reports__summary">{{ item.summary }}</div>
+          }
+
+          <div class="hc-muted hc-tiny hpm-reports__meta">
+            <span class="hc-num">{{ formatDay(item.reportDate ?? item.createdDate) }}</span>
+            · {{ memberOf(item.authorId).name }}
+            @if (caseLabel(item.caseId); as label) {
+              · {{ label }}
+            }
+          </div>
+
+          @if (item.url) {
+            <!--
+              A button, never an <a href> to the api. See ReportsPage.openFile — a plain navigation
+              carries no token and, with CapacitorHttp, no X-Acting-As either.
+            -->
+            <ion-button
+              size="small"
+              fill="outline"
+              color="primary"
+              class="hpm-reports__open"
+              [disabled]="opening() === item.id"
+              (click)="openFile(item)"
+            >
+              @if (opening() === item.id) {
+                <ion-spinner name="crescent" slot="start"></ion-spinner>
+                {{ 'patientPortal.reports.opening' | translate }}
+              } @else {
+                {{ 'patientPortal.reports.openFile' | translate }}
+              }
+            </ion-button>
+          }
+        </article>
+      }
+    </div>
+  </hpm-stream>
+</hpm-portal-page>
+
+<ion-modal [isOpen]="uploading()" (ionModalDidDismiss)="uploading.set(false)">
+  <ng-template>
+    <div class="hc-card-pad hpm-reports__dialog">
+      <h2 class="hc-auth-title" hpmTranslate="patientPortal.reports.upload">Upload a report</h2>
+      <p class="hc-muted hc-sm" hpmTranslate="patientPortal.reports.uploadBlurb"></p>
+
+      @if (uploadError(); as err) {
+        <!-- "what you typed is still here" — and it is: nothing is cleared on failure. -->
+        <div class="hc-auth-error" role="alert">{{ err | translate }}</div>
+      }
+
+      <div class="hc-field">
+        <label for="reportFile" hpmTranslate="patientPortal.reports.file">The file</label>
+        <!--
+          A real file input: Android WebView hands this to the system picker, which is also the
+          camera. §5 allows the camera as the one place mobile should diverge, and the picker
+          already offers it.
+        -->
+        <input id="reportFile" type="file" [attr.accept]="acceptedTypes" (change)="chooseFile($event)" />
+        <p class="hc-muted hc-tiny" hpmTranslate="patientPortal.reports.fileHint"></p>
+        @if (fileName()) {
+          <p class="hc-sm">{{ fileName() }}</p>
+        }
+      </div>
+
+      <div class="hc-field">
+        <label for="reportName" hpmTranslate="patientPortal.reports.name">What is it</label>
+        <input
+          id="reportName"
+          type="text"
+          [value]="reportName()"
+          (input)="reportName.set($any($event.target).value)"
+          [attr.placeholder]="'patientPortal.reports.nameHint' | translate"
+        />
+      </div>
+
+      <div class="hc-field">
+        <label for="reportCase" hpmTranslate="patientPortal.reports.attachCase">Attach to a case (optional)</label>
+        <ion-select
+          id="reportCase"
+          interface="action-sheet"
+          [value]="uploadCase()"
+          (ionChange)="uploadCase.set($any($event.detail).value)"
+          [placeholder]="'patientPortal.reports.noCase' | translate"
+        >
+          <ion-select-option [value]="null">{{ 'patientPortal.reports.noCase' | translate }}</ion-select-option>
+          @for (c of openCases(); track c.id) {
+            <ion-select-option [value]="c.id">{{ c.title ?? c.brief }}</ion-select-option>
+          }
+        </ion-select>
+      </div>
+
+      <ion-button expand="block" color="primary" [disabled]="!canUpload()" (click)="save()">
+        @if (saving()) {
+          <ion-spinner name="crescent" slot="start"></ion-spinner>
+          {{ 'patientPortal.reports.uploading' | translate }}
+        } @else {
+          {{ 'patientPortal.reports.upload' | translate }}
+        }
+      </ion-button>
+      <ion-button expand="block" fill="clear" color="dark" (click)="uploading.set(false)">
+        {{ 'entity.action.cancel' | translate }}
+      </ion-button>
+    </div>
+  </ng-template>
+</ion-modal>

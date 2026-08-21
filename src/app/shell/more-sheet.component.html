@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ 'patientPortal.nav.aria' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="hpm-more">
+  <ion-list lines="none">
+    @for (group of groups(); track group.groupKey) {
+      <ion-list-header>{{ group.groupKey | translate }}</ion-list-header>
+
+      @for (item of group.items; track item.path) {
+        <ion-item button detail="false" (click)="go(item)">
+          <ion-icon slot="start" [name]="item.icon" aria-hidden="true"></ion-icon>
+          <ion-label>{{ item.labelKey | translate }}</ion-label>
+        </ion-item>
+      }
+    }
+  </ion-list>
+</ion-content>

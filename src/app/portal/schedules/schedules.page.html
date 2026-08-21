@@ -1,0 +1,105 @@
+<hpm-portal-page titleKey="patientPortal.nav.schedules">
+  <ion-segment [value]="tab()" (ionChange)="tab.set($any($event.detail).value)">
+    <ion-segment-button value="upcoming">
+      <ion-label>{{ 'patientPortal.schedules.upcoming' | translate }}</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="past">
+      <ion-label>{{ 'patientPortal.schedules.past' | translate }}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <div class="hc-tools hc-mt-16">
+    <hpm-search-box
+      inputId="q_schedules"
+      placeholderKey="patientPortal.schedules.search"
+      [value]="query()"
+      (queryChange)="query.set($event)"
+    />
+    <hpm-person-filter [people]="careTeam()" [value]="professional()" (valueChange)="professional.set($event)" />
+  </div>
+
+  <hpm-stream
+    class="hc-mt-16"
+    [resource]="schedules()"
+    emptyTitleKey="patientPortal.schedules.empty"
+    emptyMessageKey="patientPortal.schedules.emptyHint"
+    emptyIcon="calendar-outline"
+    [skeletonRowHeight]="104"
+  >
+    <div class="hc-grid">
+      @for (item of visible(); track item.id) {
+        <article
+          class="hc-card hc-card-pad hpm-sched__row"
+          role="button"
+          tabindex="0"
+          (click)="selected.set(item)"
+          (keydown.enter)="selected.set(item)"
+        >
+          <div class="hc-row hc-between hc-gap-8 hc-wrap">
+            <b class="hc-grow">{{ item.name }}</b>
+            <span class="hc-pill" [class]="pill(item.status)">{{ item.status | hpmStatus }}</span>
+          </div>
+
+          <div class="hc-row hc-gap-8 hc-muted hc-tiny hc-wrap hpm-sched__when">
+            <span class="hc-num">{{ formatInstantDay(item.scheduledAt, item.schedule) }}</span>
+            @if (item.scheduledAt) {
+              <span>· <span class="hc-num">{{ formatTime(item.scheduledAt) }}</span></span>
+            }
+            @if (item.location) {
+              <span>· {{ item.location }}</span>
+            }
+          </div>
+
+          <div class="hc-row hc-gap-12 hpm-sched__who">
+            <hpm-avatar
+              [name]="memberOf(item.attendantId).name"
+              [initials]="memberOf(item.attendantId).initials"
+              [imageUrl]="memberOf(item.attendantId).imageUrl"
+              [size]="32"
+            />
+            <div class="hc-grow hc-sm">{{ memberOf(item.attendantId).name }}</div>
+          </div>
+        </article>
+      }
+    </div>
+  </hpm-stream>
+</hpm-portal-page>
+
+<ion-modal [isOpen]="!!selected()" (ionModalDidDismiss)="selected.set(null)">
+  <ng-template>
+    @if (selected(); as item) {
+      <div class="hc-card-pad hpm-sched__detail">
+        <div class="hc-row hc-between hc-gap-8 hc-wrap">
+          <h2 class="hc-auth-title hc-grow">{{ item.name }}</h2>
+          <span class="hc-pill" [class]="pill(item.status)">{{ item.status | hpmStatus }}</span>
+        </div>
+
+        <dl class="hc-kv hc-mt-16">
+          <span class="hc-kv__k" hpmTranslate="patientPortal.schedules.column.when">When</span>
+          <span class="hc-kv__v">{{ formatInstantDay(item.scheduledAt, item.schedule) }}</span>
+
+          <span class="hc-kv__k" hpmTranslate="patientPortal.schedules.column.who">With</span>
+          <span class="hc-kv__v">{{ memberOf(item.attendantId).name }}</span>
+
+          @if (item.location) {
+            <span class="hc-kv__k" hpmTranslate="patientPortal.schedules.column.where">Where</span>
+            <span class="hc-kv__v">{{ item.location }}</span>
+          }
+
+          @if (caseLabel(item.caseId); as label) {
+            <span class="hc-kv__k">{{ 'patientPortal.nav.cases' | translate }}</span>
+            <span class="hc-kv__v">{{ label }}</span>
+          }
+        </dl>
+
+        @if (item.description) {
+          <div class="hc-prose hc-mt-16"><p>{{ item.description }}</p></div>
+        }
+
+        <ion-button expand="block" fill="clear" color="dark" (click)="selected.set(null)">
+          {{ 'entity.action.close' | translate }}
+        </ion-button>
+      </div>
+    }
+  </ng-template>
+</ion-modal>
