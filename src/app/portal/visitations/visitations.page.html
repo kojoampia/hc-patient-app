@@ -1,0 +1,47 @@
+<hpm-portal-page titleKey="patientPortal.nav.visitations">
+  <div class="hc-tools">
+    <hpm-search-box
+      inputId="q_visitations"
+      placeholderKey="patientPortal.visitations.search"
+      [value]="query()"
+      (queryChange)="query.set($event)"
+    />
+  </div>
+
+  <hpm-stream
+    class="hc-mt-16"
+    [resource]="visitations()"
+    emptyTitleKey="patientPortal.visitations.empty"
+    emptyMessageKey="patientPortal.visitations.emptyHint"
+    emptyIcon="location-outline"
+    [skeletonRowHeight]="88"
+  >
+    <div class="hc-grid">
+      @for (item of filtered(); track item.id) {
+        <article class="hc-card hc-card-pad">
+          <div class="hc-row hc-between hc-gap-8 hc-wrap">
+            <b class="hc-grow">{{ item.purpose }}</b>
+            <span class="hc-num hc-tiny hc-muted">{{ formatInstantDay(item.visitedAt) }}</span>
+          </div>
+
+          @if (item.notes) {
+            <div class="hc-prose hc-sm"><p>{{ item.notes }}</p></div>
+          }
+
+          <div class="hc-kv hc-mt-16">
+            <span class="hc-kv__k" hpmTranslate="patientPortal.visitations.column.who">Seen by</span>
+            <span class="hc-kv__v">{{ memberOf(item.professionalId).name }}</span>
+
+            <span class="hc-kv__k" hpmTranslate="patientPortal.visitations.column.where">Where</span>
+            <span class="hc-kv__v">{{ item.location ?? '—' }}</span>
+
+            @if (caseLabel(item.caseId); as label) {
+              <span class="hc-kv__k" hpmTranslate="patientPortal.visitations.column.case">Case</span>
+              <span class="hc-kv__v"><a (click)="openCase(item.caseId)">{{ label }}</a></span>
+            }
+          </div>
+        </article>
+      }
+    </div>
+  </hpm-stream>
+</hpm-portal-page>

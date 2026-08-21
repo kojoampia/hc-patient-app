@@ -1,0 +1,13 @@
+/** Layout only. */
+
+.hpm-case__missing { text-align: center; }
+.hpm-case__opened { margin-top: 4px; }
+.hpm-case__clinician { margin-top: 14px; }
+.hpm-case__actions { margin-top: 14px; }
+
+.hpm-case__log {
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+ion-accordion .hc-lrow:last-child { border-bottom: 0; }

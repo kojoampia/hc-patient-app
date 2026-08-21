@@ -1,0 +1,105 @@
+<hpm-portal-page titleKey="patientPortal.nav.overview">
+  <section class="hc-hero">
+    <div class="hc-hero__overlay"></div>
+    <div class="hc-hero__inner">
+      <h3>{{ 'patientPortal.overview.greeting' | translate: { name: greetingName() } }}</h3>
+      <!--
+        Rendered only when the numbers behind it are real. "3 of your 12 cases are open" produced by
+        a dropped connection would read "0 of your 0" — §7.5's own example of a lie.
+      -->
+      @if (heroSummary(); as hero) {
+        <p>
+          {{ 'patientPortal.overview.heroNext' | translate: { when: hero.when, clinician: hero.clinician } }}
+          {{ 'patientPortal.overview.heroCases' | translate: { open: hero.open, total: hero.total } }}
+        </p>
+      }
+    </div>
+  </section>
+
+  <!-- Tiles. A dash, never a zero, when the figure behind it is unknown. -->
+  <div class="hc-grid hc-grid--2 hc-mt-16">
+    @for (tile of tiles(); track tile.labelKey) {
+      <button type="button" class="hc-stat" (click)="go(tile.path)">
+        <span class="hc-stat__ic"><hpm-icon [name]="tile.icon" [size]="18" [strokeWidth]="2" /></span>
+        <b class="hc-num">{{ tile.value === null ? '—' : tile.value }}</b>
+        <span [hpmTranslate]="tile.labelKey"></span>
+      </button>
+    }
+  </div>
+
+  <div class="hc-grid hc-grid--2 hc-mt-16">
+    @for (tile of recordTiles(); track tile.labelKey) {
+      <button type="button" class="hc-stat" (click)="go(tile.path)">
+        <span class="hc-stat__ic"><hpm-icon [name]="tile.icon" [size]="18" [strokeWidth]="2" /></span>
+        <b class="hc-num">{{ tile.value === null ? '—' : tile.value }}</b>
+        <span [hpmTranslate]="tile.labelKey"></span>
+      </button>
+    }
+  </div>
+
+  <!-- Vitals — the one chart worth its width on a phone. -->
+  <hpm-panel class="hc-mt-16" titleKey="patientPortal.record.vitals" icon="heart">
+    <hpm-stream [resource]="vitalsState()" emptyTitleKey="patientPortal.record.noVitals" emptyIcon="pulse-outline" [skeletonRows]="2">
+      <div class="hpm-overview__vitals">
+        @for (vital of vitals(); track vital.key) {
+          <button
+            type="button"
+            class="hc-vital"
+            [class.is-on]="currentVital()?.key === vital.key"
+            (click)="selectedVital.set(vital)"
+            [attr.aria-pressed]="currentVital()?.key === vital.key"
+          >
+            <span class="hc-vital__label">{{ vital.label }}</span>
+            <b class="hc-num">{{ vital.display }}</b>
+            <span class="hc-pill" [class]="vitalPill(vital.flag)">{{ vital.flag | hpmStatus }}</span>
+          </button>
+        }
+      </div>
+
+      @if (currentVital(); as vital) {
+        <div class="hc-mt-16">
+          <span class="hc-muted hc-tiny">
+            {{ 'patientPortal.overview.recordedBy' | translate: { name: recorderOf(vital) } }}
+          </span>
+          <hpm-trend-chart [data]="vital.trend" [unit]="vital.unit" />
+        </div>
+      }
+    </hpm-stream>
+  </hpm-panel>
+
+  <hpm-panel class="hc-mt-16" titleKey="patientPortal.nav.schedules" icon="cal">
+    <hpm-stream [resource]="schedulesState()" emptyTitleKey="patientPortal.schedules.empty" emptyIcon="calendar-outline" [skeletonRows]="2">
+      @for (item of nextAppointments(); track item.id) {
+        <div class="hc-drow">
+          <span class="hc-drow__date">{{ formatInstantDay(item.scheduledAt, item.schedule) }}</span>
+          <span class="hc-drow__text">{{ item.name }}<span class="hc-drow__sub">{{ memberOf(item.attendantId).name }}</span></span>
+        </div>
+      }
+      <button type="button" class="hc-toggle hc-mt-16" (click)="go('schedules')">{{ 'patientPortal.action.viewAll' | translate }}</button>
+    </hpm-stream>
+  </hpm-panel>
+
+  <hpm-panel class="hc-mt-16" titleKey="patientPortal.nav.cases" icon="case">
+    <hpm-stream [resource]="casesState()" emptyTitleKey="patientPortal.cases.empty" emptyIcon="briefcase-outline" [skeletonRows]="2">
+      @for (item of recentCases(); track item.id) {
+        <div class="hc-drow" role="button" tabindex="0" (click)="openCase(item.id)" (keydown.enter)="openCase(item.id)">
+          <span class="hc-drow__date">{{ formatInstantDay(item.openedAt) }}</span>
+          <span class="hc-drow__text">{{ item.title ?? item.brief }}</span>
+        </div>
+      }
+      <button type="button" class="hc-toggle hc-mt-16" (click)="go('cases')">{{ 'patientPortal.action.viewAll' | translate }}</button>
+    </hpm-stream>
+  </hpm-panel>
+
+  <hpm-panel class="hc-mt-16" titleKey="patientPortal.nav.activity" icon="note">
+    <hpm-stream [resource]="activityState()" emptyTitleKey="patientPortal.activity.empty" emptyIcon="document-text-outline" [skeletonRows]="2">
+      @for (item of recentActivity(); track item.id) {
+        <div class="hc-drow">
+          <span class="hc-drow__date">{{ formatInstantDay(item.loggedAt, item.createdDate) }}</span>
+          <span class="hc-drow__text">{{ item.summary }}<span class="hc-drow__sub">{{ authorName(item) }}</span></span>
+        </div>
+      }
+      <button type="button" class="hc-toggle hc-mt-16" (click)="go('activity')">{{ 'patientPortal.action.viewAll' | translate }}</button>
+    </hpm-stream>
+  </hpm-panel>
+</hpm-portal-page>

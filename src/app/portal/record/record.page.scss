@@ -1,0 +1,11 @@
+/** Layout only. */
+.hpm-record__name { font-size: 18px; }
+
+.hpm-record__vitals {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.hpm-record__vitals .hc-vital { flex: none; min-width: 116px; }

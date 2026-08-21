@@ -1,0 +1,21 @@
+/** Layout only. */
+
+.hpm-activity__kinds {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.hpm-activity__kinds .hc-toggle {
+  flex: none;
+}
+
+.hpm-activity__detail {
+  margin: 4px 0 0;
+}
+
+.hpm-activity__author {
+  margin-top: 3px;
+}

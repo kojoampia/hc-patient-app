@@ -1,0 +1,97 @@
+<hpm-portal-page titleKey="patientPortal.nav.allergies">
+  <!--
+    Rendered ONLY when the count is real. "0 allergies on record" produced by a dropped connection,
+    above "prescribing is blocked against this", is the most dangerous sentence this app could show.
+  -->
+  @if (allergyCount(); as count) {
+    <section class="hc-card hc-card-pad hpm-allergies__banner">
+      <div class="hc-row hc-gap-12">
+        <span class="hc-stat__ic hpm-allergies__icon">
+          <hpm-icon name="shield" [size]="18" [strokeWidth]="2" />
+        </span>
+        <div>
+          <b>{{ 'patientPortal.allergies.onRecord' | translate: { count } }}</b>
+          <p class="hc-muted hc-sm" hpmTranslate="patientPortal.allergies.onRecordBlurb"></p>
+        </div>
+      </div>
+    </section>
+  }
+
+  <hpm-stream
+    class="hc-mt-16"
+    [resource]="allergiesState()"
+    emptyTitleKey="patientPortal.allergies.empty"
+    emptyMessageKey="patientPortal.allergies.emptyHint"
+    emptyIcon="shield-outline"
+    [skeletonRowHeight]="120"
+  >
+    <div class="hc-grid">
+      @for (item of allergies(); track item.id) {
+        <article class="hc-card hc-card-pad" [class.hpm-allergies__severe]="item.severity === 'SEVERE'">
+          <div class="hc-row hc-between hc-gap-8 hc-wrap">
+            <div class="hc-row hc-gap-8">
+              <hpm-icon name="shield" [size]="18" [strokeWidth]="2" />
+              <b>{{ item.name }}</b>
+            </div>
+            <span class="hc-pill" [class]="pill(item.severity)">{{ item.severity | hpmStatus }}</span>
+          </div>
+
+          <div class="hc-kv hpm-allergies__kv">
+            <span class="hc-kv__k" hpmTranslate="patientPortal.allergies.category">Type</span>
+            <span class="hc-kv__v">{{ item.category | hpmStatus }}</span>
+
+            @if (item.reaction) {
+              <span class="hc-kv__k" hpmTranslate="patientPortal.allergies.reaction">Reaction</span>
+              <span class="hc-kv__v">{{ item.reaction }}</span>
+            }
+
+            <span class="hc-kv__k" hpmTranslate="patientPortal.allergies.noted">Noted</span>
+            <span class="hc-kv__v">{{ formatDay(item.notedOn) }} · {{ memberOf(item.notedById).name }}</span>
+          </div>
+        </article>
+      }
+    </div>
+  </hpm-stream>
+
+  @if (blocked().length) {
+    <div class="hc-sec-head hc-mt-16">
+      <div>
+        <h3 hpmTranslate="patientPortal.allergies.blocked">Blocked by this record</h3>
+        <p hpmTranslate="patientPortal.allergies.blockedSub"></p>
+      </div>
+    </div>
+
+    <div class="hc-card">
+      @for (item of blocked(); track item.id) {
+        <div class="hc-drow">
+          <span class="hc-tl-item__dot hpm-allergies__blockedDot">
+            <hpm-icon name="x" [size]="14" [strokeWidth]="2.4" />
+          </span>
+          <span class="hc-drow__text">
+            {{ item.name }}
+            @if (item.dosage) {
+              <span class="hc-drow__sub">{{ item.dosage }}</span>
+            }
+          </span>
+          <span class="hc-drow__date">{{ formatDay(item.startedOn) }}</span>
+        </div>
+      }
+    </div>
+  }
+
+  <hpm-panel class="hc-mt-16" titleKey="patientPortal.allergies.conditions" icon="stetho">
+    <hpm-stream [resource]="conditionsState()" emptyTitleKey="patientPortal.allergies.noConditions" emptyIcon="pulse-outline" [skeletonRows]="2">
+      @for (item of conditions(); track item.id) {
+        <div class="hc-drow">
+          <span class="hc-drow__date">{{ formatDay(item.createdDate) }}</span>
+          <span class="hc-drow__text">
+            {{ item.name }}
+            @if (item.description) {
+              <span class="hc-drow__sub">{{ item.description }}</span>
+            }
+          </span>
+        </div>
+      }
+    </hpm-stream>
+  </hpm-panel>
+</hpm-portal-page>

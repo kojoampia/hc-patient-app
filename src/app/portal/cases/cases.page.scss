@@ -1,0 +1,25 @@
+/** Layout only. */
+
+.hpm-cases__statuses {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.hpm-cases__statuses .hc-toggle {
+  flex: none;
+}
+
+.hpm-cases__row {
+  cursor: pointer;
+}
+
+.hpm-cases__brief {
+  margin-top: 4px;
+}
+
+.hpm-cases__meta {
+  margin-top: 10px;
+}

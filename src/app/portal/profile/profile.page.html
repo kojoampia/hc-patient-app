@@ -1,0 +1,149 @@
+<hpm-portal-page titleKey="patientPortal.nav.profile">
+  <section class="hc-card hc-card-pad">
+    <div class="hc-row hc-gap-12">
+      <hpm-avatar [name]="fullName()" [initials]="initials()" [size]="56" />
+      <div class="hc-grow">
+        <b class="hpm-profile__name">{{ fullName() }}</b>
+        <div class="hc-muted hc-sm">{{ profile()?.email }}</div>
+      </div>
+    </div>
+  </section>
+
+  <ion-segment class="hc-mt-16" scrollable [value]="activeTab()" (ionChange)="activeTab.set($any($event.detail).value)">
+    @for (tab of tabs; track tab.id) {
+      <ion-segment-button [value]="tab.id">
+        <ion-label>{{ tab.labelKey | translate }}</ion-label>
+      </ion-segment-button>
+    }
+  </ion-segment>
+
+  <div class="hc-mt-16">
+    @switch (activeTab()) {
+      @case ('about') {
+        <div class="hc-card hc-card-pad">
+          <dl class="hc-kv">
+            <span class="hc-kv__k" hpmTranslate="patientPortal.record.born">Born</span>
+            <span class="hc-kv__v">{{ formatDay(profile()?.birthDate) }}</span>
+            <span class="hc-kv__k" hpmTranslate="patientPortal.profile.sex">Sex</span>
+            <span class="hc-kv__v">{{ profile()?.sex ?? '—' }}</span>
+          </dl>
+        </div>
+      }
+
+      @case ('contact') {
+        <div class="hc-card hc-card-pad">
+          <dl class="hc-kv">
+            <span class="hc-kv__k" hpmTranslate="patientPortal.record.phone">Phone</span>
+            <span class="hc-kv__v">{{ profile()?.mobilePhone ?? profile()?.phoneNumber ?? '—' }}</span>
+            <!-- formatAddress: the address is a document, and interpolating it prints [object Object]. -->
+            <span class="hc-kv__k" hpmTranslate="patientPortal.record.address">Address</span>
+            <span class="hc-kv__v">{{ formatAddress(profile()?.address) }}</span>
+          </dl>
+        </div>
+      }
+
+      @case ('careAngel') {
+        @if (delegationError(); as err) {
+          <div class="hc-auth-error" role="alert">{{ err | translate }}</div>
+        }
+
+        <div class="hc-card">
+          @for (d of delegations(); track d.id) {
+            <div class="hc-lrow">
+              <div class="hc-grow">
+                <div class="hc-sm"><b>{{ d.angelName ?? d.angelEmail }}</b></div>
+                <div class="hc-muted hc-tiny">{{ d.angelEmail }}</div>
+              </div>
+              <span class="hc-pill hc-pill--grey">{{ d.status | hpmStatus }}</span>
+
+              <!--
+                §4: an angel acting for somebody may SEE who else can act, but must not change it —
+                otherwise they could hand their access on, or lock the patient's own nominee out.
+              -->
+              @if (canManageAngel() && (d.status === 'ACTIVE' || d.status === 'PENDING' || d.status === 'STANDBY')) {
+                <ion-button size="small" fill="clear" color="danger" [disabled]="busy()" (click)="revoke(d)">
+                  {{ 'patientPortal.profile.careAngel.revoke' | translate }}
+                </ion-button>
+              }
+            </div>
+          } @empty {
+            <div class="hc-card-pad hc-muted hc-sm">{{ 'patientPortal.profile.careAngel.none' | translate }}</div>
+          }
+        </div>
+      }
+
+      @case ('membership') {
+        @if (planError(); as err) {
+          <div class="hc-auth-error" role="alert">{{ err | translate }}</div>
+        }
+
+        <hpm-stream [resource]="membershipsState()" emptyTitleKey="patientPortal.profile.plan.none" emptyIcon="card-outline" [skeletonRows]="1">
+          @if (membership(); as m) {
+            <div class="hc-card hc-card-pad">
+              <div class="hc-row hc-between hc-gap-8 hc-wrap">
+                <b class="hc-grow">{{ m.name ?? m.plan }}</b>
+                <span class="hc-pill hc-pill--gold">{{ m.status | hpmStatus }}</span>
+              </div>
+              @if (m.startDate) {
+                <div class="hc-muted hc-tiny">{{ formatDay(m.startDate) }}</div>
+              }
+            </div>
+          }
+        </hpm-stream>
+
+        @if (plans().length) {
+          <div class="hc-sec-head hc-mt-16">
+            <div><h3 hpmTranslate="patientPortal.profile.plan.choose">Change plan</h3></div>
+          </div>
+
+          <div class="hc-grid">
+            @for (plan of plans(); track plan.code) {
+              <article class="hc-card hc-card-pad">
+                <div class="hc-row hc-between hc-gap-8 hc-wrap">
+                  <b class="hc-grow">{{ plan.name }}</b>
+                  <!--
+                    NEVER RESTATE A PLAN PRICE (§4). `priceAmount` arrives pre-formatted for the
+                    locale from Abofonsa via the gateway proxy. No CurrencyPipe, no arithmetic, no
+                    "from ₵X" — two products quoting different numbers for one tier is what
+                    restating causes.
+                  -->
+                  @if (plan.priceAmount) {
+                    <span class="hc-pill hc-pill--gold">{{ plan.priceAmount }}</span>
+                  }
+                </div>
+                @if (plan.forWho) {
+                  <p class="hc-muted hc-sm">{{ plan.forWho }}</p>
+                }
+                <ion-button size="small" fill="outline" color="primary" [disabled]="choosingPlan()" (click)="choosePlan(plan)">
+                  {{ 'patientPortal.profile.plan.select' | translate }}
+                </ion-button>
+              </article>
+            }
+          </div>
+        }
+      }
+
+      @case ('careTeam') {
+        <hpm-stream [resource]="careTeamState()" emptyTitleKey="patientPortal.profile.careTeam.none" emptyIcon="people-outline" [skeletonRows]="3">
+          <div class="hc-card">
+            @for (member of careTeam(); track member.id) {
+              <div class="hc-lrow">
+                <hpm-avatar [name]="member.name" [initials]="member.initials" [imageUrl]="member.imageUrl" [size]="40" />
+                <div class="hc-grow">
+                  <div class="hc-sm"><b>{{ member.name }}</b></div>
+                  <div class="hc-muted hc-tiny">{{ member.role }}</div>
+                </div>
+              </div>
+            }
+          </div>
+        </hpm-stream>
+      }
+    }
+  </div>
+
+  <!--
+    NO DELETE AFFORDANCE ANYWHERE (§4). Sixteen resources refuse DELETE for anyone but ROLE_ADMIN —
+    patient and angel alike — and archiving, the replacement, does not exist yet. The mobile reflex
+    is ion-item-sliding with a red Delete; it is banned (§8.4.5).
+  -->
+</hpm-portal-page>

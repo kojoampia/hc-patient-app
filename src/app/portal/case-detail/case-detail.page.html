@@ -1,0 +1,205 @@
+<hpm-portal-page titleKey="patientPortal.nav.cases" backHref="/tabs/cases">
+  <!--
+    The whole screen hangs off the case list, so its three states are the page's three states. The
+    failed branch is why `missing` requires isLoaded: a dropped connection must render a retry, not
+    "Case not found".
+  -->
+  <hpm-stream [resource]="cases()" emptyTitleKey="patientPortal.case.notFound" [skeletonRowHeight]="120">
+    @if (missing()) {
+      <div class="hc-card hc-card-pad hpm-case__missing">
+        <b>{{ 'patientPortal.case.notFound' | translate }}</b>
+        <p class="hc-muted hc-sm">{{ 'patientPortal.case.notFoundHint' | translate }}</p>
+      </div>
+    } @else if (item(); as record) {
+      <article class="hc-card hc-card-pad">
+        <div class="hc-row hc-between hc-gap-8 hc-wrap">
+          <b class="hc-grow">{{ record.title ?? record.brief }}</b>
+          <span class="hc-pill" [class]="pill(record.status)">{{ record.status | hpmStatus }}</span>
+        </div>
+
+        <p class="hc-muted hc-tiny hpm-case__opened">
+          {{ 'patientPortal.case.openedOn' | translate: { date: formatInstantDay(record.openedAt) } }}
+          @if (record.caseNumber) {
+            · <span class="hc-num">{{ record.caseNumber }}</span>
+          }
+        </p>
+
+        <div class="hc-row hc-gap-12 hpm-case__clinician">
+          <hpm-avatar [name]="clinician().name" [initials]="clinician().initials" [imageUrl]="clinician().imageUrl" [size]="40" />
+          <div class="hc-grow">
+            <div class="hc-sm"><b>{{ clinician().name }}</b></div>
+            <div class="hc-muted hc-tiny">{{ clinician().role }}</div>
+          </div>
+        </div>
+
+        <div class="hc-row hc-gap-8 hpm-case__actions">
+          <ion-button size="small" fill="outline" color="primary" (click)="openLog()">
+            {{ 'patientPortal.case.logActivity' | translate }}
+          </ion-button>
+          <ion-button size="small" fill="clear" color="dark" (click)="copy()">
+            <hpm-icon name="copy" [size]="15" />
+          </ion-button>
+        </div>
+      </article>
+
+      <!--
+        Accordions rather than the web's six stacked panels: at 390px those are a very long scroll
+        before the timeline, which is the part a returning patient actually opens the case for.
+        "What was reported" and "What was found" are open by default — they are the case.
+      -->
+      <ion-accordion-group class="hc-mt-16" [multiple]="true" [value]="['symptoms', 'diagnosis']">
+        <ion-accordion value="symptoms">
+          <ion-item slot="header"><ion-label>{{ 'patientPortal.case.symptoms' | translate }}</ion-label></ion-item>
+          <div slot="content" class="hc-card-pad hc-prose">
+            <p>{{ record.symptoms || ('patientPortal.case.noSymptoms' | translate) }}</p>
+          </div>
+        </ion-accordion>
+
+        <ion-accordion value="diagnosis">
+          <ion-item slot="header"><ion-label>{{ 'patientPortal.case.diagnosis' | translate }}</ion-label></ion-item>
+          <div slot="content" class="hc-card-pad hc-prose">
+            <p>{{ record.diagnosis || ('patientPortal.case.noDiagnosis' | translate) }}</p>
+          </div>
+        </ion-accordion>
+
+        <ion-accordion value="recommendations">
+          <ion-item slot="header"><ion-label>{{ 'patientPortal.case.recommendations' | translate }}</ion-label></ion-item>
+          <div slot="content" class="hc-card-pad">
+            @if (recommendations().length) {
+              <ul class="hc-prose">
+                @for (rec of recommendations(); track rec.id) {
+                  <li>{{ rec.label }}</li>
+                }
+              </ul>
+            } @else {
+              <p class="hc-muted hc-sm">{{ 'patientPortal.case.noRecommendations' | translate }}</p>
+            }
+          </div>
+        </ion-accordion>
+
+        <ion-accordion value="visits">
+          <ion-item slot="header"><ion-label>{{ 'patientPortal.case.visits' | translate }}</ion-label></ion-item>
+          <div slot="content" class="hc-card-pad">
+            @for (visit of caseVisits(); track visit.id) {
+              <div class="hc-lrow">
+                <div class="hc-grow">
+                  <div class="hc-sm">{{ visit.purpose }}</div>
+                  <div class="hc-muted hc-tiny">{{ memberOf(visit.professionalId).name }}</div>
+                </div>
+                <span class="hc-num hc-tiny hc-muted">{{ formatInstantDay(visit.visitedAt) }}</span>
+              </div>
+            } @empty {
+              <p class="hc-muted hc-sm">{{ 'patientPortal.case.noVisits' | translate }}</p>
+            }
+          </div>
+        </ion-accordion>
+
+        <ion-accordion value="medications">
+          <ion-item slot="header"><ion-label>{{ 'patientPortal.case.medications' | translate }}</ion-label></ion-item>
+          <div slot="content" class="hc-card-pad">
+            @for (med of caseMedications(); track med.id) {
+              <div class="hc-lrow">
+                <div class="hc-grow">
+                  <div class="hc-sm">{{ med.name }}</div>
+                  <div class="hc-muted hc-tiny">{{ med.dosage }}</div>
+                </div>
+                <span class="hc-pill hc-pill--grey">{{ med.status | hpmStatus }}</span>
+              </div>
+            } @empty {
+              <p class="hc-muted hc-sm">{{ 'patientPortal.case.noMedications' | translate }}</p>
+            }
+          </div>
+        </ion-accordion>
+
+        <ion-accordion value="reports">
+          <ion-item slot="header"><ion-label>{{ 'patientPortal.case.reports' | translate }}</ion-label></ion-item>
+          <div slot="content" class="hc-card-pad">
+            @for (report of caseReports(); track report.id) {
+              <div class="hc-lrow">
+                <div class="hc-grow">
+                  <div class="hc-sm">{{ report.name }}</div>
+                  <div class="hc-muted hc-tiny">{{ formatDay(report.reportDate) }}</div>
+                </div>
+              </div>
+            } @empty {
+              <p class="hc-muted hc-sm">{{ 'patientPortal.case.noReports' | translate }}</p>
+            }
+          </div>
+        </ion-accordion>
+
+        <ion-accordion value="timeline">
+          <ion-item slot="header"><ion-label>{{ 'patientPortal.case.timeline' | translate }}</ion-label></ion-item>
+          <div slot="content" class="hc-card-pad">
+            @for (entry of caseActivity(); track entry.id) {
+              <div class="hc-tl-item">
+                <span class="hc-tl-item__dot"></span>
+                <div class="hc-grow">
+                  <div class="hc-row hc-between hc-gap-8 hc-wrap">
+                    <b class="hc-sm">{{ entry.summary }}</b>
+                    <span class="hc-muted hc-tiny hc-num">{{ formatInstantDay(entry.loggedAt, entry.createdDate) }}</span>
+                  </div>
+                  @if (entry.detail) {
+                    <p class="hc-muted hc-sm">{{ entry.detail }}</p>
+                  }
+                  <!-- source decides before authorId: the patient's own note reads "You". -->
+                  <div class="hc-muted hc-tiny">{{ authorName(entry) }}</div>
+                </div>
+              </div>
+            } @empty {
+              <p class="hc-muted hc-sm">{{ 'patientPortal.case.noTimeline' | translate }}</p>
+            }
+          </div>
+        </ion-accordion>
+      </ion-accordion-group>
+    }
+  </hpm-stream>
+</hpm-portal-page>
+
+<!-- Log-activity dialog. Dismissable: backing out of writing a note loses only the note. -->
+<ion-modal [isOpen]="logging()" (ionModalDidDismiss)="logging.set(false)">
+  <ng-template>
+    <div class="hc-card-pad hpm-case__log">
+      <h2 class="hc-auth-title">{{ 'patientPortal.case.logActivity' | translate }}</h2>
+      <p class="hc-muted hc-sm">{{ 'patientPortal.case.logActivityBlurb' | translate }}</p>
+
+      @if (saveFailed()) {
+        <!-- "what you wrote is still here" — and it is: the signals are not cleared on failure. -->
+        <div class="hc-auth-error" role="alert">{{ 'patientPortal.case.noteFailed' | translate }}</div>
+      }
+
+      <div class="hc-field">
+        <label for="noteTitle">{{ 'patientPortal.case.noteTitle' | translate }}</label>
+        <ion-input
+          id="noteTitle"
+          fill="outline"
+          [value]="noteTitle()"
+          (ionInput)="noteTitle.set($any($event.target).value)"
+          [placeholder]="'patientPortal.case.noteTitleHint' | translate"
+        ></ion-input>
+      </div>
+
+      <div class="hc-field">
+        <label for="noteDetail">{{ 'patientPortal.case.noteDetail' | translate }}</label>
+        <ion-textarea
+          id="noteDetail"
+          fill="outline"
+          [autoGrow]="true"
+          [rows]="4"
+          [value]="noteDetail()"
+          (ionInput)="noteDetail.set($any($event.target).value)"
+          [placeholder]="'patientPortal.case.noteDetailHint' | translate"
+        ></ion-textarea>
+      </div>
+
+      <ion-button expand="block" color="primary" [disabled]="!canSave()" (click)="save()">
+        @if (saving()) {
+          <ion-spinner name="crescent" slot="start"></ion-spinner>
+        }
+        {{ 'entity.action.save' | translate }}
+      </ion-button>
+      <ion-button expand="block" fill="clear" color="dark" (click)="logging.set(false)">
+        {{ 'entity.action.cancel' | translate }}
+      </ion-button>
+    </div>
+  </ng-template>
+</ion-modal>

@@ -1,0 +1,111 @@
+<hpm-portal-page titleKey="patientPortal.nav.medications">
+  <!-- Rendered only when the figures are real — three zeroes from a failed fetch would read as "nothing withheld". -->
+  @if (counts(); as rows) {
+    <div class="hc-grid hc-grid--3">
+      @for (count of rows; track count.status) {
+        <div class="hc-stat">
+          <span
+            class="hc-stat__ic"
+            [style.background]="count.status === 'WITHHELD' ? 'var(--hc-danger-bg)' : 'var(--hc-gold-050)'"
+            [style.color]="count.status === 'WITHHELD' ? 'var(--hc-danger)' : 'var(--hc-gold)'"
+          >
+            <hpm-icon [name]="count.status === 'WITHHELD' ? 'shield' : 'pill'" [size]="18" [strokeWidth]="2" />
+          </span>
+          <b class="hc-num">{{ count.value }}</b>
+          <span [hpmTranslate]="count.labelKey"></span>
+        </div>
+      }
+    </div>
+  }
+
+  <div class="hc-tools hc-mt-16">
+    <hpm-search-box
+      inputId="q_medications"
+      placeholderKey="patientPortal.medications.search"
+      [value]="query()"
+      (queryChange)="query.set($event)"
+    />
+    <hpm-person-filter [people]="careTeam()" [value]="professional()" (valueChange)="professional.set($event)" />
+  </div>
+
+  <div class="hpm-meds__statuses">
+    @for (option of statuses; track option) {
+      <button type="button" class="hc-toggle" [class.is-on]="status() === option" (click)="setStatus(option)">
+        {{ option | hpmStatus }}
+      </button>
+    }
+  </div>
+
+  <hpm-stream
+    class="hc-mt-16"
+    [resource]="medications()"
+    emptyTitleKey="patientPortal.medications.empty"
+    emptyMessageKey="patientPortal.medications.emptyHint"
+    emptyIcon="medkit-outline"
+    [skeletonRowHeight]="92"
+  >
+    <div class="hc-grid">
+      @for (item of filtered(); track item.id) {
+        <article
+          class="hc-card hc-card-pad hpm-meds__row"
+          role="button"
+          tabindex="0"
+          (click)="open(item)"
+          (keydown.enter)="open(item)"
+          [attr.aria-label]="'patientPortal.medications.viewOne' | translate: { name: item.name }"
+        >
+          <div class="hc-row hc-between hc-gap-8 hc-wrap">
+            <b class="hc-grow">{{ item.name }}</b>
+            <span class="hc-pill" [class]="pill(item.status)">{{ item.status | hpmStatus }}</span>
+          </div>
+
+          <div class="hc-sm hpm-meds__dose">{{ item.dosage ?? item.prescription ?? '—' }}</div>
+
+          <div class="hc-muted hc-tiny hpm-meds__meta">
+            <span class="hc-num">{{ formatDay(item.startedOn ?? item.createdDate) }}</span>
+            · {{ memberOf(item.prescribedById).name }}
+            @if (caseLabel(item.caseId); as label) {
+              · <a (click)="openCase(item.caseId); $event.stopPropagation()">{{ label }}</a>
+            }
+          </div>
+        </article>
+      }
+    </div>
+  </hpm-stream>
+</hpm-portal-page>
+
+<ion-modal [isOpen]="!!selected()" (ionModalDidDismiss)="selected.set(null)">
+  <ng-template>
+    @if (selected(); as item) {
+      <div class="hc-card-pad hpm-meds__detail">
+        <div class="hc-row hc-between hc-gap-8 hc-wrap">
+          <h2 class="hc-auth-title hc-grow">{{ item.name }}</h2>
+          <span class="hc-pill" [class]="pill(item.status)">{{ item.status | hpmStatus }}</span>
+        </div>
+
+        <dl class="hc-kv hc-mt-16">
+          <span class="hc-kv__k" hpmTranslate="patientPortal.medications.column.dosage">How to take it</span>
+          <span class="hc-kv__v">{{ item.dosage ?? item.prescription ?? '—' }}</span>
+
+          <span class="hc-kv__k" hpmTranslate="patientPortal.medications.column.started">Started</span>
+          <span class="hc-kv__v">{{ formatDay(item.startedOn ?? item.createdDate) }}</span>
+
+          <span class="hc-kv__k" hpmTranslate="patientPortal.medications.column.prescriber">Prescribed by</span>
+          <span class="hc-kv__v">{{ memberOf(item.prescribedById).name }}</span>
+        </dl>
+
+        @if (item.description) {
+          <!--
+            The reason. On a WITHHELD row this is the sentence the whole screen exists to surface —
+            "not given, penicillin allergy on record".
+          -->
+          <div class="hc-prose hc-mt-16"><p>{{ item.description }}</p></div>
+        }
+
+        <ion-button expand="block" fill="clear" color="dark" (click)="selected.set(null)">
+          {{ 'entity.action.close' | translate }}
+        </ion-button>
+      </div>
+    }
+  </ng-template>
+</ion-modal>
