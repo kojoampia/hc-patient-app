@@ -1,14 +1,14 @@
 # hc-patient-app — plan of record
 
-**Status: no code.** This repository holds a `.gitignore`, an untracked `bin/jhipster-ionic` and nothing else. This
-file is Phase D of `docs/onboarding.md`: it freezes the contract the Ionic client will be written against, so that the
-app can be started without re-reading three backends.
+**Status: no code.** This repository holds a `.gitignore`, this file and `PROVENANCE.md`. **§1–§5 are the contract**,
+frozen as Phase D of `docs/onboarding.md` so that the client can be started without re-reading three backends.
+**§6–§8 are the plan**, added 2026-08-21: the decisions that were open, and the port they imply.
 
 The contract below is taken from **`docs/onboarding.md` §16, not from its §4–§10.** Those earlier sections describe
 what was *planned*; §16 records what was *built*, and the two differ in ways that matter to a client — the step
 endpoints are named rather than numbered, the status response carries `onboarded`, and `/mine` returns the patient's
-name. Where this file and the code disagree, **the code is right and this file is the bug**; it was written on
-2026-08-20 against `api` `cec2c24` and `gateway` `b2314cf`.
+name. Where this file and the code disagree, **the code is right and this file is the bug**; §1–§5 were written on
+2026-08-20 against `api` `cec2c24` and `gateway` `b2314cf`, and the port plan against `web` `12e418c`.
 
 ---
 
@@ -224,12 +224,426 @@ already has an account gets `ROLE_ANGEL` rather than a second account, and the r
 
 ---
 
-## 6 · Open, and to be decided before the first commit
+## 6 · Decided, 2026-08-21
 
-- **Angular baseline.** Ionic on Angular 19, or reuse the dashboard's Angular 17 to share models and services? This
-  has been open since the workspace consolidation and nothing here settles it. Sharing models argues for 17; starting
-  a new app in 2026 on a superseded major argues for 19.
-- **Whether the app ships the wizard at all**, or only the portal, leaving onboarding to the web. The contract above
-  supports either; the decision is a product one.
-- **`bin/jhipster-ionic`** is untracked scaffolding from 2022 and predates every decision in this file. Treat it as
-  archaeology, not as a starting point.
+The three items this section used to leave open are settled, and five more are answered here because they do not
+exist on the web and have no default worth inheriting.
+
+**The Angular-baseline question was not just open, it was wrong.** It asked whether to start on Angular 19 or reuse
+"the dashboard's Angular 17". The dashboard has been on **20.3.27** since before this file was written; the premise
+had rotted. `@ionic/angular@9` peers `@angular/core >=18.0.0`, so matching the web exactly costs nothing and the
+trade-off the question described — newer major against shared models — does not arise.
+
+| # | Decision | |
+| - | -------- | - |
+| 1 | **Ionic Angular + Capacitor, Angular 20** | Ionic owns the shell: tabs, page transitions, back gesture, safe areas, pull-to-refresh, keyboard. The web's `hc-*` CSS owns everything inside a page. |
+| 2 | **Portal only** | The 13 portal screens, acting-as, and sign-in. No onboarding wizard, no invitations screen. |
+| 3 | **Copy the shared TypeScript in, allow divergence** | Provenance header on every lifted file, `PROVENANCE.md` as the index, `tools/check-provenance.mjs` as the check. |
+| 4 | **The acting-as selection clears on cold start, on resume after >15 min backgrounded, on sign-out, and on 401** | Then the §3.2 fork runs again. |
+| 5 | **Token in the Keychain / Keystore, behind a biometric unlock** | On cold start and on long resume. `rememberMe` is forced `true` and the checkbox is not rendered. |
+| 6 | **Online-only, but three-state** | Every stream is `loading`, `loaded`, or `failed`. No caching in v1. |
+| 7 | **Android first** | iOS via `npx cap add ios` once the Android app is real. |
+| 8 | **This file is the plan** | Not a new document in `docs/`. One plan file per repo, as `docs/CLAUDE.md` requires. |
+
+Three of these deserve their reasoning recorded, because each is a place where the obvious choice is wrong.
+
+**Why Ionic rather than wrapping the existing app (1).** The web shell already has a mobile mode below its 940px
+breakpoint — a drawer and the same five-tab bar — so a Capacitor wrapper would have been *pixel*-identical for
+almost no work. It was rejected because "the same look, style and feel" is not only pixels: a back gesture that does
+nothing, a page transition that is a repaint, and a tab bar that does not keep per-tab history all read as *not an
+app*. Ionic buys those, and because all visual truth lives in `_tokens.scss` and `_components.scss` and **nothing
+downstream hardcodes a hex**, buying them costs the templates and not the appearance.
+
+**Why portal-only (2), and what it obliges.** The wizard is five endpoints, five payload shapes and the resume rule;
+the portal is the reason anyone opens the app twice. Shipping the portal first is the smaller, more useful half. But
+**the §3.2 fork must still be implemented in full** — dropping the wizard does not drop the question of where an
+unonboarded user goes. Its two terminal branches become dead-end screens that open `patient.abofonsa.com` in the
+**system browser**, so the user's password manager and any existing session are available. Those screens must say
+*"finish this on the web, then come back"*; a screen that merely refuses is indistinguishable from a bug. §3.2's
+fourth row is unchanged and still the trap: a `PENDING` nomination goes to the **invitations** dead end, never the
+onboarding one.
+
+**Why the acting-as selection needs a new rule (4).** The web keeps it in `sessionStorage` deliberately — whose
+record is on screen must not outlive the session or greet the next person at the device. **A Capacitor webview has
+no meaningful session**; it can persist for weeks, across backgrounding and process death, and it survives a
+different account signing in. Copying `ActingAsService` verbatim would therefore ship a real defect wearing the
+web's safety property as a disguise. On mobile the selection lives **only in the signal**, and the four triggers
+above replace the storage rule. One consequence to handle deliberately: an angel holding exactly one delegation is
+auto-selected every time (one option is not a decision), so the banner's `role="status"` will not re-announce an
+unchanged string — re-announce it explicitly after each fork run.
+
+**`bin/jhipster-ionic` and `.yo-repository/` are discarded.** The generator is JHipster-Ionic 8.2.1 (Angular 18,
+Capacitor 6, `ionic-appauth` for OAuth2 — an auth model this stack does not use), installed 2024-06-06 and never
+run. It predates every decision in this file. Both paths are now in `.gitignore`, which is also what finally makes
+this working tree clean: the 2022 stock template it replaced listed neither.
+
+### Still open, deliberately
+
+- **Dark mode.** Out of scope for v1. Do not import `@ionic/angular/css/palettes/dark.*.css` — half the app would
+  invert and the `hc-*` half would not.
+- **A read-through cache.** Decision 6 makes a failed fetch *honest*; it does not make a train tunnel pleasant. The
+  next step is an in-session memory cache plus a "last updated HH:MM" line. Plan it rather than discovering it.
+- **`LONG_ABSENCE_MS`.** 15 minutes is a guess, and biometrics on every resume is aggressive for an app that is
+  read-only in v1. It is one exported constant so it can be tuned from data rather than re-argued.
+- **Telemetry.** `web/app/core/telemetry/` is not ported. OTel's browser SDK in a webview posting to a
+  same-origin `/v1/traces` that no longer exists is a separate design question.
+
+---
+
+## 7 · The port
+
+Source of truth is `web` at `12e418c`. Two files hold all the visual truth — `content/scss/_tokens.scss` and
+`content/scss/_components.scss` — and one more holds the icons. That is what makes this port tractable, and it is
+the property to protect: **nothing in this app hardcodes a hex either.**
+
+### 7.1 · Shape
+
+```
+mobile/
+├── patient-mobile.md          this file
+├── PROVENANCE.md              path | origin | web sha | divergence
+├── capacitor.config.ts  ionic.config.json  angular.json  tsconfig*.json
+├── jest.config.js  setup-jest.ts  .eslintrc.json  .prettierrc  .editorconfig
+├── tools/merge-i18n.mjs       replaces merge-jsons-webpack-plugin
+├── tools/check-provenance.mjs diffs lifted files against a sibling ../web checkout
+├── .github/workflows/ci.yml
+├── android/                   `npx cap add android`, committed
+└── src/
+    ├── theme/                 _tokens, _components, _utilities  (verbatim)
+    │                          ionic-bridge.scss, mobile.scss    (new)
+    ├── i18n/{en,fr,de}/       verbatim
+    └── app/
+        ├── core/              lifted: config, interceptor, request, util, auth
+        ├── core/native/       new: token store, biometrics, lifecycle, lock
+        ├── shell/             new: tabs page, banner, picker, more-sheet, nav
+        ├── auth/              new: login page, lock page
+        ├── fork/              new: session bootstrap — the §3.2 five-case fork
+        ├── deadends/          new: onboarding-required, invitations-required
+        ├── portal/data/       lifted, except portal-data.service.ts (rewritten)
+        ├── portal/<13 pages>/ every template rewritten
+        ├── entities/          lifted: 15 × model + service only
+        └── shared/ui/         lifted: icon, charts, avatar, empty-state, panel, pager…
+```
+
+**Do this before lifting a single file.** In `tsconfig.json`:
+
+```jsonc
+"baseUrl": "./",
+"paths": { "app/*": ["src/app/*"], "environments/*": ["src/environments/*"] }
+```
+
+Every lifted file's `import { … } from 'app/core/auth/account.service'` then resolves with **zero edits**. This one
+decision removes most of the mechanical cost of decision 3 and most of the noise from every future re-sync.
+
+### 7.2 · Lifted, rewritten, and never copied
+
+**Lifted near-verbatim** — `core/config/application-config.service.ts` · `core/interceptor/*` (all five and
+`index.ts`) · `core/request/request-util.ts` · `core/util/operators.ts` · `core/auth/{account.model,account.service,
+user-route-access.service,auth-jwt.service,state-storage.service}` · `config/{authority.constants,input.constants,
+dayjs,error.constants,translation.config}` · `portal/data/{portal-format,vitals,status-label.pipe,
+care-delegation.service,membership-plan.service}` **and their specs** · `shared/ui/{icon,charts,avatar,empty-state,
+panel,pager,search-box,person-filter}` · `shared/language/*` · `login/{login.model,login.service}` ·
+`i18n/{en,fr,de}/*.json` · `entities/enumerations/*` · and 15 entities' `<e>.model.ts` + `service/<e>.service.ts`
+(`activity-log, address, allergy, care-plan-item, clinical-case, condition, emergency, medication, membership,
+professional, profile, report, stat, task, visitation`). The only sweeping change is the selector prefix, `hpd` →
+**`hpm`**.
+
+**Rewritten** — every template and page, the shell, and `portal-data.service.ts` (§7.5).
+
+**Never copied** — `shared/shared.module.ts` (it exports `NgbModule` and `FontAwesomeModule`; importing it into a
+lifted chart component would drag ng-bootstrap and Font Awesome into the bundle for nothing — write a slim
+replacement) · `layouts/*` · `widgets/*` · `dashboard/*` · `home/*` · `admin/*` · `features/*` · `onboarding/*` ·
+`invitations/*` · `entities/*/{list,detail,update,delete,route}/` · `core/telemetry/*` · and the dead `resolutions`
+block in `web/package.json` still pinning Angular 17.
+
+Every lifted file opens with:
+
+```ts
+/**
+ * Lifted from hc-patient-dashboard
+ *   src/main/webapp/app/portal/data/portal-format.ts @ 12e418c
+ * Divergence: none.          // or a one-line summary of every deliberate change
+ * Re-sync: see PROVENANCE.md.
+ */
+```
+
+**Be honest about what this control is worth.** `check-provenance.mjs` needs a sibling `../web` checkout, so CI
+cannot run it. It belongs in the release checklist, and a lifted file whose origin has moved is blocking. The
+mitigation that would actually work — publishing `portal/data/` and the entity models and services from the web repo
+as a private package — is a bigger change than decision 3 contemplates, and is the thing to revisit first if these
+two copies start drifting.
+
+### 7.3 · Theming bridge
+
+`theme/ionic-bridge.scss`, imported after `_tokens.scss` and before `_components.scss`, maps the brand onto Ionic's
+variables: `--ion-color-primary` ← `$hc-navy` (white contrast, 13.28:1), `--ion-color-secondary` ← `$hc-gold`,
+surfaces ← `$hc-bg` / `$hc-card` / `$hc-ink` / `$hc-line`, tab bar ← `$hc-card` with `$hc-navy` selected, and
+`--ion-font-family` ← `$hc-sans`.
+
+Generate Ionic's 19 stepped neutrals with a SCSS `@for` mixing `$hc-ink` into `$hc-bg`. That ramp drives placeholder
+text, dividers, disabled states and `ion-skeleton-text`; **leaving it on Ionic's default grey is the single most
+visible way an app announces itself as unthemed.**
+
+**The gold rule, enforced rather than remembered.** `#c59437` on white is **2.74:1** and fails AA at every size, so
+`--ion-color-secondary-contrast` is `$hc-ink` (6.00:1) and **no `ion-button color="secondary"` may carry white
+text**. Gold on navy is 4.85:1 — fine at ≥18.66px, so auth accents use `$hc-gold-300` or size up.
+
+Two contrast defects are inherited from the web and get worse at phone pill sizes. Fix them here as a **documented
+divergence**, and raise them on the web repo: `$hc-warn #b4741a` on its own background is 3.50 (fails) → `#8f5c14`;
+`$hc-ok #2e7d5b` on its own background is 4.39 (marginal) → `#286d4f`. Both keep the hue.
+
+`mobile.scss` carries only what a 390px viewport forces: `.hc-grid` to one column below 600px, `.hc-tbl` scrolling
+inside `.hc-tbl-wrap`, less `.hc-hero` padding, `.hc-card` radius from `--hc-r-lg` to `--hc-r`. The `.hc-shell__*`
+classes are dropped — the shell is rewritten.
+
+### 7.4 · The banner is a shell element, not a page element
+
+```html
+<div class="hpm-shell">
+  <hpm-acting-as-banner />        <!-- ALWAYS rendered, above ion-tabs -->
+  <ion-tabs>
+    <ion-router-outlet />
+    <ion-tab-bar slot="bottom"> …5 buttons… </ion-tab-bar>
+  </ion-tabs>
+</div>
+```
+
+Putting it in each page's `ion-header` is the idiomatic Ionic answer and it is **wrong here**, because it must then
+be remembered on 13 pages and one forgotten page shows a patient's record with no banner. That is exactly the
+silently-the-wrong-person failure §3 calls a safety control, and it is the same argument that puts `X-Acting-As` in
+one interceptor: make forgetting impossible rather than unlikely.
+
+Four consequences follow:
+
+1. **The banner now owns the top inset.** It takes `padding-top: var(--ion-safe-area-top)`, and `--ion-safe-area-top`
+   is set to `0px` **scoped to `ion-tabs`** — not globally, because login and lock sit outside the shell and still
+   need it. Otherwise the inset doubles. Only visible on a real notched device.
+2. **Two states, always rendered** — `actingAs.bannerOwn` when the choice is the user's own *and* a switch is
+   possible, `actingAs.banner` naming the patient otherwise. This is the web's own regression fix; `.hc-shell__acting-as`
+   and `.is-own` port straight across.
+3. **Switching is the web's `switchRecord()` plus one mobile-only step.** Guard against re-selecting the same id,
+   `actingAs.select(id)`, **`data.reload()`**, navigate to overview — and then **pop every tab stack to its root**.
+   Without that last step a case detail belonging to the previous patient survives on a background stack and
+   reappears on the next tab tap. The web has no equivalent of this bug.
+4. **`mustChoose` is an `ion-modal`** with `[canDismiss]="false"` and `[backdropDismiss]="false"`, and the Android
+   hardware back button must not dismiss it either.
+
+### 7.5 · Three states, not one
+
+Every one of the 12 portal streams currently ends `catchError(() => of([]))`, so a failed fetch and an empty
+collection are the same value. On a phone that renders as **"No allergies recorded"** when the truth is that the
+request never arrived — and an allergy list is the worst possible place for those two to read alike.
+
+```ts
+export type Resource<T> =
+  | { state: 'loading' }
+  | { state: 'loaded'; value: T }
+  | { state: 'failed'; status: number | null; error: unknown };
+```
+
+`PatientContextService` goes first, because everything depends on it. `profile$` becomes `profileState$` with
+`blankOnlyOn404` **untouched**: a 404 becomes `loaded(null)` — "you have no profile" is a real state — and anything
+else becomes `failed`. **Do not widen that narrowing while wrapping it.** It is the guard that stops a network blip
+throwing a fully onboarded patient at the onboarding dead end, which in v1 is a screen they cannot get past.
+`careTeam$` has the same defect and gets the same treatment.
+
+`PortalDataService` is rewritten around one private `scoped<T>(key, service)` helper that passes `loading` and
+`failed` through from the profile state, returns `loaded([])` when there is no patient id (no record is not a
+failure), keeps the **double filter** — server query parameter *and* client-side `patientId` check, defence in depth,
+unchanged — and places `startWith(LOADING)` **inside the `switchMap`, after `catchError`**.
+
+That placement earns its keep twice. It guarantees the sequence is always `loading → (loaded | failed)`. And because
+it is inside the `switchMap`, **an acting-as switch resets all 12 streams to `loading`** — which fixes a live defect:
+today `shareReplay({ refCount: false })` keeps the previous patient's rows on screen under the new patient's name
+for the duration of a request. Write the spec for exactly that.
+
+One `hpm-stream` component renders all three states so the 12 streams cannot drift apart: skeleton rows sized to the
+real row, the existing `hpm-empty-state`, or a card with a message keyed off status (`0`/`null` → no connection,
+`403` → no access to this record, else generic) and a **Try again** button. Never surface a raw error string.
+
+Anything `computed()` across streams must decide explicitly what a failure means for it. The overview's "3 of your
+12 cases are active" must not render while `cases$` is `failed`, because **"0 active" would be a lie**. Same for the
+emergencies badge: nothing on loading or failed, never `0`.
+
+### 7.6 · Token, biometrics, lifecycle
+
+Plugins sit behind interfaces in `core/native/` so that no app code imports one directly and either can be swapped:
+`@capacitor/{app,preferences,browser,keyboard,status-bar,splash-screen}`,
+`@aparajita/capacitor-secure-storage@8`, `@aparajita/capacitor-biometric-auth@10`. All peer Capacitor 8.
+
+**The synchronous-token problem.** `StateStorageService.getAuthenticationToken()` is synchronous and `AuthInterceptor`
+calls it on every request; secure storage is async. Do not make the interceptor async — that is a keychain read per
+HTTP call and it turns every interceptor spec async. Instead `core/native/session-token.service.ts` holds the token
+in an in-memory signal with a synchronous `get()`, and async `unlock()` / `persist()` / `lock()` / `signOut()` around
+the secure store. `StateStorageService` keeps its shape and delegates, so `AuthInterceptor` and `AuthServerProvider`
+port verbatim. `previousUrl` and `locale` move to Preferences.
+
+`AppLifecycleService` exposes one signal, `resumed$: 'cold-start' | 'long-resume'`, from `App.addListener(
+'appStateChange')` plus a `backgroundedAt` persisted to Preferences so that a process kill still yields a sane
+answer on relaunch.
+
+**`suppressNextResume()` must wrap every native prompt.** The biometric dialog, the camera, the file picker and the
+system browser all background the app on Android, so a naive listener re-locks in a loop the moment it locks. There
+is a `native/with-prompt.ts` for this and it is not optional. **This is the most likely bug in this area.**
+
+Order is load-bearing — the fork calls `/care-delegations/mine`, which needs a token, which needs the unlock:
+
+```
+resumed$ → AppLockService.lock()      // clear in-memory token, actingAs.clear(), → /lock, pop stacks
+              └─ unlock ok → SessionBootstrapService.restart() → the §3.2 fork
+```
+
+`LockPage` prompts inside `withPrompt` with `allowDeviceCredential: true`; failure offers **Unlock** and **Use
+password**. **If the device has no screen lock at all, refuse to persist the token** — sign out, require a password
+every launch, and say so in the copy. Do not silently keep a 7-day token on an unsecured device, particularly given
+that the gateway has no revocation.
+
+Two device traps: **the iOS Keychain survives app uninstall**, so use `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`
+and clear the store on first run, detected with a Preferences flag (which does not survive uninstall). And the wall
+clock can move — a process kill always yields `cold-start` regardless, so the worst case is a resume that should
+have locked and did not. Acceptable; do not chase a monotonic clock across process death.
+
+### 7.7 · Build
+
+`@angular/build:application` (esbuild), **no custom webpack**. Three consequences:
+
+1. `tools/merge-i18n.mjs` replaces `merge-jsons-webpack-plugin` and writes the content hash `translation.config.ts`
+   reads. Make it **fail the build when the three locales have unequal key sets** — they are 1199 / 1198 / 1189
+   today, and a missing key renders `translation-not-found[key]` in that language with nothing failing. Close the
+   gap in the scaffold phase while the diff is small. This is a check the web does not have.
+2. `DefinePlugin` globals become `src/environments/*` with `fileReplacements`.
+3. **`SERVER_API_URL` must be absolute**, because a Capacitor webview is `https://localhost` and nothing is
+   same-origin. Set `androidScheme: 'https'` and `CapacitorHttp: { enabled: true }` so XHR is patched to the native
+   client and **CORS does not apply** — the gateway has CORS deliberately disabled and would refuse every preflight.
+   `setEndpointPrefix()` runs in an `APP_INITIALIZER` that **must resolve before any HTTP call**: both interceptors
+   compare `request.url` against `getEndpointFor('')` to decide whether to attach headers, so with an empty prefix
+   they attach to every host, including third-party ones. Spec it.
+
+Jest mirrors `web/jest.conf.js` with `transformIgnorePatterns` exempting `@ionic|@stencil|ionicons|@capacitor|
+dayjs/esm` — the same ESM failure class the web hit with d3, different packages. Mock the plugins in
+`setup-jest.ts`; `Capacitor.isNativePlatform()` is `false` under Jest, which selects the web token store — make that
+explicit rather than incidental.
+
+ESLint is the web's config with prefix `hpm`, keeping the `member-ordering` block **and its comment** — private
+instance fields before public, because `inject()` runs in field-initialiser order and every lifted service depends
+on it. **No `pretest: lint` hook**: that is why `npm test` on web has been failing on lint for months and everyone
+uses `npx ng test` instead. Gate them separately in CI.
+
+CI is one workflow on push and PR to `master`: a node job (`npm ci`, lint, `test:ci`, `build:prod`) and an Android
+job needing it (temurin **21**, `cap sync android`, `./gradlew assembleDebug`, upload the APK). Do **not** copy the
+web repo's `docker-publish.yml` (failing since 2026-07-30 against a Dockerfile in another repo) or `release.yml`
+(publishes an nginx image this app does not have).
+
+**The JDK trap applies here through Gradle.** `/usr/lib/jvm/java-25-openjdk-amd64` is a JRE with no `javac`, and the
+`java` on `PATH` is Oracle 25, which *does* have one — so `java -version` will not catch it. Gradle's failure reads
+`does not provide the required capabilities: [JAVA_COMPILER]`, and a warm build **still installs a stale APK**,
+which is the part that wastes an afternoon. Pin `JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64` and
+`ANDROID_HOME=$HOME/Android/Sdk` in the README and in CI.
+
+### 7.8 · Phases
+
+Each is PR-sized and ends in something testable by hand.
+
+| | Work | Done when |
+| - | ---- | --------- |
+| **0** | Docs and hygiene: this file, `PROVENANCE.md`, the new `.gitignore`, the stale lines in `docs/CLAUDE.md`. | `git status` clean on `master` for the first time. |
+| **1** | Scaffold and theme: `ionic start`, tsconfig paths, lint/prettier/jest, `theme/`, `merge-i18n.mjs`, `capacitor.config.ts`, `cap add android`. | One page shows an `ion-button color="primary"` beside an `.hc-card` with the right radius and shadow — **on a device**. i18n key-equality green. |
+| **2** | Core, auth, sign-in: lift `core/*`, write the token store, `LoginPage`, the `APP_INITIALIZER`, i18n in. | Sign in on a physical Android device against the quality stack; token in EncryptedSharedPreferences; kill and relaunch still signed in; **no `Authorization` header on `/api/authenticate`**. |
+| **3** | The fork, acting-as, dead ends. | The five accounts, five outcomes table in §8.3, by hand. |
+| **4** | Data layer: 15 models and services, `profileState$`, `PortalDataService`, `hpm-stream`. | Airplane mode shows failed-with-retry on every panel, **not** empty. Switching records flashes skeletons, never the previous patient's rows. |
+| **5** | The 13 screens, in the §8.1 order. | Each ships with loading/empty/failed specs, an `ion-refresher`, a More-sheet entry, and a side-by-side walk against the web. 13 PRs. |
+| **6** | Lifecycle and lock. | Background past the threshold → biometric → unlock → picker returns. Cancel the prompt → **no lock loop**. Revoke a delegation server-side → 401 → login, selection cleared. |
+| **7** | Polish and release: deep links, back-button policy, keyboard, safe areas on a notched device, splash and icon, cleartext off, signed build. | `assembleRelease` produces an installable signed artifact; CI green on a PR. |
+| **8** | iOS. | `cap add ios`, Keychain accessibility flags, `NSFaceIDUsageDescription`, and the same five fork outcomes. |
+
+---
+
+## 8 · The screens
+
+### 8.1 · Thirteen routes, five tabs
+
+`shell/mobile-nav.ts` replaces the web's `shell-nav.ts`, keeping the same five `MOBILE_TABS`, the same ten
+`MOBILE_NAV` items in the same order with the same i18n keys, and extending `NAV_OWNER` into `TAB_OWNER`:
+
+| Tab | Root | Also on this stack |
+| --- | ---- | ------------------ |
+| Overview | `overview` | `emergencies` |
+| Record | `record` | `visitations`, `activity`, `allergies` |
+| Schedules | `schedules` | — |
+| Cases | `cases` | `medications`, `reports`, `plans` |
+| Profile | `profile` | — |
+
+The grouping is the web's own sidebar grouping — health, clinical, account — rather than a fresh opinion.
+`allergies` is the one judgement call: it goes under `record` because on a phone it reads as record content, and
+because **no screen links to it** (it is sidebar-only on the web), so it needs an explicit home or it has none.
+
+**`case/:id` is registered under all five tabs** via a `caseRoute()` factory. It is linked from eight screens.
+Jumping tabs to open a case would yank the reader out of the list they were scanning; registering it once above the
+tab bar would hide the tab bar on the most-visited detail screen in the app. Five copies of one lazy route object is
+the cheap answer.
+
+**No template hardcodes a `/tabs/...` URL.** `shell/portal-nav.service.ts` resolves `go('medications')` to
+`/tabs/cases/medications` by reading `TAB_OWNER`, so moving a screen between tabs is a one-line change.
+
+**Five tabs cannot reach ten destinations.** Every tab root carries a `⋯` button opening `MoreSheetComponent`, an
+`ion-modal` listing all ten `MOBILE_NAV` items with their icons, badges and group headings, driven off the same
+constant the tab bar reads. This is the sidebar's job on a phone, and it is what stops a repeat of the web defect
+where two screens sat routed with no way into them for months.
+
+### 8.2 · Routes outside the shell
+
+```
+''                      → redirect /tabs/overview
+'login'                 LoginPage                 no shell
+'lock'                  LockPage                  no shell, canDismiss:false
+'onboarding-required'   dead end                  guarded, no shell
+'invitations-required'  dead end                  guarded, no shell
+'tabs'                  TabsPage                  canActivate: [UserRouteAccessService, forkGuard]
+```
+
+`AuthShellComponent` has no mobile analogue — its split brand-left/form-right layout is a desktop idea. `LoginPage`
+is a single full-bleed `ion-content` reusing the `.hc-auth*` classes.
+
+### 8.3 · The fork, and how it is verified
+
+`SessionBootstrapService` implements §3.2 in one place, and these five accounts are the acceptance test — run by
+hand on a device in phase 3, again in phase 6:
+
+| Account | Expected |
+| ------- | -------- |
+| self, no delegations | straight in; banner in its `is-own` state, switcher hidden |
+| angel only, one delegation | auto-selected; banner names the patient |
+| self **and** a delegation | **asked**; modal undismissable; hardware back does not escape it |
+| fresh registration, no record | onboarding dead end, opening the web in the **system browser** |
+| `PENDING` nomination, no record | invitations dead end — **not** the onboarding one |
+
+One divergence from the web to record deliberately: when `/care-delegations/mine` **fails**, the web falls back to
+`setAvailable([])`, which is right for a desktop portal already showing the signed-in person. On mobile, combined
+with the cold-start reset, that turns a transient failure into an angel-only user staring at an empty portal under
+their own name. A failed fork gets an explicit retry screen instead.
+
+### 8.4 · Traps carried across
+
+Most of these are already in §1–§5 or in `web/patient-web.md`; they are gathered here because a rewrite is exactly
+when they come back.
+
+1. **`X-Acting-As` is set by the interceptor and by nothing else** — and the mobile twist is worse than the web's.
+   With `CapacitorHttp` enabled, a raw `fetch()`, an `<img src="…/api/…">` or `Browser.open(apiUrl)` bypasses
+   Angular's interceptor chain entirely: **no `Authorization`, no `X-Acting-As`**, and a 200 carrying the wrong
+   patient's record. Add an eslint `no-restricted-globals` rule for `fetch` outside `core/`. The web already hit the
+   auth half of this — "Open file" was a plain `<a href>` and returned a 401 page for every uploaded report.
+2. **`Profile.address` is a document.** Interpolating it prints `[object Object]`; `formatAddress` in
+   `portal/data/portal-format.ts` is the only way to render it.
+3. **Instants are not calendar dates.** `formatDay` never shifts; the others render in the record's zone via
+   `.utc()`. Ghana is UTC year-round, so a phone in another timezone exposes this in a way the browser never did — a
+   23:05 alert becomes 01:05 **the next day**, the wrong day on a clinical record. Lift `portal-format.ts` *and its
+   spec*; on the web only the test caught this.
+4. **Read `onboarded`, never re-derive it from `status`** (§2.3). Getting it backwards sends every pre-existing
+   patient to a dead end they cannot leave.
+5. **No delete affordance anywhere** (§4). The mobile reflex is `ion-item-sliding` with a red Delete — ban it.
+6. **Never restate a plan price** (§4). Render `priceAmount`; no `CurrencyPipe`, no arithmetic, no "from ₵X".
+7. **`ROLE_ANGEL` grants nothing** (§3). Do not gate a screen, a tab or a nav item on it.
+8. **Android hardware back** must not dismiss `mustChoose`, must pop within the tab's own stack, and must not exit
+   the app from a tab root without a confirm.
+9. **The gateway and api still ship different JWT secrets** in committed config. If sign-in succeeds and every
+   `/services/hcpatientservice/**` call 401s, that is the cause and it is not a client bug.

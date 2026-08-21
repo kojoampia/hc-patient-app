@@ -1,0 +1,10 @@
+{
+  "patientDashboardApp": {
+    "AllergySeverity": {
+      "null": "",
+      "MILD": "MILD",
+      "MODERATE": "MODERATE",
+      "SEVERE": "SEVERE"
+    }
+  }
+}

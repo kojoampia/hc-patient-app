@@ -1,0 +1,77 @@
+/**
+ * New in hc-patient-app — no origin in the web repo.
+ *
+ * The only stylesheet allowed to override _components.scss, and only for what a 390px viewport
+ * forces (patient-mobile.md §7.3). Everything here is an override of a lifted rule; nothing here
+ * introduces a component. If a rule in this file is not justified by the viewport, it belongs
+ * upstream in the web repo instead — otherwise the two copies drift and §7.2's provenance check
+ * stops meaning anything.
+ *
+ * Imported last, after _components.scss.
+ *
+ * Note what is NOT here: the `.hc-shell__*` classes. The shell is rewritten on Ionic (§7.4) — the
+ * web's sidebar, drawer and its own tab bar have no mobile analogue, and the banner lives above
+ * `ion-tabs` rather than inside a page.
+ */
+
+/**
+ * The web's grid already collapses --2 and --3 at 820px and --4 at 560px. A phone is below all of
+ * those, but --auto still resolves to `repeat(auto-fill, minmax(232px, 1fr))`, which fits two
+ * columns at 390px with 16px gaps and produces cards too narrow to read. One column below 600px,
+ * unconditionally.
+ */
+@media (max-width: 600px) {
+  .hc-grid,
+  .hc-grid--2,
+  .hc-grid--3,
+  .hc-grid--4,
+  .hc-grid--auto {
+    grid-template-columns: 1fr;
+  }
+}
+
+/**
+ * `.hc-tbl` carries `min-width: 520px`, so on a 390px viewport it overflows its container. The
+ * lifted `.hc-tbl-wrap` already scrolls — the failure mode is a table rendered without that
+ * wrapper, which on desktop merely looks wide and on a phone pushes the whole page sideways.
+ *
+ * Belt and braces: keep the wrapper scrolling with momentum, and stop the page itself from ever
+ * scrolling horizontally. A horizontally-scrolling page body is the one layout bug that makes an
+ * app feel broken rather than merely cramped.
+ */
+@media (max-width: 600px) {
+  .hc-tbl-wrap {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  ion-content::part(scroll) {
+    overflow-x: hidden;
+  }
+}
+
+/**
+ * `--hc-r-lg` (20px) is drawn for a wide card. On a phone the card is nearly the full viewport, and
+ * a 20px corner on a 358px-wide card reads as a rounded rectangle rather than a card. Step the two
+ * large-radius surfaces down to `--hc-r` (14px).
+ */
+@media (max-width: 600px) {
+  .hc-card,
+  .hc-hero {
+    border-radius: var(--hc-r);
+  }
+}
+
+/**
+ * The hero's `clamp(20px, 3vw, 30px)` resolves to its 20px floor on a phone — 3vw is 11.7px at
+ * 390px — and 20px on all four sides costs a fifth of the width to padding. Tighten the horizontal
+ * padding specifically; the vertical is what gives the hero its presence.
+ */
+@media (max-width: 600px) {
+  .hc-hero__inner {
+    padding: 18px 16px;
+  }
+
+  .hc-hero p {
+    font-size: 13px;
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "hc-patient-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

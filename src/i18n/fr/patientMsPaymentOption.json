@@ -1,0 +1,26 @@
+{
+  "patientDashboardApp": {
+    "patientMsPaymentOption": {
+      "home": {
+        "title": "PaymentOptions",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Payment Option",
+        "createOrEditLabel": "Créer ou éditer un Payment Option",
+        "notFound": "Aucun Payment Option trouvé"
+      },
+      "created": "Un nouveau Payment Option a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Payment Option avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Payment Option avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Payment Option {{ id }} ?"
+      },
+      "detail": {
+        "title": "Payment Option"
+      },
+      "id": "Id",
+      "type": "Type",
+      "userID": "User ID",
+      "metadata": "Metadata"
+    }
+  }
+}

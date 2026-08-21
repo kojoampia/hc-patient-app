@@ -1,0 +1,10 @@
+{
+  "patientDashboardApp": {
+    "EmergencyStatus": {
+      "null": "",
+      "RAISED": "RAISED",
+      "ACKNOWLEDGED": "ACKNOWLEDGED",
+      "RESOLVED": "RESOLVED"
+    }
+  }
+}

@@ -1,0 +1,48 @@
+/*
+ * Compiler options are deliberately aligned with hc-patient-dashboard's tsconfig.json @ 12e418c.
+ * Decision 3 in patient-mobile.md lifts TypeScript from that repo near-verbatim, so a flag this
+ * project enables and the web does not is a flag that breaks lifted files on arrival. Two from the
+ * Ionic starter are dropped for exactly that reason: `noImplicitOverride` and
+ * `noPropertyAccessFromIndexSignature`. Turning either on is a decision to edit every lifted file
+ * that trips it — take it deliberately, not by inheriting a starter default.
+ *
+ * `paths` is the load-bearing entry (patient-mobile.md §7.1): it makes every lifted
+ * `import { … } from 'app/core/auth/account.service'` resolve with zero edits.
+ */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "app/*": ["src/app/*"],
+      "environments/*": ["src/environments/*"]
+    },
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
+    "importHelpers": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "useDefineForClassFields": false,
+    "target": "es2022",
+    "module": "es2020",
+    "types": ["node"],
+    "lib": ["es2022", "dom"],
+    "skipLibCheck": true
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true,
+    "preserveWhitespaces": true
+  }
+}

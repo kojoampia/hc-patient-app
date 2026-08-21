@@ -1,0 +1,10 @@
+{
+  "patientDashboardApp": {
+    "StatFlag": {
+      "null": "",
+      "OK": "OK",
+      "WARN": "WARN",
+      "DANGER": "DANGER"
+    }
+  }
+}

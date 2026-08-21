@@ -1,0 +1,10 @@
+{
+  "patientDashboardApp": {
+    "EmergencySeverity": {
+      "null": "",
+      "LOW": "LOW",
+      "MODERATE": "MODERATE",
+      "HIGH": "HIGH"
+    }
+  }
+}

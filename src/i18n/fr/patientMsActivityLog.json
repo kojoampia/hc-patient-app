@@ -1,0 +1,33 @@
+{
+  "patientDashboardApp": {
+    "patientMsActivityLog": {
+      "home": {
+        "title": "ActivityLogs",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Activity Log",
+        "createOrEditLabel": "Créer ou éditer un Activity Log",
+        "notFound": "Aucun Activity Log trouvé"
+      },
+      "created": "Un nouveau Activity Log a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Activity Log avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Activity Log avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Activity Log {{ id }} ?"
+      },
+      "detail": {
+        "title": "Activity Log"
+      },
+      "id": "Id",
+      "patientId": "Patient Id",
+      "caseId": "Case Id",
+      "loggedAt": "Logged At",
+      "summary": "Summary",
+      "detail": "Detail",
+      "kind": "Kind",
+      "source": "Source",
+      "authorId": "Author Id",
+      "createdDate": "Created Date",
+      "createdBy": "Created By"
+    }
+  }
+}

@@ -1,0 +1,508 @@
+{
+  "patientPortal": {
+    "brand": {
+      "suffix": "BridgeCare",
+      "tagline": "Patient portal"
+    },
+    "nav": {
+      "aria": "Portal sections",
+      "ariaPrimary": "Main sections",
+      "openMenu": "Open the menu",
+      "signOut": "Sign out",
+      "roleLine": "Patient",
+      "overview": "Overview",
+      "record": "My record",
+      "recordShort": "Record",
+      "schedules": "Schedules",
+      "schedulesShort": "Schedule",
+      "emergencies": "Emergencies",
+      "cases": "Cases",
+      "medications": "Medications",
+      "reports": "Reports",
+      "plans": "Diet & exercise",
+      "allergies": "Allergies",
+      "profile": "Profile",
+      "group": {
+        "overview": "Overview",
+        "health": "My health",
+        "clinical": "Clinical",
+        "account": "Account",
+        "session": "Session"
+      },
+      "collapseMenu": "Collapse the menu",
+      "expandMenu": "Expand the menu"
+    },
+    "title": {
+      "overview": "Patient context",
+      "record": "My record",
+      "schedules": "Schedules",
+      "emergencies": "Emergencies",
+      "cases": "Cases",
+      "case": "Case detail",
+      "medications": "Medications",
+      "reports": "Reports",
+      "plans": "Diet & exercise plan",
+      "allergies": "Allergies",
+      "visitations": "Visitations",
+      "activity": "Activity trail",
+      "profile": "Profile"
+    },
+    "action": {
+      "print": "Print this screen",
+      "careLine": "Care line",
+      "seeAll": "See all",
+      "viewRecord": "Full record",
+      "viewProfile": "Profile",
+      "backToCases": "All cases",
+      "printShort": "Print",
+      "close": "Close",
+      "view": "View",
+      "openCase": "Open case",
+      "copy": "Copy",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…"
+    },
+    "auth": {
+      "eyebrow": "Abofonsa BridgeCare · Patient portal",
+      "headlineLead": "Your whole health record,",
+      "headlineAccent": "in one calm place.",
+      "blurb": "Every case, visit, medication and report your care team records — visible to you, in plain language, wherever you are.",
+      "signInLede": "Access your personal health record.",
+      "or": "or",
+      "stat": {
+        "cases": "Cases on file",
+        "casesValue": "12",
+        "visits": "Visits logged",
+        "visitsValue": "41",
+        "team": "Professionals",
+        "teamValue": "6",
+        "careLine": "Care line",
+        "careLineValue": "24/7"
+      }
+    },
+    "pager": {
+      "aria": "Pagination",
+      "prev": "Prev",
+      "next": "Next"
+    },
+    "chart": {
+      "table": "Table",
+      "when": "When",
+      "glance": "Care at a glance",
+      "glanceSub": "Every chart has a table view — press Table to read the numbers.",
+      "visitsOverTime": "Visits over time",
+      "visitsOverTimeSub": "Visits recorded for you, month by month.",
+      "caseDistribution": "Case distribution",
+      "caseDistributionSub": "How your {{ total }} cases stand today.",
+      "perProfessional": "Cases and visits per professional",
+      "perProfessionalSub": "Who has been involved in your care.",
+      "month": "Month",
+      "cases": "Cases",
+      "visits": "Visits",
+      "status": "Status",
+      "count": "Cases",
+      "share": "Share",
+      "who": "Professional",
+      "case": "Case"
+    },
+    "overview": {
+      "greeting": "Your health, at a glance",
+      "greetingNamed": "Hello {{ name }}",
+      "heroBlurb": "Everything your care team has recorded — cases, visits, medications and reports — in one place.",
+      "vitals": "Latest readings",
+      "vitalsSub": "The most recent measurement your care team recorded.",
+      "noVitals": "No readings yet",
+      "noVitalsHint": "Vitals appear here once your care team records them.",
+      "nextUp": "Coming up",
+      "openCases": "Recent cases",
+      "activity": "Recent activity",
+      "lastAlert": "Most recent alert",
+      "tile": {
+        "openCases": "Open cases",
+        "upcoming": "Upcoming visits",
+        "activeMeds": "Active medications",
+        "reports": "Reports on file",
+        "emergencies": "Emergencies",
+        "allergies": "Allergies",
+        "diet": "Diet plan",
+        "exercise": "Exercise plan"
+      },
+      "heroNext": "Your next appointment is {{ when }} with {{ clinician }}. {{ open }} of your {{ total }} cases are still active.",
+      "openRecord": "Open my record",
+      "onFile": "On your file",
+      "onFileSub": "Tap any tile to open it.",
+      "viewVital": "See {{ name }} in detail",
+      "lastReadings": "The readings behind it",
+      "recordedBy": "recorded {{ when }} by {{ who }}",
+      "recordedByYou": "you"
+    },
+    "record": {
+      "vitals": "Vitals",
+      "vitalsSub": "Pick a reading to see how it has moved.",
+      "history": "Reading history",
+      "visits": "Visitations",
+      "activity": "Activity trail",
+      "careTeam": "Your care team",
+      "noCareTeam": "No care team on file",
+      "noCareTeamHint": "The professionals looking after you will be listed here.",
+      "cases": "Cases",
+      "medications": "Medications",
+      "reports": "Reports",
+      "lists": "On this record",
+      "listsSub": "Three at a time — page through here, or open the full list.",
+      "openAll": {
+        "cases": "Open all cases",
+        "visits": "Open all visitations",
+        "activity": "Open the full activity trail",
+        "medications": "Open all medications",
+        "reports": "Open all reports"
+      }
+    },
+    "cases": {
+      "search": "Search cases, symptoms, diagnoses…",
+      "empty": "No cases on file",
+      "emptyHint": "A case is opened whenever your care team looks into something.",
+      "openCase": "Open the case {{ name }}",
+      "column": {
+        "number": "#",
+        "title": "Case",
+        "opened": "Opened",
+        "clinician": "Clinician",
+        "status": "Status",
+        "open": "Open"
+      }
+    },
+    "case": {
+      "openedOn": "Opened {{ date }}",
+      "symptoms": "What was reported",
+      "noSymptoms": "No symptoms were recorded for this case.",
+      "diagnosis": "What was found",
+      "noDiagnosis": "No diagnosis has been recorded yet.",
+      "recommendations": "Recommendations",
+      "noRecommendations": "No recommendations recorded for this case.",
+      "visits": "Visits",
+      "noVisits": "No visits recorded against this case",
+      "medications": "Medications",
+      "noMedications": "No medications prescribed for this case",
+      "reports": "Reports",
+      "noReports": "No reports filed against this case",
+      "timeline": "Timeline",
+      "noTimeline": "Nothing has been logged against this case",
+      "notFound": "Case not found",
+      "notFoundHint": "It may have been closed, or the link may be out of date.",
+      "logActivity": "Log activity",
+      "logActivityBlurb": "Add something you noticed — a symptom, a missed dose, how you slept. It is filed under this case and your care team sees it.",
+      "noteTitle": "Title of event",
+      "noteTitleHint": "e.g. Dizzy on standing up",
+      "noteDetail": "What happened",
+      "noteDetailHint": "When it started, how long it lasted, anything that helped…",
+      "noteFailed": "Your note was not saved. Check your connection and try again — what you wrote is still here.",
+      "filedUnder": "Everything filed under case {{ number }}",
+      "filedUnderSub": "Your own notes appear here too.",
+      "seeAppointments": "See appointments"
+    },
+    "schedules": {
+      "search": "Search by date, professional or appointment…",
+      "upcoming": "Coming up",
+      "upcomingSub": "Appointments still to attend.",
+      "past": "Already attended",
+      "pastSub": "Appointments that have been and gone.",
+      "empty": "Nothing scheduled",
+      "emptyHint": "New appointments appear here as your care team books them.",
+      "emptyPast": "No past appointments yet",
+      "column": {
+        "when": "When",
+        "what": "Appointment",
+        "who": "With",
+        "where": "Where",
+        "status": "Status"
+      },
+      "viewOne": "View {{ name }}",
+      "detail": "Appointment"
+    },
+    "emergencies": {
+      "search": "Search alerts, detail or outcome…",
+      "careLineTitle": "Need help now?",
+      "careLineBlurb": "The care line is staffed around the clock and your care angel is called at the same time. If this is life-threatening, call your local emergency number first.",
+      "callCareLine": "Call the care line",
+      "outcome": "Outcome",
+      "empty": "No emergencies on record",
+      "emptyHint": "Alerts raised on your record appear here, with what came of them."
+    },
+    "medications": {
+      "search": "Search medicines, doses or instructions…",
+      "empty": "No medications on file",
+      "emptyHint": "Anything prescribed to you appears here, current and past.",
+      "column": {
+        "started": "Started",
+        "name": "Medication",
+        "dosage": "How to take it",
+        "prescriber": "Prescribed by",
+        "status": "Status"
+      },
+      "count": {
+        "active": "Taking now",
+        "completed": "Completed courses",
+        "withheld": "Withheld — allergy"
+      },
+      "viewOne": "View {{ name }}",
+      "withheldTitle": "Withheld.",
+      "withheldBody": "This was not given because of an allergy recorded on your file."
+    },
+    "reports": {
+      "search": "Search reports, findings or type…",
+      "openFile": "Open file",
+      "empty": "No reports on file",
+      "emptyHint": "Lab, imaging and clinical reports appear here once filed.",
+      "upload": "Upload a report",
+      "uploading": "Uploading…",
+      "uploadBlurb": "A result you were given on paper, or a PDF from a clinic. Your care team sees it on your record.",
+      "file": "The file",
+      "fileHint": "PDF or a photograph, up to 10 MB.",
+      "name": "What is it",
+      "nameHint": "e.g. HbA1c results, 12 August",
+      "attachCase": "Attach to a case (optional)",
+      "noCase": "Not related to a case",
+      "tooLarge": "That file is larger than 10 MB. A photograph taken at a lower resolution will fit.",
+      "uploadFailed": "Your report was not uploaded. Check your connection and try again — what you typed is still here.",
+      "opening": "Opening…"
+    },
+    "plans": {
+      "diet": "Diet plan",
+      "exercise": "Exercise plan",
+      "progress": "{{ done }} of {{ total }} done",
+      "emptyDiet": "No diet plan yet",
+      "emptyExercise": "No exercise plan yet",
+      "emptyHint": "Your care team can set one up at your next appointment."
+    },
+    "allergies": {
+      "category": "Type",
+      "reaction": "Reaction",
+      "noted": "Noted",
+      "conditions": "Ongoing conditions",
+      "noConditions": "No conditions on file",
+      "empty": "No allergies on file",
+      "emptyHint": "Tell your care team about any reaction so it can be recorded here.",
+      "onRecord": "{{ count }} allergies on your record",
+      "onRecordBlurb": "Every professional who opens your context sees this panel first, and prescribing is blocked against it.",
+      "blocked": "Blocked by this record",
+      "blockedSub": "Prescriptions your team withheld because of an allergy."
+    },
+    "visitations": {
+      "search": "Search visits, places or notes…",
+      "empty": "No visits recorded",
+      "emptyHint": "Every visit your care team logs will appear here.",
+      "column": {
+        "when": "When",
+        "purpose": "Purpose",
+        "who": "Seen by",
+        "where": "Where",
+        "case": "Case"
+      }
+    },
+    "activity": {
+      "search": "Search entries or their detail…",
+      "empty": "Nothing logged yet",
+      "emptyHint": "Everything filed on your record shows up here, newest first."
+    },
+    "profile": {
+      "editAccount": "Account settings",
+      "noProfile": "No profile on file",
+      "noProfileHint": "Your care team creates this when you register.",
+      "noMembership": "No membership on file",
+      "noMembershipHint": "Speak to your care team about joining a plan.",
+      "tab": {
+        "about": "About",
+        "contact": "Contact",
+        "membership": "Membership",
+        "careTeam": "Care team",
+        "careAngel": "Care angel"
+      },
+      "field": {
+        "birthDate": "Born",
+        "sex": "Sex",
+        "bloodGroup": "Blood group",
+        "cardType": "Card",
+        "cardNumber": "Card number",
+        "social": "Social",
+        "email": "Email",
+        "mobile": "Mobile",
+        "phone": "Phone",
+        "address": "Address",
+        "careAngel": "Care angel",
+        "careAngelPhone": "Angel phone",
+        "plan": "Plan",
+        "memberNumber": "Member number",
+        "status": "Status",
+        "since": "Member since",
+        "renews": "Renews"
+      },
+      "careAngel": {
+        "explainer": "A care angel can see and update your health record, and act for you if you are ever unable to. Nothing happens until they accept, and you can withdraw it at any time.",
+        "none": "No care angel yet",
+        "noneHint": "Nobody is currently able to act for you.",
+        "status": {
+          "STANDBY": "Standby — dormant until a clinician activates them",
+          "AWAITING_COUNTERSIGNATURE": "Waiting for a second clinician to agree",
+          "PENDING": "Waiting for them to accept",
+          "ACTIVE": "Can act for you",
+          "DECLINED": "Declined",
+          "REVOKED": "Ended"
+        },
+        "action": {
+          "revoke": "Withdraw"
+        },
+        "error": {
+          "revokeFailed": "That could not be withdrawn. Try again."
+        }
+      },
+      "plan": {
+        "choose": "Choose a plan",
+        "select": "Choose",
+        "unavailable": "Plans cannot be shown just now. Nothing about your record is affected.",
+        "error": {
+          "failed": "That plan could not be selected. Try again."
+        }
+      }
+    },
+    "filter": {
+      "professional": "Filter by professional",
+      "allProfessionals": "All professionals"
+    },
+    "status": {
+      "URGENT": "Urgent",
+      "OPEN": "Open",
+      "TREATMENT": "In treatment",
+      "CLOSED": "Closed",
+      "ACTIVE": "Taking now",
+      "COMPLETED": "Completed",
+      "WITHHELD": "Withheld",
+      "CONFIRMED": "Confirmed",
+      "PENDING": "Awaiting confirmation",
+      "ATTENDED": "Attended",
+      "CANCELLED": "Cancelled",
+      "LOW": "Low",
+      "MODERATE": "Moderate",
+      "HIGH": "Urgent",
+      "RAISED": "Raised",
+      "ACKNOWLEDGED": "Acknowledged",
+      "RESOLVED": "Resolved",
+      "MILD": "Mild",
+      "SEVERE": "Severe",
+      "OK": "In range",
+      "WARN": "Watch",
+      "DANGER": "Out of range",
+      "DIET": "Diet",
+      "EXERCISE": "Exercise",
+      "MEDICATION": "Medication",
+      "FOOD": "Food",
+      "ENVIRONMENTAL": "Environmental",
+      "OTHER": "Other",
+      "membership": {
+        "ACTIVE": "Active",
+        "CANCELLED": "Cancelled",
+        "EXPIRED": "Expired",
+        "PENDING": "Pending",
+        "SUSPENDED": "Suspended"
+      }
+    },
+    "onboarding": {
+      "title": "Set up your record",
+      "heading": "Let us set up your record",
+      "intro": "Each step is saved as you go, so you can stop and come back.",
+      "step": {
+        "identity": "About you",
+        "careAngel": "Care angel",
+        "baseline": "Baseline",
+        "currentState": "Your health",
+        "identification": "Identification"
+      },
+      "field": {
+        "firstName": "First name",
+        "middleNames": "Middle names",
+        "lastName": "Last name",
+        "birthDate": "Date of birth",
+        "sex": "Sex",
+        "mobilePhone": "Mobile number",
+        "phoneNumber": "Other phone",
+        "address": "Where you live",
+        "streetAddress": "Street",
+        "digitalAddress": "Digital address",
+        "town": "Town",
+        "city": "City",
+        "district": "District",
+        "region": "Region",
+        "country": "Country",
+        "phone": "Phone",
+        "email": "Email",
+        "emailConfirm": "Confirm email",
+        "contacts": "Anyone else we should contact",
+        "heightCm": "Height (cm)",
+        "weightKg": "Weight (kg)",
+        "systolic": "Blood pressure, upper",
+        "diastolic": "Blood pressure, lower",
+        "heartRateBpm": "Resting heart rate (optional)",
+        "bloodSugar": "Blood sugar (optional)",
+        "bloodGroup": "Blood group",
+        "conditions": "Ongoing conditions, one per line",
+        "noConditions": "I have none",
+        "allergies": "Allergies, one per line",
+        "noAllergies": "I have none",
+        "medications": "Medicines you take, one per line",
+        "noMedications": "I take none",
+        "cardType": "ID type",
+        "cardNumber": "ID number"
+      },
+      "careAngel": {
+        "explainer": "A care angel can see and update your health record, and act for you if you are ever unable to. They are asked to accept, and you can withdraw this at any time."
+      },
+      "standby": {
+        "heading": "If you are ever unable to decide",
+        "explainer": "You can name somebody in advance. They are told nothing now. If a clinician ever declares that you cannot decide for yourself, two of them must agree before this person is asked — and they can still say no.",
+        "consent": "If I am ever unable to decide for myself, a clinician may activate my standby nominee."
+      },
+      "action": {
+        "next": "Continue",
+        "back": "Back",
+        "finish": "Finish"
+      },
+      "error": {
+        "emailMismatch": "The two email addresses do not match.",
+        "consentRequired": "Tick the consent box to name a standby nominee, or leave their details blank.",
+        "saveFailed": "That could not be saved. Nothing you have already answered is lost — try again."
+      }
+    },
+    "actingAs": {
+      "banner": "You are viewing {{name}}'s record",
+      "bannerOwn": "You are viewing your own record",
+      "switch": "Switch record",
+      "chooseTitle": "Whose record would you like to open?",
+      "chooseOwn": "My own record",
+      "chooseFor": "Acting for {{name}}"
+    },
+    "invitations": {
+      "title": "Care nominations",
+      "heading": "Care nominations",
+      "empty": "You have no nominations waiting. If somebody has just named you, check the link in the email they were sent.",
+      "from": "{{name}} has asked you to be their care angel",
+      "explainer": "Accepting means you will be able to see and update their health record, and act for them if they are ever unable to. You can step down at any time, and they can withdraw it at any time.",
+      "action": {
+        "accept": "Accept",
+        "decline": "Decline"
+      },
+      "error": {
+        "failed": "That could not be saved. Try again."
+      }
+    },
+    "empty": {
+      "title": "Nothing recorded yet"
+    },
+    "stream": {
+      "offline": "We could not reach Health Connect. Check your connection and try again.",
+      "forbidden": "You do not have access to this part of the record.",
+      "generic": "Something went wrong loading this. Please try again.",
+      "retry": "Try again"
+    }
+  }
+}

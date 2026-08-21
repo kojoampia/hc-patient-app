@@ -1,0 +1,34 @@
+{
+  "patientDashboardApp": {
+    "patientMsAllergy": {
+      "home": {
+        "title": "Allergies",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Allergy",
+        "createOrEditLabel": "Create or edit a Allergy",
+        "notFound": "No Allergies found"
+      },
+      "created": "A new Allergy is created with identifier {{ param }}",
+      "updated": "A Allergy is updated with identifier {{ param }}",
+      "deleted": "A Allergy is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Allergy {{ id }}?"
+      },
+      "detail": {
+        "title": "Allergy"
+      },
+      "id": "Id",
+      "patientId": "Patient Id",
+      "name": "Name",
+      "category": "Category",
+      "severity": "Severity",
+      "reaction": "Reaction",
+      "notedOn": "Noted On",
+      "notedById": "Noted By Id",
+      "createdDate": "Created Date",
+      "modifiedDate": "Modified Date",
+      "createdBy": "Created By",
+      "modifiedBy": "Modified By"
+    }
+  }
+}

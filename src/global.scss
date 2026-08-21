@@ -1,0 +1,111 @@
+/**
+ * Global stylesheet — the single entry point for all styling in the app.
+ *
+ * THE IMPORT ORDER BELOW IS LOAD-BEARING (patient-mobile.md §7.3):
+ *
+ *   1. Ionic's own CSS      the shell's baseline
+ *   2. _tokens.scss         the brand, as $hc-* SCSS vars and --hc-* custom properties
+ *   3. ionic-bridge.scss    reads $hc-*, writes --ion-*        <- must sit between 2 and 4
+ *   4. _utilities.scss      lifted verbatim
+ *   5. _components.scss     lifted verbatim; the hc-* component layer
+ *   6. mobile.scss          phone-viewport overrides of 5, and nothing else
+ *
+ * The bridge cannot move above _tokens (the $hc-* vars would be undefined) and must not move below
+ * _components (Ionic's defaults would win over the brand for anything that reads an --ion-* var).
+ */
+
+/* ---------------------------------------------------------------- 1. Ionic */
+
+/* Core CSS required for Ionic components to work properly */
+@import '@ionic/angular/css/core.css';
+
+/* Basic CSS for apps built with Ionic */
+@import '@ionic/angular/css/normalize.css';
+@import '@ionic/angular/css/structure.css';
+@import '@ionic/angular/css/typography.css';
+@import '@ionic/angular/css/display.css';
+
+/* Optional CSS utils */
+@import '@ionic/angular/css/padding.css';
+@import '@ionic/angular/css/float-elements.css';
+@import '@ionic/angular/css/text-alignment.css';
+@import '@ionic/angular/css/text-transformation.css';
+@import '@ionic/angular/css/flex-utils.css';
+
+/*
+ * DELIBERATELY NOT IMPORTED: @ionic/angular/css/palettes/dark.*.css
+ *
+ * The Ionic starter ships `dark.system.css` uncommented. It was removed rather than commented out,
+ * because leaving it in place would be an actual defect and not a preference: Ionic's dark palette
+ * inverts every --ion-* surface, while the hc-* classes in _components.scss hardcode
+ * var(--hc-card) / var(--hc-ink) / var(--hc-line) and would stay light. Any user whose phone is in
+ * dark mode would get a dark shell wrapped around light content — that is, every page.
+ *
+ * Dark mode is out of scope for v1 (patient-mobile.md §6, "Still open, deliberately"). Supporting it
+ * means giving _tokens.scss a dark set, not importing this file.
+ */
+
+/* ------------------------------------------------- 2-6. brand, in strict order */
+@import 'theme/tokens';
+@import 'theme/ionic-bridge';
+@import 'theme/utilities';
+@import 'theme/components';
+@import 'theme/mobile';
+
+/* ---------------------------------------------------------------- base
+ *
+ * Adapted from hc-patient-dashboard's content/scss/global.scss @ 12e418c, reduced to what applies
+ * inside a webview. Dropped from the original: the Bootstrap tweaks (no Bootstrap here), and the
+ * ::-webkit-scrollbar rules (a 10px scrollbar gutter is a pointer-device idea; Ionic renders
+ * overlay scrollbars).
+ */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--hc-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--hc-ink);
+  text-rendering: optimizelegibility;
+  background: var(--hc-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: var(--hc-navy);
+
+  &:hover {
+    color: var(--hc-gold);
+    cursor: pointer;
+  }
+}

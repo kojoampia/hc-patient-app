@@ -1,0 +1,30 @@
+{
+  "patientDashboardApp": {
+    "patientMsCondition": {
+      "home": {
+        "title": "Conditions",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Condition erstellen",
+        "createOrEditLabel": "Condition erstellen oder bearbeiten",
+        "notFound": "Keine Conditions gefunden"
+      },
+      "created": "Condition erstellt mit ID {{ param }}",
+      "updated": "Condition aktualisiert mit ID {{ param }}",
+      "deleted": "Condition gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Condition {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Condition"
+      },
+      "id": "Id",
+      "name": "Name",
+      "description": "Description",
+      "patientId": "Patient Id",
+      "createdDate": "Created Date",
+      "modifiedDate": "Modified Date",
+      "createdBy": "Created By",
+      "modifiedBy": "Modified By"
+    }
+  }
+}

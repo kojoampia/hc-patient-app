@@ -1,0 +1,508 @@
+{
+  "patientPortal": {
+    "brand": {
+      "suffix": "BridgeCare",
+      "tagline": "Patientenportal"
+    },
+    "nav": {
+      "aria": "Portalbereiche",
+      "ariaPrimary": "Hauptbereiche",
+      "openMenu": "Menü öffnen",
+      "signOut": "Abmelden",
+      "roleLine": "Patient",
+      "overview": "Übersicht",
+      "record": "Meine Akte",
+      "recordShort": "Akte",
+      "schedules": "Termine",
+      "schedulesShort": "Termine",
+      "emergencies": "Notfälle",
+      "cases": "Fälle",
+      "medications": "Medikamente",
+      "reports": "Befunde",
+      "plans": "Ernährung & Bewegung",
+      "allergies": "Allergien",
+      "profile": "Profil",
+      "group": {
+        "overview": "Übersicht",
+        "health": "Meine Gesundheit",
+        "clinical": "Klinisch",
+        "account": "Konto",
+        "session": "Sitzung"
+      },
+      "collapseMenu": "Menü einklappen",
+      "expandMenu": "Menü ausklappen"
+    },
+    "title": {
+      "overview": "Patientenkontext",
+      "record": "Meine Akte",
+      "schedules": "Termine",
+      "emergencies": "Notfälle",
+      "cases": "Fälle",
+      "case": "Falldetails",
+      "medications": "Medikamente",
+      "reports": "Befunde",
+      "plans": "Ernährungs- und Bewegungsplan",
+      "allergies": "Allergien",
+      "visitations": "Besuche",
+      "activity": "Aktivitätsverlauf",
+      "profile": "Profil"
+    },
+    "action": {
+      "print": "Diese Ansicht drucken",
+      "careLine": "Notfallnummer",
+      "seeAll": "Alle anzeigen",
+      "viewRecord": "Vollständige Akte",
+      "viewProfile": "Profil",
+      "backToCases": "Alle Fälle",
+      "printShort": "Drucken",
+      "close": "Schließen",
+      "view": "Ansehen",
+      "openCase": "Fall öffnen",
+      "copy": "Kopieren",
+      "cancel": "Abbrechen",
+      "save": "Speichern",
+      "saving": "Wird gespeichert…"
+    },
+    "auth": {
+      "eyebrow": "Abofonsa BridgeCare · Patientenportal",
+      "headlineLead": "Ihre gesamte Gesundheitsakte,",
+      "headlineAccent": "an einem ruhigen Ort.",
+      "blurb": "Jeder Fall, Besuch, jedes Medikament und jeder Befund, den Ihr Behandlungsteam erfasst — für Sie sichtbar, in verständlicher Sprache, wo immer Sie sind.",
+      "signInLede": "Zugang zu Ihrer persönlichen Gesundheitsakte.",
+      "or": "oder",
+      "stat": {
+        "cases": "Erfasste Fälle",
+        "casesValue": "12",
+        "visits": "Erfasste Besuche",
+        "visitsValue": "41",
+        "team": "Fachkräfte",
+        "teamValue": "6",
+        "careLine": "Notfallnummer",
+        "careLineValue": "24/7"
+      }
+    },
+    "pager": {
+      "aria": "Seitennavigation",
+      "prev": "Zurück",
+      "next": "Weiter"
+    },
+    "chart": {
+      "table": "Tabelle",
+      "when": "Wann",
+      "glance": "Versorgung auf einen Blick",
+      "glanceSub": "Jedes Diagramm hat eine Tabellenansicht — drücken Sie Tabelle, um die Zahlen zu lesen.",
+      "visitsOverTime": "Besuche im Zeitverlauf",
+      "visitsOverTimeSub": "Ihre erfassten Besuche, Monat für Monat.",
+      "caseDistribution": "Verteilung der Fälle",
+      "caseDistributionSub": "So stehen Ihre {{ total }} Fälle heute.",
+      "perProfessional": "Fälle und Besuche je Fachkraft",
+      "perProfessionalSub": "Wer an Ihrer Versorgung beteiligt ist.",
+      "month": "Monat",
+      "cases": "Fälle",
+      "visits": "Besuche",
+      "status": "Status",
+      "count": "Fälle",
+      "share": "Anteil",
+      "who": "Fachkraft",
+      "case": "Fall"
+    },
+    "overview": {
+      "greeting": "Ihre Gesundheit auf einen Blick",
+      "greetingNamed": "Hallo {{ name }}",
+      "heroBlurb": "Alles, was Ihr Behandlungsteam erfasst hat — Fälle, Besuche, Medikamente und Befunde — an einem Ort.",
+      "vitals": "Neueste Messwerte",
+      "vitalsSub": "Der zuletzt von Ihrem Behandlungsteam erfasste Messwert.",
+      "noVitals": "Noch keine Messwerte",
+      "noVitalsHint": "Vitalwerte erscheinen hier, sobald Ihr Behandlungsteam sie erfasst.",
+      "nextUp": "Als Nächstes",
+      "openCases": "Aktuelle Fälle",
+      "activity": "Letzte Aktivität",
+      "lastAlert": "Letzte Meldung",
+      "tile": {
+        "openCases": "Offene Fälle",
+        "upcoming": "Anstehende Besuche",
+        "activeMeds": "Laufende Medikamente",
+        "reports": "Vorliegende Befunde",
+        "emergencies": "Notfälle",
+        "allergies": "Allergien",
+        "diet": "Ernährungsplan",
+        "exercise": "Bewegungsplan"
+      },
+      "heroNext": "Ihr nächster Termin ist am {{ when }} bei {{ clinician }}. {{ open }} von {{ total }} Fällen sind noch offen.",
+      "openRecord": "Meine Akte öffnen",
+      "onFile": "In Ihrer Akte",
+      "onFileSub": "Tippen Sie auf eine Kachel, um sie zu öffnen.",
+      "viewVital": "{{ name }} im Detail ansehen",
+      "lastReadings": "Die Messwerte dahinter",
+      "recordedBy": "erfasst am {{ when }} von {{ who }}",
+      "recordedByYou": "Ihnen"
+    },
+    "record": {
+      "vitals": "Vitalwerte",
+      "vitalsSub": "Wählen Sie einen Messwert, um seinen Verlauf zu sehen.",
+      "history": "Messwertverlauf",
+      "visits": "Besuche",
+      "activity": "Aktivitätsverlauf",
+      "careTeam": "Ihr Behandlungsteam",
+      "noCareTeam": "Kein Behandlungsteam hinterlegt",
+      "noCareTeamHint": "Die Fachkräfte, die Sie betreuen, werden hier aufgeführt.",
+      "cases": "Fälle",
+      "medications": "Medikamente",
+      "reports": "Berichte",
+      "lists": "In dieser Akte",
+      "listsSub": "Drei auf einmal — hier blättern oder die vollständige Liste öffnen.",
+      "openAll": {
+        "cases": "Alle Fälle öffnen",
+        "visits": "Alle Besuche öffnen",
+        "activity": "Vollständigen Verlauf öffnen",
+        "medications": "Alle Medikamente öffnen",
+        "reports": "Alle Berichte öffnen"
+      }
+    },
+    "cases": {
+      "search": "Fälle, Symptome, Diagnosen durchsuchen…",
+      "empty": "Keine Fälle hinterlegt",
+      "emptyHint": "Ein Fall wird eröffnet, sobald Ihr Behandlungsteam etwas untersucht.",
+      "openCase": "Fall {{ name }} öffnen",
+      "column": {
+        "number": "Nr.",
+        "title": "Fall",
+        "opened": "Eröffnet",
+        "clinician": "Behandelnde Person",
+        "status": "Status",
+        "open": "Öffnen"
+      }
+    },
+    "case": {
+      "openedOn": "Eröffnet am {{ date }}",
+      "symptoms": "Was berichtet wurde",
+      "noSymptoms": "Für diesen Fall wurden keine Symptome erfasst.",
+      "diagnosis": "Was festgestellt wurde",
+      "noDiagnosis": "Es wurde noch keine Diagnose erfasst.",
+      "recommendations": "Empfehlungen",
+      "noRecommendations": "Für diesen Fall wurden keine Empfehlungen erfasst.",
+      "visits": "Besuche",
+      "noVisits": "Zu diesem Fall wurden keine Besuche erfasst",
+      "medications": "Medikamente",
+      "noMedications": "Für diesen Fall wurden keine Medikamente verordnet",
+      "reports": "Befunde",
+      "noReports": "Zu diesem Fall liegen keine Befunde vor",
+      "timeline": "Verlauf",
+      "noTimeline": "Zu diesem Fall wurde nichts erfasst",
+      "notFound": "Fall nicht gefunden",
+      "notFoundHint": "Er wurde möglicherweise geschlossen oder der Link ist veraltet.",
+      "logActivity": "Eintrag hinzufügen",
+      "logActivityBlurb": "Notieren Sie, was Ihnen aufgefallen ist — ein Symptom, eine vergessene Dosis, Ihr Schlaf. Es wird zu diesem Fall abgelegt und Ihr Team sieht es.",
+      "noteTitle": "Titel des Ereignisses",
+      "noteTitleHint": "z. B. Schwindel beim Aufstehen",
+      "noteDetail": "Was passiert ist",
+      "noteDetailHint": "Wann es begann, wie lange es dauerte, was geholfen hat…",
+      "noteFailed": "Ihre Notiz wurde nicht gespeichert. Prüfen Sie die Verbindung und versuchen Sie es erneut — Ihr Text ist noch da.",
+      "filedUnder": "Alles zum Fall {{ number }}",
+      "filedUnderSub": "Ihre eigenen Notizen erscheinen hier ebenfalls.",
+      "seeAppointments": "Termine ansehen"
+    },
+    "schedules": {
+      "search": "Nach Datum, Fachkraft oder Termin suchen…",
+      "upcoming": "Als Nächstes",
+      "upcomingSub": "Termine, die noch anstehen.",
+      "past": "Bereits wahrgenommen",
+      "pastSub": "Termine, die bereits stattgefunden haben.",
+      "empty": "Nichts geplant",
+      "emptyHint": "Neue Termine erscheinen hier, sobald Ihr Behandlungsteam sie einträgt.",
+      "emptyPast": "Noch keine vergangenen Termine",
+      "column": {
+        "when": "Wann",
+        "what": "Termin",
+        "who": "Mit",
+        "where": "Wo",
+        "status": "Status"
+      },
+      "viewOne": "{{ name }} ansehen",
+      "detail": "Termin"
+    },
+    "emergencies": {
+      "search": "Warnungen, Details oder Ergebnis suchen…",
+      "careLineTitle": "Brauchen Sie jetzt Hilfe?",
+      "careLineBlurb": "Die Notfallnummer ist rund um die Uhr besetzt, und Ihr Care Angel wird gleichzeitig verständigt. Bei Lebensgefahr rufen Sie zuerst den örtlichen Notruf.",
+      "callCareLine": "Notfallnummer anrufen",
+      "outcome": "Ergebnis",
+      "empty": "Keine Notfälle erfasst",
+      "emptyHint": "In Ihrer Akte ausgelöste Meldungen erscheinen hier samt Ergebnis."
+    },
+    "medications": {
+      "search": "Medikamente, Dosierung oder Hinweise suchen…",
+      "empty": "Keine Medikamente hinterlegt",
+      "emptyHint": "Alles, was Ihnen verordnet wird, erscheint hier — laufend wie abgeschlossen.",
+      "column": {
+        "started": "Begonnen",
+        "name": "Medikament",
+        "dosage": "Einnahme",
+        "prescriber": "Verordnet von",
+        "status": "Status"
+      },
+      "count": {
+        "active": "Aktuell eingenommen",
+        "completed": "Abgeschlossene Therapien",
+        "withheld": "Zurückgehalten — Allergie"
+      },
+      "viewOne": "{{ name }} ansehen",
+      "withheldTitle": "Nicht gegeben.",
+      "withheldBody": "Dieses Medikament wurde wegen einer in Ihrer Akte vermerkten Allergie nicht verabreicht."
+    },
+    "reports": {
+      "search": "Berichte, Befunde oder Art durchsuchen…",
+      "openFile": "Datei öffnen",
+      "empty": "Keine Befunde hinterlegt",
+      "emptyHint": "Labor-, Bildgebungs- und klinische Befunde erscheinen hier, sobald sie vorliegen.",
+      "upload": "Bericht hochladen",
+      "uploading": "Wird hochgeladen…",
+      "uploadBlurb": "Ein Ergebnis, das Sie auf Papier bekommen haben, oder ein PDF aus einer Praxis. Ihr Team sieht es in Ihrer Akte.",
+      "file": "Die Datei",
+      "fileHint": "PDF oder Foto, bis 10 MB.",
+      "name": "Worum geht es",
+      "nameHint": "z. B. HbA1c-Ergebnisse, 12. August",
+      "attachCase": "Einem Fall zuordnen (optional)",
+      "noCase": "Gehört zu keinem Fall",
+      "tooLarge": "Diese Datei ist größer als 10 MB. Ein Foto mit geringerer Auflösung passt.",
+      "uploadFailed": "Ihr Bericht wurde nicht hochgeladen. Prüfen Sie die Verbindung und versuchen Sie es erneut — Ihre Eingaben sind noch da.",
+      "opening": "Wird geöffnet…"
+    },
+    "plans": {
+      "diet": "Ernährungsplan",
+      "exercise": "Bewegungsplan",
+      "progress": "{{ done }} von {{ total }} erledigt",
+      "emptyDiet": "Noch kein Ernährungsplan",
+      "emptyExercise": "Noch kein Bewegungsplan",
+      "emptyHint": "Ihr Behandlungsteam kann beim nächsten Termin einen einrichten."
+    },
+    "allergies": {
+      "category": "Art",
+      "reaction": "Reaktion",
+      "noted": "Erfasst",
+      "conditions": "Bestehende Erkrankungen",
+      "noConditions": "Keine Erkrankungen hinterlegt",
+      "empty": "Keine Allergien hinterlegt",
+      "emptyHint": "Melden Sie jede Reaktion Ihrem Behandlungsteam, damit sie hier erfasst wird.",
+      "onRecord": "{{ count }} Allergien in Ihrer Akte",
+      "onRecordBlurb": "Jede Fachkraft, die Ihre Akte öffnet, sieht zuerst diese Übersicht, und Verordnungen werden dagegen geprüft.",
+      "blocked": "Durch diese Akte verhindert",
+      "blockedSub": "Verordnungen, die Ihr Team wegen einer Allergie zurückgehalten hat."
+    },
+    "visitations": {
+      "search": "Besuche, Orte oder Notizen durchsuchen…",
+      "empty": "Keine Besuche erfasst",
+      "emptyHint": "Jeder von Ihrem Behandlungsteam erfasste Besuch erscheint hier.",
+      "column": {
+        "when": "Wann",
+        "purpose": "Anlass",
+        "who": "Gesehen von",
+        "where": "Wo",
+        "case": "Fall"
+      }
+    },
+    "activity": {
+      "search": "Einträge oder Details durchsuchen…",
+      "empty": "Noch nichts erfasst",
+      "emptyHint": "Alles, was in Ihrer Akte abgelegt wird, erscheint hier — das Neueste zuerst."
+    },
+    "profile": {
+      "editAccount": "Kontoeinstellungen",
+      "noProfile": "Kein Profil hinterlegt",
+      "noProfileHint": "Ihr Behandlungsteam legt es bei der Registrierung an.",
+      "noMembership": "Keine Mitgliedschaft hinterlegt",
+      "noMembershipHint": "Sprechen Sie Ihr Behandlungsteam auf einen Tarif an.",
+      "tab": {
+        "about": "Über",
+        "contact": "Kontakt",
+        "membership": "Mitgliedschaft",
+        "careTeam": "Behandlungsteam",
+        "careAngel": "Pflegeengel"
+      },
+      "field": {
+        "birthDate": "Geboren",
+        "sex": "Geschlecht",
+        "bloodGroup": "Blutgruppe",
+        "cardType": "Karte",
+        "cardNumber": "Kartennummer",
+        "social": "Soziale Medien",
+        "email": "E-Mail",
+        "mobile": "Mobil",
+        "phone": "Telefon",
+        "address": "Adresse",
+        "careAngel": "Betreuungsperson",
+        "careAngelPhone": "Telefon der Betreuungsperson",
+        "plan": "Tarif",
+        "memberNumber": "Mitgliedsnummer",
+        "status": "Status",
+        "since": "Mitglied seit",
+        "renews": "Verlängerung"
+      },
+      "careAngel": {
+        "explainer": "Ein Pflegeengel kann Ihre Gesundheitsakte einsehen und aktualisieren und für Sie handeln, falls Sie dazu einmal nicht in der Lage sind. Bis zur Annahme geschieht nichts, und Sie können es jederzeit widerrufen.",
+        "none": "Noch kein Pflegeengel",
+        "noneHint": "Derzeit kann niemand für Sie handeln.",
+        "status": {
+          "STANDBY": "Ersatz — ruhend, bis eine Ärztin oder ein Arzt ihn aktiviert",
+          "AWAITING_COUNTERSIGNATURE": "Wartet auf die Zustimmung einer zweiten Ärztin oder eines zweiten Arztes",
+          "PENDING": "Wartet auf die Annahme",
+          "ACTIVE": "Kann für Sie handeln",
+          "DECLINED": "Abgelehnt",
+          "REVOKED": "Beendet"
+        },
+        "action": {
+          "revoke": "Widerrufen"
+        },
+        "error": {
+          "revokeFailed": "Das konnte nicht widerrufen werden. Versuchen Sie es erneut."
+        }
+      },
+      "plan": {
+        "choose": "Tarif wählen",
+        "select": "Wählen",
+        "unavailable": "Tarife können gerade nicht angezeigt werden. Ihre Akte ist davon nicht betroffen.",
+        "error": {
+          "failed": "Dieser Tarif konnte nicht ausgewählt werden. Versuchen Sie es erneut."
+        }
+      }
+    },
+    "filter": {
+      "professional": "Nach Fachkraft filtern",
+      "allProfessionals": "Alle Fachkräfte"
+    },
+    "status": {
+      "URGENT": "Dringend",
+      "OPEN": "Offen",
+      "TREATMENT": "In Behandlung",
+      "CLOSED": "Abgeschlossen",
+      "ACTIVE": "Wird eingenommen",
+      "COMPLETED": "Abgeschlossen",
+      "WITHHELD": "Nicht gegeben",
+      "CONFIRMED": "Bestätigt",
+      "PENDING": "Wartet auf Bestätigung",
+      "ATTENDED": "Wahrgenommen",
+      "CANCELLED": "Abgesagt",
+      "LOW": "Gering",
+      "MODERATE": "Mittel",
+      "HIGH": "Dringend",
+      "RAISED": "Gemeldet",
+      "ACKNOWLEDGED": "Angenommen",
+      "RESOLVED": "Erledigt",
+      "MILD": "Leicht",
+      "SEVERE": "Schwer",
+      "OK": "Im Normbereich",
+      "WARN": "Beobachten",
+      "DANGER": "Außerhalb der Norm",
+      "DIET": "Ernährung",
+      "EXERCISE": "Bewegung",
+      "MEDICATION": "Medikament",
+      "FOOD": "Lebensmittel",
+      "ENVIRONMENTAL": "Umwelt",
+      "OTHER": "Sonstiges",
+      "membership": {
+        "ACTIVE": "Aktiv",
+        "CANCELLED": "Storniert",
+        "EXPIRED": "Abgelaufen",
+        "PENDING": "Ausstehend",
+        "SUSPENDED": "Ausgesetzt"
+      }
+    },
+    "onboarding": {
+      "title": "Ihre Akte einrichten",
+      "heading": "Richten wir Ihre Akte ein",
+      "intro": "Jeder Schritt wird unterwegs gespeichert, Sie können also aufhören und zurückkommen.",
+      "step": {
+        "identity": "Über Sie",
+        "careAngel": "Pflegeengel",
+        "baseline": "Ausgangswerte",
+        "currentState": "Ihre Gesundheit",
+        "identification": "Ausweis"
+      },
+      "field": {
+        "firstName": "Vorname",
+        "middleNames": "Weitere Vornamen",
+        "lastName": "Nachname",
+        "birthDate": "Geburtsdatum",
+        "sex": "Geschlecht",
+        "mobilePhone": "Mobilnummer",
+        "phoneNumber": "Weiteres Telefon",
+        "address": "Wo Sie wohnen",
+        "streetAddress": "Straße",
+        "digitalAddress": "Digitale Adresse",
+        "town": "Ort",
+        "city": "Stadt",
+        "district": "Bezirk",
+        "region": "Region",
+        "country": "Land",
+        "phone": "Telefon",
+        "email": "E-Mail",
+        "emailConfirm": "E-Mail bestätigen",
+        "contacts": "Wen wir sonst noch kontaktieren sollen",
+        "heightCm": "Größe (cm)",
+        "weightKg": "Gewicht (kg)",
+        "systolic": "Blutdruck, oberer Wert",
+        "diastolic": "Blutdruck, unterer Wert",
+        "heartRateBpm": "Ruhepuls (optional)",
+        "bloodSugar": "Blutzucker (optional)",
+        "bloodGroup": "Blutgruppe",
+        "conditions": "Bestehende Erkrankungen, eine pro Zeile",
+        "noConditions": "Ich habe keine",
+        "allergies": "Allergien, eine pro Zeile",
+        "noAllergies": "Ich habe keine",
+        "medications": "Medikamente, die Sie einnehmen, eines pro Zeile",
+        "noMedications": "Ich nehme keine",
+        "cardType": "Ausweisart",
+        "cardNumber": "Ausweisnummer"
+      },
+      "careAngel": {
+        "explainer": "Ein Pflegeengel kann Ihre Gesundheitsakte einsehen und aktualisieren und für Sie handeln, falls Sie dazu einmal nicht in der Lage sind. Er muss zustimmen, und Sie können dies jederzeit widerrufen."
+      },
+      "standby": {
+        "heading": "Falls Sie einmal nicht entscheiden können",
+        "explainer": "Sie können jemanden im Voraus benennen. Diese Person erfährt jetzt nichts davon. Erklärt eine Ärztin oder ein Arzt einmal, dass Sie nicht selbst entscheiden können, müssen zwei davon zustimmen, bevor diese Person gefragt wird — und sie kann immer noch ablehnen.",
+        "consent": "Falls ich einmal nicht selbst entscheiden kann, darf eine Ärztin oder ein Arzt meinen Ersatzbenannten aktivieren."
+      },
+      "action": {
+        "next": "Weiter",
+        "back": "Zurück",
+        "finish": "Fertig"
+      },
+      "error": {
+        "emailMismatch": "Die beiden E-Mail-Adressen stimmen nicht überein.",
+        "consentRequired": "Kreuzen Sie das Einwilligungsfeld an, um einen Ersatzbenannten zu benennen, oder lassen Sie dessen Daten leer.",
+        "saveFailed": "Das konnte nicht gespeichert werden. Nichts von dem, was Sie bereits beantwortet haben, ist verloren — versuchen Sie es erneut."
+      }
+    },
+    "actingAs": {
+      "banner": "Sie sehen die Akte von {{name}}",
+      "bannerOwn": "Sie sehen Ihre eigene Akte",
+      "switch": "Akte wechseln",
+      "chooseTitle": "Welche Akte möchten Sie öffnen?",
+      "chooseOwn": "Meine eigene Akte",
+      "chooseFor": "Im Namen von {{name}}"
+    },
+    "invitations": {
+      "title": "Pflege-Nominierungen",
+      "heading": "Pflege-Nominierungen",
+      "empty": "Es warten keine Nominierungen. Wenn Sie gerade jemand benannt hat, prüfen Sie den Link in der versendeten E-Mail.",
+      "from": "{{name}} hat Sie gebeten, ihr Pflegeengel zu sein",
+      "explainer": "Mit der Annahme können Sie die Gesundheitsakte dieser Person einsehen und aktualisieren und für sie handeln, falls sie dazu einmal nicht in der Lage ist. Sie können jederzeit zurücktreten, und die Person kann es jederzeit widerrufen.",
+      "action": {
+        "accept": "Annehmen",
+        "decline": "Ablehnen"
+      },
+      "error": {
+        "failed": "Das konnte nicht gespeichert werden. Versuchen Sie es erneut."
+      }
+    },
+    "empty": {
+      "title": "Noch nichts erfasst"
+    },
+    "stream": {
+      "offline": "Health Connect ist nicht erreichbar. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+      "forbidden": "Sie haben keinen Zugriff auf diesen Teil der Akte.",
+      "generic": "Beim Laden ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+      "retry": "Erneut versuchen"
+    }
+  }
+}

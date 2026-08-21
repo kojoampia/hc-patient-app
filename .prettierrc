@@ -1,0 +1,20 @@
+# Prettier configuration
+#
+# Lifted from hc-patient-dashboard/.prettierrc @ 12e418c so that a file moved between the two repos
+# reformats to the same bytes — that is what keeps `npm run provenance:check` reporting real
+# divergences rather than whitespace.
+#
+# Divergence: the `plugins` block is dropped. The web loads prettier-plugin-java (there is no Java
+# in this repo) and prettier-plugin-packagejson (not installed here). Neither affects the formatting
+# of any file this project actually has.
+
+printWidth: 140
+singleQuote: true
+tabWidth: 2
+useTabs: false
+
+# js and ts rules:
+arrowParens: avoid
+
+# jsx and tsx rules:
+bracketSameLine: false
