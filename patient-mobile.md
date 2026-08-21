@@ -645,5 +645,13 @@ when they come back.
 7. **`ROLE_ANGEL` grants nothing** (§3). Do not gate a screen, a tab or a nav item on it.
 8. **Android hardware back** must not dismiss `mustChoose`, must pop within the tab's own stack, and must not exit
    the app from a tab root without a confirm.
-9. **The gateway and api still ship different JWT secrets** in committed config. If sign-in succeeds and every
-   `/services/hcpatientservice/**` call 401s, that is the cause and it is not a client bug.
+9. ~~**The gateway and api still ship different JWT secrets** in committed config.~~ **No longer true, and this
+   trap was already stale when it was written here.** Both repos have shipped the SAME committed dev key since
+   2026-08-05, both use `${JWT_BASE64_SECRET:}` with no default in prod, and both `.yo-rc.json` files carry an
+   empty `jwtSecretKey`. Every compose file — quality, local and production — injects one variable into BOTH
+   services. Verified 2026-08-21 by comparing the values rather than the comments.
+
+   The symptom is still worth knowing, because something else can produce it: if sign-in succeeds and every
+   `/services/hcpatientservice/**` call 401s, compare
+   `JHIPSTER_SECURITY_AUTHENTICATION_JWT_BASE64_SECRET` across the two containers — a partial injection (one
+   service given an override the other was not) would look identical from the client, and is not a client bug.
