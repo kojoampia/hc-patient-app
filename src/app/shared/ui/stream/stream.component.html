@@ -1,0 +1,35 @@
+<!--
+  The three states, in one place, so twelve screens cannot disagree about which is which.
+
+  Note there is no fourth branch: `loaded` with rows projects <ng-content/> and this component gets
+  out of the way. It renders states, not lists.
+-->
+@if (isLoading()) {
+  <div class="hpm-stream__skeletons" aria-busy="true" aria-live="polite">
+    @for (row of skeletonList(); track row) {
+      <div class="hpm-stream__row" [style.height.px]="skeletonRowHeight()">
+        <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
+        <ion-skeleton-text [animated]="true" style="width: 85%"></ion-skeleton-text>
+      </div>
+    }
+  </div>
+} @else if (isFailed()) {
+  <!--
+    A card, not an empty state. The difference is deliberate: an empty state says "there is nothing
+    here", and that is exactly the claim we cannot make.
+  -->
+  <div class="hc-card hc-card-pad hpm-stream__failed" role="alert">
+    <ion-icon name="cloud-offline-outline" aria-hidden="true"></ion-icon>
+    <p>{{ failureKey() | translate }}</p>
+
+    @if (canRetry()) {
+      <ion-button size="small" fill="outline" color="primary" (click)="retried.emit()">
+        {{ 'patientPortal.stream.retry' | translate }}
+      </ion-button>
+    }
+  </div>
+} @else if (isEmpty()) {
+  <hpm-empty-state [titleKey]="emptyTitleKey()" [messageKey]="emptyMessageKey()" [icon]="emptyIcon()" />
+} @else {
+  <ng-content />
+}
