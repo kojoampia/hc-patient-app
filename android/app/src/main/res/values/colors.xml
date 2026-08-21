@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The brand, for the parts of the app that exist before the webview does: the splash and the status
+  bar behind it. Everything after first paint reads its colour from theme/_tokens.scss.
+
+  These two values are the ONE place a brand hex is duplicated outside _tokens.scss, and it is
+  unavoidable — Android resolves them before any JavaScript runs. Keep them in step with $hc-navy
+  and $hc-cream by hand.
+-->
+<resources>
+    <color name="hc_navy">#0d3058</color>
+    <color name="hc_cream">#f7f4ee</color>
+</resources>

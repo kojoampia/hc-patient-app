@@ -1,4 +1,5 @@
 import type { CapacitorConfig } from '@capacitor/cli';
+import { KeyboardResize } from '@capacitor/keyboard';
 
 /**
  * Capacitor configuration (patient-mobile.md §7.7.3).
@@ -58,12 +59,32 @@ const config: CapacitorConfig = {
     },
 
     /**
-     * Keyboard resize mode is deliberately left at the platform default until phase 7, which owns
-     * keyboard, safe areas and notched devices. Setting it here needs the `KeyboardResize` enum
-     * imported into this file — a plain 'body' string does not satisfy the config's type — and
-     * choosing between `body`, `native` and `ionic` is a decision to make against a real device
-     * with a real form on screen, not now, with one page.
+     * `native`, not `body` or `ionic`.
+     *
+     * `body` resizes the whole document, which on this app means the acting-as banner — a safety
+     * control that must be visible at all times (§7.4) — scrolls away when the keyboard opens on
+     * the sign-in screen. `ionic` has the same effect through Ionic's own handling.
+     *
+     * `native` lets Android pan the window instead, so the focused field comes into view and the
+     * banner stays where it is. The cost is that a very short screen can put the field under the
+     * keyboard; `ion-content` scrolls, so it does not.
      */
+    Keyboard: {
+      resize: KeyboardResize.Native,
+      resizeOnFullScreen: true,
+    },
+
+    /**
+     * The status bar is styled from the app rather than the theme, because the shell's top element
+     * is the banner and its colour changes: navy-on-cream when viewing your own record, warn when
+     * acting for somebody. Phase 3's banner owns the inset; this only makes the bar's ICONS legible
+     * against it.
+     */
+    StatusBar: {
+      style: 'DARK',
+      backgroundColor: '#0d3058',
+      overlaysWebView: false,
+    },
   },
 };
 

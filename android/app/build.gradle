@@ -1,5 +1,32 @@
 apply plugin: 'com.android.application'
 
+/**
+ * Release signing, read from a file that is NEVER committed.
+ *
+ * android/keystore.properties, *.keystore and *.jks are all in .gitignore. A keystore is a
+ * credential: losing it means never being able to update this app on a device again, and leaking
+ * it means somebody else can publish as this app. It belongs wherever the architect keeps the
+ * platform's other secrets, not in a repository.
+ *
+ * The file the build expects:
+ *
+ *     storeFile=/absolute/path/to/hc-patient.jks
+ *     storePassword=…
+ *     keyAlias=hcpatient
+ *     keyPassword=…
+ *
+ * When it is absent — which is the case on every developer machine and in CI — `assembleRelease`
+ * still runs and produces an UNSIGNED artifact rather than failing. That is deliberate: it keeps
+ * the release path buildable and testable by people who should not hold the signing key, and an
+ * unsigned APK cannot be installed by accident.
+ */
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+def hasKeystore = keystorePropertiesFile.exists()
+if (hasKeystore) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     namespace = "net.jojoaddison.hcpatient"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -16,8 +43,22 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        if (hasKeystore) {
+            release {
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
+        }
+    }
+
     buildTypes {
         release {
+            if (hasKeystore) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

@@ -4,7 +4,7 @@
  * The shell, and the reason the banner lives here rather than on thirteen pages (§7.4).
  */
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, computed, effect, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   IonIcon,
@@ -24,6 +24,7 @@ import { PortalDataService } from 'app/portal/data/portal-data.service';
 import { SessionBootstrapService } from 'app/fork/session-bootstrap.service';
 import { ActingAsBannerComponent } from './acting-as-banner.component';
 import { MOBILE_NAV, MOBILE_TABS, MobileNavItem } from './mobile-nav';
+import { BackButtonService } from './back-button.service';
 import { MoreSheetBus } from './more-sheet.bus';
 import { MoreSheetComponent } from './more-sheet.component';
 import { RecordPickerComponent } from './record-picker.component';
@@ -47,13 +48,17 @@ import { RecordPickerComponent } from './record-picker.component';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TabsPage {
+export class TabsPage implements AfterViewInit {
   private readonly actingAs = inject(ActingAsService);
   private readonly bootstrap = inject(SessionBootstrapService);
   private readonly modalController = inject(ModalController);
   private readonly data = inject(PortalDataService);
   private readonly moreSheetBus = inject(MoreSheetBus);
   private readonly navController = inject(NavController);
+  private readonly backButton = inject(BackButtonService);
+
+  /** The outlet whose per-tab stack the hardware back button pops (§8.4.8). */
+  readonly outlet = viewChild.required(IonRouterOutlet);
 
   readonly tabs = MOBILE_TABS;
   readonly nav = MOBILE_NAV;
@@ -99,6 +104,10 @@ export class TabsPage {
       document.addEventListener('ionBackButton', block, { capture: true });
       onCleanup(() => document.removeEventListener('ionBackButton', block, { capture: true }));
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.backButton.register(this.outlet());
   }
 
   openSwitch(): void {

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Cleartext is OFF in release builds, and only in debug builds is it allowed at all.
+
+  capacitor.config.ts sets `allowMixedContent: false`; this is the platform half of the same
+  decision, and both are needed — the first stops the WEBVIEW loading http subresources, this stops
+  the APP opening http connections.
+
+  WHY `debug-overrides` IS ALL-OR-NOTHING HERE. The obvious shape — naming 10.0.2.2 and
+  patient.healthconnect.local so only those two are exempt — is not expressible: Android rejects
+  both `<domain-config>` and `<domain>` inside `<debug-overrides>`, which accepts nothing but
+  `<trust-anchors>` and applies to every host. Per-host exemption needs a top-level
+  `<domain-config>`, and that would apply to the RELEASE build too, which is strictly worse.
+
+  So the trade is: debug builds may speak cleartext to anything; release builds may not speak it at
+  all. The containment is the build type, and `debug-overrides` is stripped entirely from release —
+  it cannot be reached by a misconfigured production APK.
+
+  DO NOT set `cleartextTrafficPermitted="true"` on `base-config` to make a local gateway work. That
+  is the change this comment exists to prevent: it opens cleartext everywhere, in release too, and
+  nothing fails to remind you.
+
+  Android lint catches malformed configs here, but ONLY on a release build — an earlier version of
+  this file with nested `<domain-config>` survived several `assembleDebug` runs.
+
+  The hosts this exists for: 10.0.2.2 (the emulator's alias for the host machine, for `npm start`)
+  and patient.healthconnect.local (the quality stack on jacserver, http on a private LAN).
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <debug-overrides cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <!--
+              User-installed CAs, so a developer can put a proxy in front of the gateway to read
+              traffic. Debug only — a release build trusting user CAs is how a hostile network
+              reads a patient's record.
+            -->
+            <certificates src="user" />
+        </trust-anchors>
+    </debug-overrides>
+</network-security-config>

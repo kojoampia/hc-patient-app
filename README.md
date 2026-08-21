@@ -6,8 +6,8 @@ The BridgeCare patient portal as an Android app — Ionic Angular + Capacitor.
 §7–§8 the port. `PROVENANCE.md` indexes every file copied out of `hc-patient-dashboard`. Read the
 plan before starting a phase; where it and the code disagree, the code wins.
 
-**Status: phase 1 of 8.** Scaffold and theme. There is one route, `theme-check`, and it exists to
-make the theming falsifiable on a device. No auth, no data layer, no shell yet.
+**Status: phase 7 of 8.** The portal is built — sign-in, the acting-as fork, the shell, the data
+layer, all thirteen screens, and the lock. Phase 8 (iOS) remains.
 
 ## Toolchain — pin these two or lose an afternoon
 
@@ -51,6 +51,35 @@ npm run android:debug      # cap:sync + ./gradlew assembleDebug
 npm run android:release    # cap:sync + ./gradlew assembleRelease
 ```
 
+### Signing a release
+
+`assembleRelease` produces an **unsigned** APK unless `android/keystore.properties` exists. That is
+deliberate: the release path stays buildable by people who should not hold the signing key, and an
+unsigned APK cannot be installed by accident.
+
+To sign, create `android/keystore.properties` — which `.gitignore` already excludes, along with
+`*.keystore` and `*.jks`:
+
+```properties
+storeFile=/absolute/path/to/hc-patient.jks
+storePassword=…
+keyAlias=hcpatient
+keyPassword=…
+```
+
+**The keystore is a credential and belongs wherever the platform's other secrets live.** Losing it
+means never being able to update this app on an installed device again; leaking it means somebody
+else can publish as this app. It is not in this repository and must not be.
+
+Deep links are configured for `patient.abofonsa.com` but will show a chooser rather than opening
+directly until `/.well-known/assetlinks.json` is published there with the release certificate's
+fingerprint — which cannot be produced before the keystore exists.
+
+### Why `assembleRelease` matters even unsigned
+
+It runs Android lint; `assembleDebug` does not. That is what caught a malformed
+`network_security_config.xml` which several debug builds had accepted without complaint.
+
 **`npm start` runs in a browser, where `CapacitorHttp` is not active.** Requests go through the
 browser's own XHR, so they are subject to CORS — and the patient gateway has CORS deliberately
 disabled. The dev server is useful for layout and nothing else. Anything touching the network has to
@@ -75,13 +104,22 @@ Both outputs are generated and gitignored. `src/i18n/` is the source.
 ## Layout
 
 ```
-src/theme/       _tokens, _components, _utilities   lifted verbatim from web
-                 ionic-bridge.scss                  $hc-* -> --ion-*   (new)
-                 mobile.scss                        390px overrides only (new)
-src/i18n/        en, fr, de                         source bundles; merged at build time
-src/app/         theme-check/                       phase 1 acceptance screen; delete in phase 5
-tools/           merge-i18n.mjs, check-provenance.mjs
-android/         committed Capacitor output
+src/theme/          _tokens, _components, _utilities   lifted verbatim from web
+                    ionic-bridge.scss                  $hc-* -> --ion-*   (new)
+                    mobile.scss                        390px overrides only (new)
+src/i18n/           en, fr, de                         source bundles; merged at build time
+src/app/core/       lifted: config, interceptors, request, util, auth
+src/app/core/native/  token store, secure store, biometrics, lifecycle, lock, with-prompt
+src/app/shell/      tabs, banner, record picker, more sheet, nav, back-button policy
+src/app/auth/       login, lock
+src/app/fork/       SessionBootstrapService — the §3.2 five-case fork
+src/app/deadends/   onboarding-required, invitations-required
+src/app/portal/     data/ (Resource<T>, PortalDataService) + the 13 screens
+src/app/entities/   lifted: 15 models + services, enumerations
+src/app/shared/     lifted ui kit and the language directive
+tools/              merge-i18n.mjs, check-provenance.mjs
+android/            committed Capacitor output
+.github/workflows/  ci.yml — one workflow, node job + android job
 ```
 
 `src/global.scss` imports the theme in a **fixed order** — Ionic, tokens, bridge, utilities,

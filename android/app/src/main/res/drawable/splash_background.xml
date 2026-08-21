@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Navy behind the splash image, so the moment before first paint is the brand rather than white.
+  That gap is short on a fast phone and very visible on a slow one, which is the phone a patient in
+  Accra is more likely to be holding.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/hc_navy" />
+    <item>
+        <bitmap android:gravity="center" android:src="@drawable/splash" />
+    </item>
+</layer-list>

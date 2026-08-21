@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!--
+      allowBackup=false, changed from Capacitor's default.
+
+      Android auto-backup copies app data to the user's Google Drive. This app's data is a session
+      token for a health record and, on a device with no screen lock, the ONLY copy of it. Backing
+      that up moves a credential off the device into an account whose security this app does not
+      control, and restores it onto whatever handset the user next signs into — which is the same
+      class of problem as the iOS Keychain surviving uninstall (§7.6), arriving by a different route.
+    -->
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="false"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/AppTheme">
 
         <activity
@@ -20,6 +31,24 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!--
+              Deep links, so the dead ends' "finish this on the web, then come back" can actually
+              come back. §6 decision 2 sends an un-onboarded patient to patient.abofonsa.com in the
+              SYSTEM browser; without this the return trip is the user finding the icon again.
+
+              autoVerify requires /.well-known/assetlinks.json on patient.abofonsa.com carrying this
+              app's signing-certificate fingerprint. Until that file is published Android treats
+              these as ordinary links and offers a chooser, which still works — it just is not
+              seamless. The fingerprint comes from the release keystore, so this cannot be finished
+              before signing is.
+            -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="patient.abofonsa.com" />
             </intent-filter>
 
         </activity>
