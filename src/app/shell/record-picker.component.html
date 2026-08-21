@@ -1,0 +1,43 @@
+<!--
+  No ion-header with a close button when `forced` — there is deliberately no way out of this modal
+  except choosing. §3.2's third row: do not choose on their behalf.
+-->
+<ion-content class="ion-padding hpm-picker">
+  <h2 class="hc-auth-title hpm-picker__title">{{ 'patientPortal.actingAs.chooseTitle' | translate }}</h2>
+
+  @if (forced()) {
+    <p class="hc-muted hc-sm hpm-picker__lede">
+      You can act for more than one person. Everything you see next belongs to whoever you pick.
+    </p>
+  }
+
+  <ion-list lines="full">
+    @for (choice of choices(); track choice.patientId) {
+      <ion-item button detail="false" (click)="select(choice)" [attr.aria-current]="choice.patientId === currentId()?.patientId">
+        <ion-icon
+          slot="start"
+          [name]="choice.own ? 'person-outline' : 'people-outline'"
+          [class.hpm-picker__icon--other]="!choice.own"
+          aria-hidden="true"
+        ></ion-icon>
+
+        <ion-label>
+          <!--
+            The PATIENT's name, never the angel's. A picker labelled with opaque ids is exactly the
+            confusion the banner exists to prevent (§3.1).
+          -->
+          <h3>{{ choice.own ? ('patientPortal.actingAs.chooseOwn' | translate) : choice.name }}</h3>
+          @if (!choice.own) {
+            <p>{{ 'patientPortal.actingAs.chooseFor' | translate: { name: choice.name } }}</p>
+          }
+        </ion-label>
+
+        @if (choice.patientId === currentId()?.patientId) {
+          <ion-note slot="end">
+            <ion-icon name="checkmark-outline" aria-hidden="true"></ion-icon>
+          </ion-note>
+        }
+      </ion-item>
+    }
+  </ion-list>
+</ion-content>

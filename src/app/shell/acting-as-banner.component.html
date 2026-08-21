@@ -1,0 +1,34 @@
+<!--
+  ALWAYS rendered. Never conditional on acting-for-somebody, because the calm state carries the way
+  back to the patient's record and because a banner that appears and disappears trains people not to
+  read it.
+
+  The visually-hidden live region is separate from the visible text on purpose: it is republished on
+  every fork run even when the string has not changed (§6 decision 4), and doing that to the visible
+  element would make it flicker.
+-->
+<div class="hpm-banner" [class.is-own]="isOwn()" role="note">
+  <span class="hpm-banner__text">
+    @if (current(); as choice) {
+      @if (choice.own) {
+        {{ 'patientPortal.actingAs.bannerOwn' | translate }}
+      } @else {
+        {{ 'patientPortal.actingAs.banner' | translate: { name: choice.name } }}
+      }
+    }
+  </span>
+
+  @if (canSwitch()) {
+    <ion-button
+      class="hpm-banner__switch"
+      size="small"
+      fill="clear"
+      (click)="switchRequested.emit()"
+      [attr.aria-label]="'patientPortal.actingAs.switch' | translate"
+    >
+      {{ 'patientPortal.actingAs.switch' | translate }}
+    </ion-button>
+  }
+</div>
+
+<span class="hc-sr-only" role="status" aria-live="polite">{{ liveText() }}</span>

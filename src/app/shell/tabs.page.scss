@@ -1,0 +1,26 @@
+.hpm-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.hpm-shell ion-tabs {
+  flex: 1;
+  min-height: 0;
+
+  /**
+   * §7.4.1 — THE INSET, and the reason this rule is scoped rather than global.
+   *
+   * The banner owns the top inset: it is the topmost element in the shell, so it takes
+   * `padding-top: var(--ion-safe-area-top)` (see acting-as-banner.component.scss). If ion-tabs also
+   * honoured the inset, every page inside it would push its header down by a second status-bar
+   * height and the shell would be visibly too tall.
+   *
+   * Zeroing it GLOBALLY would be wrong: LoginPage, the lock screen and the two dead ends sit
+   * OUTSIDE this shell and still need the real inset, or their content runs under the status bar.
+   * So the override is scoped to ion-tabs and nothing else.
+   *
+   * Only visible on a real notched device — no emulator default and no browser will show this.
+   */
+  --ion-safe-area-top: 0px;
+}

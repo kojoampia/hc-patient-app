@@ -1,0 +1,60 @@
+<!--
+  §7.4 — THE SHAPE THAT MATTERS.
+
+      <div class="hpm-shell">
+        <hpm-acting-as-banner />        ALWAYS rendered, ABOVE ion-tabs
+        <ion-tabs> … </ion-tabs>
+      </div>
+
+  Putting the banner in each page's `ion-header` is the idiomatic Ionic answer and it is WRONG here:
+  it would then have to be remembered on thirteen pages, and one forgotten page shows a patient's
+  record with no banner at all. That is the silently-the-wrong-person failure §3 calls a safety
+  control — the same argument that puts X-Acting-As in one interceptor. Make forgetting impossible
+  rather than unlikely.
+-->
+<div class="hpm-shell">
+  <hpm-acting-as-banner [runCount]="runCount()" (switchRequested)="openSwitch()" />
+
+  <ion-tabs>
+    <ion-router-outlet></ion-router-outlet>
+
+    <ion-tab-bar slot="bottom" [attr.aria-label]="'patientPortal.nav.ariaPrimary' | translate">
+      @for (item of tabItems(); track item.path) {
+        <ion-tab-button [tab]="item.path">
+          <ion-icon [name]="item.icon" aria-hidden="true"></ion-icon>
+          <ion-label>{{ (item.shortLabelKey ?? item.labelKey) | translate }}</ion-label>
+        </ion-tab-button>
+      }
+
+      <!--
+        Five tabs cannot reach ten destinations. This is the sidebar's job on a phone.
+      -->
+      <ion-tab-button (click)="moreOpen.set(true)" [attr.aria-label]="'patientPortal.nav.openMenu' | translate">
+        <ion-icon name="ellipsis-horizontal" aria-hidden="true"></ion-icon>
+        <ion-label>More</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
+</div>
+
+<!--
+  §7.4.4. `mustChoose` is undismissable in every direction: no backdrop, no swipe, and the Android
+  hardware back button is blocked in tabs.page.ts. A voluntary switch from the banner IS dismissable,
+  because backing out of it just leaves the record you already had open.
+-->
+<ion-modal
+  [isOpen]="pickerOpen()"
+  [canDismiss]="!mustChoose()"
+  [backdropDismiss]="!mustChoose()"
+  (ionModalDidDismiss)="switching.set(false)"
+>
+  <ng-template>
+    <hpm-record-picker [forced]="mustChoose()" (chosen)="onChosen($event)" />
+  </ng-template>
+</ion-modal>
+
+<ion-modal [isOpen]="moreOpen()" (ionModalDidDismiss)="closeMore()">
+  <ng-template>
+    <hpm-more-sheet (closed)="closeMore()" />
+  </ng-template>
+</ion-modal>

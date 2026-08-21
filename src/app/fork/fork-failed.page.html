@@ -1,0 +1,16 @@
+<ion-content class="ion-padding hpm-forkfail" [fullscreen]="true">
+  <div class="hpm-forkfail__inner">
+    <ion-icon class="hpm-forkfail__icon" name="cloud-offline-outline" aria-hidden="true"></ion-icon>
+
+    <h1 class="hc-auth-title">We could not open your records</h1>
+    <!-- Never a raw error string. -->
+    <p class="hc-auth-lede hc-muted" role="alert">{{ message() }}</p>
+
+    @if (isAuthProblem()) {
+      <ion-button expand="block" color="primary" (click)="signOut()">Sign in again</ion-button>
+    } @else {
+      <ion-button expand="block" color="primary" (click)="retry()">Try again</ion-button>
+      <ion-button expand="block" fill="clear" color="dark" (click)="signOut()">Sign out</ion-button>
+    }
+  </div>
+</ion-content>

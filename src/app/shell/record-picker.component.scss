@@ -1,0 +1,29 @@
+/** Layout only. */
+
+.hpm-picker {
+  --background: var(--hc-bg);
+}
+
+.hpm-picker__title {
+  margin-top: 8px;
+}
+
+.hpm-picker__lede {
+  margin: 0 0 18px;
+}
+
+.hpm-picker ion-list {
+  background: transparent;
+}
+
+.hpm-picker ion-item {
+  --background: var(--hc-card);
+  --border-radius: var(--hc-r-sm);
+
+  margin-bottom: 8px;
+}
+
+/* A record that is not yours is marked in the same warn hue the banner uses, so the two agree. */
+.hpm-picker__icon--other {
+  color: var(--hc-warn);
+}

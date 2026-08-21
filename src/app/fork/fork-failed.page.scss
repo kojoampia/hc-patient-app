@@ -1,0 +1,26 @@
+/** Layout only. */
+
+.hpm-forkfail {
+  --background: var(--hc-bg);
+}
+
+.hpm-forkfail__inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 420px;
+  min-height: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hpm-forkfail__icon {
+  align-self: center;
+  margin-bottom: 18px;
+  font-size: 56px;
+  color: var(--hc-grey-400);
+}
+
+.hpm-forkfail__inner ion-button {
+  margin-top: 8px;
+}
