@@ -22,6 +22,7 @@ import { AppLockService } from 'app/core/native/app-lock.service';
 import { BiometricsService } from 'app/core/native/biometrics.service';
 import { DevicePreferencesService } from 'app/core/native/device-preferences.service';
 import { SessionTokenService } from 'app/core/native/session-token.service';
+import { StateStorageService } from 'app/core/auth/state-storage.service';
 import { httpInterceptorProviders } from 'app/core/interceptor';
 import { missingTranslationHandler, translatePartialLoader } from 'app/config/translation.config';
 import { environment } from 'environments/environment';
@@ -53,6 +54,17 @@ const initializeApp = async (): Promise<void> => {
   const lifecycle = inject(AppLifecycleService);
   const lock = inject(AppLockService);
 
+  /**
+   * EVERY inject() HAPPENS HERE, BEFORE THE FIRST await.
+   *
+   * The injection context does not survive an await — `inject()` after one throws NG0203, which
+   * during an APP_INITIALIZER means bootstrap fails and the app renders a blank page. It is caught
+   * by main.ts and logged, which is the only reason it is diagnosable at all; nothing else says
+   * anything, and a blank cream screen looks like a styling problem rather than a crash.
+   */
+  const translate = inject(TranslateService);
+  const stateStorage = inject(StateStorageService);
+
   const [, , security] = await Promise.all([sessionToken.unlock(), preferences.hydrate(), biometrics.check()]);
 
   /**
@@ -70,6 +82,25 @@ const initializeApp = async (): Promise<void> => {
    */
   lock.start();
   await lifecycle.start();
+
+  /**
+   * 6. **Choose a language, or nothing is ever translated.**
+   *
+   * ngx-translate does not load a bundle until a language is selected, so without this every key
+   * on every screen renders as `translation-not-found[login.title]` — literally, in the UI. The
+   * only other `use()` in the app is in AccountService.identity(), which runs AFTER sign-in, so
+   * the sign-in screen itself was never translated. Found on a device; no unit test sees it,
+   * because TestBed specs use `TranslateModule.forRoot()` with no loader and assert on keys.
+   *
+   * The web does this in TranslationModule's constructor. That module is not lifted — this app
+   * calls `TranslateModule.forRoot` directly — so its bootstrapping had to move here with it.
+   *
+   * Reads the stored locale so a language chosen on a previous run survives, which is why the CALL
+   * sits here, after preferences have hydrated — while the injections that serve it happen above,
+   * before the first await.
+   */
+  translate.setDefaultLang('en');
+  translate.use(stateStorage.getLocale() ?? 'en');
 };
 
 export const appConfig: ApplicationConfig = {
