@@ -15,6 +15,7 @@
  */
 
 import { Injectable, computed, inject, signal } from '@angular/core';
+import { Preferences } from '@capacitor/preferences';
 
 import { SECURE_STORE } from './secure-store';
 
@@ -23,6 +24,12 @@ import { SECURE_STORE } from './secure-store';
  * secure store prefixes it (`hcpatient.`), so there is no collision with anything else on device.
  */
 const TOKEN_KEY = 'jhi-authenticationToken';
+
+/**
+ * Written on first run. Lives in Preferences, NOT the secure store, precisely because Preferences
+ * do not survive an uninstall and the iOS Keychain does — see clearIfFirstRun().
+ */
+const INSTALL_MARKER_KEY = 'installMarker';
 
 @Injectable({ providedIn: 'root' })
 export class SessionTokenService {
@@ -54,12 +61,14 @@ export class SessionTokenService {
 
   /**
    * Read the stored token back into memory. Called once at startup, and again after the biometric
-   * unlock in phase 6.
+   * unlock.
    *
    * Order is load-bearing (§7.6): the §3.2 fork calls `/care-delegations/mine`, which needs a
    * token, which needs this to have resolved. Nothing may fetch before it does.
    */
   async unlock(): Promise<string | null> {
+    await this.clearIfFirstRun();
+
     try {
       const stored = await this.store.getItem(TOKEN_KEY);
       this.token.set(stored);
@@ -79,12 +88,10 @@ export class SessionTokenService {
    * the session still runs — the token simply stays in memory and dies with the process, so the
    * user types their password every launch, and the copy says so.
    *
-   * PHASE 6 OWNS THE DETECTION. Deciding whether the device is secure needs
-   * `@aparajita/capacitor-biometric-auth`'s `checkBiometry().deviceIsSecure`, and that plugin
-   * arrives with the lock screen in phase 6. Until then {@link setDevicePersistable} is never
-   * called and this defaults to true, which means **phase 2 through 5 persist a token on a device
-   * with no lock screen.** That is a real gap, not a rounding error; it is written down here and in
-   * patient-mobile.md rather than left to be discovered. The seam exists so phase 6 is one call.
+   * The detection landed in phase 6: the APP_INITIALIZER calls {@link setDevicePersistable} with
+   * `BiometricsService.check().deviceIsSecure` before anything can sign in, so by the time this
+   * runs the answer is known. On the web build it is always false, which is correct — `ng serve`
+   * and Jest have no secure storage either.
    */
   async persist(token: string): Promise<void> {
     this.token.set(token);
@@ -120,5 +127,31 @@ export class SessionTokenService {
   async signOut(): Promise<void> {
     this.token.set(null);
     await this.store.removeItem(TOKEN_KEY).catch(() => undefined);
+  }
+
+  /**
+   * THE iOS UNINSTALL TRAP (§7.6), handled before the first read.
+   *
+   * **The iOS Keychain survives app uninstall.** Reinstalling therefore hands the new install the
+   * previous one's token — possibly a previous *owner's*, on a resold or handed-down device. The
+   * detection is a Preferences flag, which does NOT survive uninstall: no flag means this is a
+   * first run, so anything already in the secure store predates this install and must go.
+   *
+   * Android's EncryptedSharedPreferences are cleared on uninstall, so this is a no-op there. It runs
+   * on both because iOS is phase 8 and the flag has to have been written from the first run or
+   * there is nothing to compare against when that phase arrives.
+   */
+  private async clearIfFirstRun(): Promise<void> {
+    try {
+      const { value } = await Preferences.get({ key: INSTALL_MARKER_KEY });
+      if (value !== null) {
+        return;
+      }
+      await this.store.removeItem(TOKEN_KEY).catch(() => undefined);
+      await Preferences.set({ key: INSTALL_MARKER_KEY, value: '1' });
+    } catch {
+      // A Preferences failure must not block startup. The cost is a first run that did not clear,
+      // which is the pre-existing behaviour rather than a new risk.
+    }
   }
 }

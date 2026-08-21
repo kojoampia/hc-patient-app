@@ -17,6 +17,9 @@ import { MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateS
 import { importProvidersFrom } from '@angular/core';
 
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
+import { AppLifecycleService } from 'app/core/native/app-lifecycle.service';
+import { AppLockService } from 'app/core/native/app-lock.service';
+import { BiometricsService } from 'app/core/native/biometrics.service';
 import { DevicePreferencesService } from 'app/core/native/device-preferences.service';
 import { SessionTokenService } from 'app/core/native/session-token.service';
 import { httpInterceptorProviders } from 'app/core/interceptor';
@@ -46,8 +49,27 @@ const initializeApp = async (): Promise<void> => {
 
   const sessionToken = inject(SessionTokenService);
   const preferences = inject(DevicePreferencesService);
+  const biometrics = inject(BiometricsService);
+  const lifecycle = inject(AppLifecycleService);
+  const lock = inject(AppLockService);
 
-  await Promise.all([sessionToken.unlock(), preferences.hydrate()]);
+  const [, , security] = await Promise.all([sessionToken.unlock(), preferences.hydrate(), biometrics.check()]);
+
+  /**
+   * 4. **Whether this device may keep a token at all** (§7.6). A device with no screen lock does
+   *    not get one written to disk — the session runs in memory and ends with the process, and the
+   *    sign-in screen says so. Set BEFORE anything can sign in, or the first sign-in of a fresh
+   *    install would persist under the default.
+   */
+  sessionToken.setDevicePersistable(security.deviceIsSecure);
+
+  /**
+   * 5. **Then the lock**, last, because it subscribes to `resumed$` and the very first thing that
+   *    emits is a cold start — which locks if a token came back from the store. Wiring it before
+   *    the token was read would race that decision.
+   */
+  lock.start();
+  await lifecycle.start();
 };
 
 export const appConfig: ApplicationConfig = {

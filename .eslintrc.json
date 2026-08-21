@@ -149,8 +149,10 @@
       // The Capacitor plugin mocks. Every mocked method is `async` with no `await` in it, and that
       // is the point: the real plugin methods return promises, so a mock that returned a plain
       // value would let a missing `await` pass under test and fail on a device. The rule is
-      // measuring the mock's body when what matters is its signature.
-      "files": ["setup-jest.ts"],
+      // measuring the mock's body when what matters is its signature. The native specs are here for
+      // the same reason: they stub SessionTokenService and BiometricsService, whose real methods are
+      // async.
+      "files": ["setup-jest.ts", "src/app/core/native/*.spec.ts"],
       "rules": {
         "@typescript-eslint/require-await": "off",
         // jest.requireActual() is typed `any`; spreading it is the documented way to mock part of

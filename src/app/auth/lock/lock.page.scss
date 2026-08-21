@@ -1,0 +1,22 @@
+/** Layout only. */
+
+.hpm-lock { --background: var(--hc-bg); }
+
+.hpm-lock__inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 420px;
+  min-height: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hpm-lock__icon {
+  align-self: center;
+  margin-bottom: 18px;
+  font-size: 56px;
+  color: var(--hc-navy);
+}
+
+.hpm-lock__inner ion-button { margin-top: 8px; }

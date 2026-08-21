@@ -31,6 +31,15 @@ export const routes: Routes = [
   },
 
   {
+    /**
+     * Outside the shell, and deliberately NOT guarded by forkGuard: the fork needs a token, and
+     * being locked is precisely the state of having one that is not in memory. §8.2.
+     */
+    path: 'lock',
+    loadComponent: () => import('app/auth/lock/lock.page').then(m => m.LockPage),
+  },
+
+  {
     path: 'tabs',
     canActivate: [UserRouteAccessService, forkGuard],
     loadComponent: () => import('app/shell/tabs.page').then(m => m.TabsPage),
