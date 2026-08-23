@@ -143,3 +143,59 @@ one is accounted for:
 
 Nothing else in the web app has moved since the port, which is the useful half of this table: the
 divergence is small, recent, and entirely enumerable.
+
+## Decisions — 2026-08-23
+
+Taken by the architect after this sweep was written. Recorded here rather than in a commit message
+because each one reverses something the sweep argued for, and the reasoning above should not be read
+as still standing.
+
+### The finder is ported, and an administrator gets it on the phone
+
+**Decided: build a mobile patient finder** — `portal/patient-finder/`, `ActingAsService.open()`, an
+administrator branch in the fork, and the seventeen `finder.*` keys across three locales.
+
+The sweep argued the other way, on the grounds that an administrative surface on a patient's phone is
+a thing to avoid. That concern does not disappear because the decision went against it, so it is
+worth stating what it now rests on: an administrator holding a phone can search every patient in the
+system and open any record. The protections are the ones that already exist — `ROLE_ADMIN` is
+unrestricted server-side either way, the acting-as banner names whose record is on screen, and
+`PatientScope` narrows a caller who has chosen a patient. Nothing new is granted; what changes is
+that the reach is now in a pocket rather than at a desk.
+
+`[ ]` Not yet built.
+
+### Registration and password reset both land on mobile
+
+**Decided: both**, not reset alone. Note the consequence the option carried and accept it: onboarding
+itself stays web-only (§7 drops the wizard deliberately), so somebody who registers on the phone
+activates by email, signs in, and is sent straight to the `onboarding-required` dead end telling them
+to finish on the web. That is a worse first run than not offering registration at all, unless the
+dead end is rewritten to explain it — which is now part of this work rather than a separate question.
+
+`account/*` therefore does **not** join the never-copied list, and the three interceptor allowlist
+entries stop being plumbing without a purpose.
+
+`[ ]` Not yet built.
+
+### Archived cases appear on both apps, collapsed
+
+**Decided: show them**, in a collapsed "Archived" section on the cases screen of both apps, fetched
+with `includeArchived=true` and showing when and by whom.
+
+This is the first patient-facing surface for archiving, and it decides something the api left open: a
+patient can now see that a clinician retired one of their cases, and the reason that clinician typed.
+`archiveReason` was specified as required precisely so it would never be empty, and it was written on
+the assumption of a clinical audience. Whether to render it, or only the fact and the date, is the
+one sub-decision left open here — the safer default is to show the date and the archivist and to keep
+the reason for the case detail screen.
+
+`[ ]` Not yet built.
+
+### `visitations` and `activity` join the navigation
+
+**Decided: add them**, both apps. Ten nav entries become twelve, and every routed screen except case
+detail — which is reached from a case, correctly — becomes reachable. This closes `patient-web.md`
+Phase E B1 rather than re-recording it as deliberate.
+
+`[ ]` Not yet built.
