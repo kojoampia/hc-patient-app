@@ -1,0 +1,21 @@
+/**
+ * Layout only. Colour, radius and shadow come from the theme — a hex here would be the first
+ * violation of the property patient-mobile.md §7 exists to protect.
+ */
+
+.hpm-register {
+  --background: var(--hc-bg);
+}
+
+.hpm-register__inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 420px;
+  min-height: 100%;
+  margin: 0 auto;
+}
+
+.hpm-register__brand {
+  margin-bottom: 18px;
+}

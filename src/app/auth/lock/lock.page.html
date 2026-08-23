@@ -13,21 +13,16 @@
     </div>
 
     <h1 class="hc-auth-title">Abofonsa BridgeCare is locked</h1>
-    <p class="hc-auth-lede hc-muted">
-      You have been away for a while. Unlock to see your health record again.
-    </p>
+    <p class="hc-auth-lede hc-muted">You have been away for a while. Unlock to see your health record again.</p>
 
     @if (message(); as msg) {
-      <div class="hc-auth-error" role="alert">{{ msg }}</div>
-    }
-
-    @if (canRetry()) {
-      <ion-button expand="block" color="primary" [disabled]="busy()" (click)="attempt()">
-        @if (busy()) {
-          <ion-spinner name="crescent" slot="start"></ion-spinner>
-        }
-        Unlock
-      </ion-button>
+    <div class="hc-auth-error" role="alert">{{ msg }}</div>
+    } @if (canRetry()) {
+    <ion-button expand="block" color="primary" [disabled]="busy()" (click)="attempt()">
+      @if (busy()) {
+      <ion-spinner name="crescent" slot="start"></ion-spinner>
+      } Unlock
+    </ion-button>
     }
 
     <!--

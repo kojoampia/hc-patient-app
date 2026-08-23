@@ -1,6 +1,8 @@
 /** Layout only. */
 
-.hpm-lock { --background: var(--hc-bg); }
+.hpm-lock {
+  --background: var(--hc-bg);
+}
 
 .hpm-lock__inner {
   display: flex;
@@ -31,4 +33,6 @@
   border-radius: 50%;
 }
 
-.hpm-lock__inner ion-button { margin-top: 8px; }
+.hpm-lock__inner ion-button {
+  margin-top: 8px;
+}

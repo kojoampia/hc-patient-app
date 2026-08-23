@@ -18,12 +18,7 @@ describe('LoginPage', () => {
 
     await TestBed.configureTestingModule({
       imports: [LoginPage, TranslateModule.forRoot()],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        provideRouter([]),
-        { provide: LoginService, useValue: loginService },
-      ],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]), { provide: LoginService, useValue: loginService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginPage);
@@ -55,9 +50,7 @@ describe('LoginPage', () => {
 
       component.login();
 
-      expect(loginService.login).toHaveBeenCalledWith(
-        expect.objectContaining({ username: 'kojo', password: 'pw', rememberMe: true }),
-      );
+      expect(loginService.login).toHaveBeenCalledWith(expect.objectContaining({ username: 'kojo', password: 'pw', rememberMe: true }));
     });
   });
 

@@ -22,7 +22,8 @@
         "fail": "<strong>Registrierung fehlgeschlagen!</strong> Bitte versuchen Sie es später nochmal.",
         "userexists": "<strong>Benutzername bereits vergeben!</strong> Bitte wählen Sie einen anderen aus.",
         "emailexists": "<strong>E-Mail-Adresse wird bereits verwendet!</strong> Bitte wählen Sie eine andere aus."
-      }
+      },
+      "thenWeb": "Sobald Ihr Konto aktiv ist, melden Sie sich im Web an, um Ihre Akte anzulegen. Diese App zeigt eine bereits vorhandene Akte — anlegen kann sie keine."
     }
   }
 }

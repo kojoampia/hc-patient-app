@@ -31,6 +31,25 @@ export const routes: Routes = [
   },
 
   {
+    // Unauthenticated, like /login: somebody creating an account has no token yet. The gateway owns
+    // all three of these because it is the only service with a User domain (§1).
+    path: 'register',
+    loadComponent: () => import('app/auth/register/register.page').then(m => m.RegisterPage),
+  },
+
+  {
+    path: 'reset-password',
+    loadComponent: () => import('app/auth/password-reset/password-reset-request.page').then(m => m.PasswordResetRequestPage),
+  },
+
+  {
+    // Reached from the mail's link, carrying ?key=. The deep-link filter routes it here rather than
+    // to the web app when this app is installed.
+    path: 'reset-password/finish',
+    loadComponent: () => import('app/auth/password-reset/password-reset-finish.page').then(m => m.PasswordResetFinishPage),
+  },
+
+  {
     /**
      * Outside the shell, and deliberately NOT guarded by forkGuard: the fork needs a token, and
      * being locked is precisely the state of having one that is not in memory. §8.2.
