@@ -11,6 +11,12 @@ What `hc-patient-app` does and does not do, measured against `hc-patient-dashboa
 
 Status legend: `[x]` at parity · `[~]` deliberate divergence · `[ ]` gap.
 
+> **All four gaps below were closed on 2026-08-23.** The sweep is left as it was written, because it
+> is a dated record of what the two apps looked like and the reasoning is worth keeping — but do not
+> read the `[ ]` markers in "Gaps" and "Shared gaps" as current. **[Decisions](#decisions--2026-08-23)
+> at the end of this file is what is true now**, and two of the four went against what the sweep
+> argued for.
+
 ## The short version
 
 Parity is closer than the difference in size suggests. Every one of the thirteen portal screens
@@ -163,7 +169,16 @@ unrestricted server-side either way, the acting-as banner names whose record is 
 `PatientScope` narrows a caller who has chosen a patient. Nothing new is granted; what changes is
 that the reach is now in a pocket rather than at a desk.
 
-`[ ]` Not yet built.
+`[x]` Built, 2026-08-23. `portal/patient-finder/` is a route of its own rather than a branch inside
+the overview — there is no overview to branch inside until a record is chosen. The fork answers
+`finder` for `ROLE_ADMIN`, before fetching delegations, since that call has nothing to say about
+somebody holding none.
+
+**It shipped with a hole, found and fixed the same day.** An administrator reaches a record by
+searching, so after opening one they hold exactly one choice — which made `canSwitch` false and left
+no route to a second patient short of signing out. The record picker could never have helped: it
+lists what is already available, and the point is reaching somebody who is not. The banner now
+carries a second action, keyed on the role rather than the choice count.
 
 ### Registration and password reset both land on mobile
 
@@ -176,7 +191,15 @@ dead end is rewritten to explain it — which is now part of this work rather th
 `account/*` therefore does **not** join the never-copied list, and the three interceptor allowlist
 entries stop being plumbing without a purpose.
 
-`[ ]` Not yet built.
+`[x]` Built, 2026-08-23, and it needed one new i18n key rather than three screens' worth — the
+scaffold had shipped `register.*` and `reset.*` in all three locales already. The dead end is
+reworded, as this decision carried.
+
+Two things the work turned up. The reset mail's link had nowhere to land: the Android intent filter
+already claimed every link on the host, but nothing routed one, so the key was dropped —
+`DeepLinkService` now routes an allowlist of two paths. And both forms trimmed on the way _out_
+while `Validators.email` rejects a trailing space, so an address pasted from a mail app left the
+form invalid and blamed the address. Both now trim before validity is checked.
 
 ### Archived cases appear on both apps, collapsed
 
@@ -190,7 +213,14 @@ the assumption of a clinical audience. Whether to render it, or only the fact an
 one sub-decision left open here — the safer default is to show the date and the archivist and to keep
 the reason for the case detail screen.
 
-`[ ]` Not yet built.
+`[x]` Built, 2026-08-23, on both apps. The date and the archivist are shown; the reason is not, and
+that sub-decision stays open. Note a constraint that forced part of it: `archivedById` is a _login_
+rather than a `Professional` id — the api stamps `getCurrentUserLogin()` because no reliable mapping
+exists — so there is no name to resolve it to and the raw login is what appears.
+
+The work also fixed something the api's archiving default had already broken silently: `casesById$`
+was built from the live list, so a report attached to a case somebody later archived was rendering
+with its case name missing.
 
 ### `visitations` and `activity` join the navigation
 
@@ -198,4 +228,6 @@ the reason for the case detail screen.
 detail — which is reached from a case, correctly — becomes reachable. This closes `patient-web.md`
 Phase E B1 rather than re-recording it as deliberate.
 
-`[ ]` Not yet built.
+`[x]` Built, 2026-08-23, on both apps. Labels reuse each screen's own title, so tapping
+"Visitations" opens a page headed "Visitations", and all three locales already carried those strings
+under `title.*`.
