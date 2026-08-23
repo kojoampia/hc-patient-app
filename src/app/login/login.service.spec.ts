@@ -12,6 +12,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { AccountService } from 'app/core/auth/account.service';
 import { ActingAsChoice, ActingAsService } from 'app/core/auth/acting-as.service';
 import { AuthServerProvider } from 'app/core/auth/auth-jwt.service';
+import { SessionBootstrapService } from 'app/fork/session-bootstrap.service';
 
 import { LoginService } from './login.service';
 
@@ -30,6 +31,7 @@ describe('LoginService and the acting-as selection', () => {
   let navigate: jest.Mock;
   let authenticate: jest.Mock;
   let serverLogout: jest.Mock<Observable<void>>;
+  let resetFork: jest.Mock;
 
   const own: ActingAsChoice = { patientId: 'patient-ophelia', name: 'Ophelia Gaisie', own: true };
   const delegated: ActingAsChoice = { patientId: 'patient-kojo', name: 'Kojo Ampia-Addison', own: false };
@@ -39,11 +41,13 @@ describe('LoginService and the acting-as selection', () => {
     navigate = jest.fn().mockResolvedValue(true);
     authenticate = jest.fn();
     serverLogout = jest.fn().mockReturnValue(of(undefined));
+    resetFork = jest.fn();
     TestBed.configureTestingModule({
       providers: [
         { provide: AccountService, useValue: { identity: () => of(null), authenticate } },
         { provide: AuthServerProvider, useValue: { login: () => of({}), logout: () => serverLogout() } },
         { provide: Router, useValue: { navigate } },
+        { provide: SessionBootstrapService, useValue: { reset: resetFork } },
       ],
     });
     service = TestBed.inject(LoginService);
@@ -100,5 +104,20 @@ describe('LoginService and the acting-as selection', () => {
     expect(authenticate).toHaveBeenCalledWith(null);
     expect(actingAs.header()).toBeNull();
     expect(navigate).toHaveBeenCalledWith(['/login']);
+  });
+
+  /**
+   * Where the session ends and where it begins, both. The fork's outcome is a root singleton and `forkGuard` only
+   * re-runs the fork when nothing is resolved yet, so an outcome left behind by the last session — in particular a
+   * failure recorded while the app was locked and had no token — silently decided the next one. Signing in
+   * successfully and landing on "your session has expired" is what that looks like from the outside.
+   */
+  it.each([
+    ['signing in', () => service.login({ username: 'kojo', password: 'irrelevant', rememberMe: false }).subscribe()],
+    ['signing out', () => service.logout()],
+  ])('forgets where the last session was sent when %s', (_label, act) => {
+    act();
+
+    expect(resetFork).toHaveBeenCalled();
   });
 });

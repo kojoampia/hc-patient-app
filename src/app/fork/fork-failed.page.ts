@@ -44,7 +44,13 @@ export class ForkFailedPage {
       return 'We could not reach Health Connect. Check your connection and try again.';
     }
     if (status === 401 || status === 403) {
-      return 'Your session has expired. Please sign in again.';
+      /**
+       * NOT "your session has expired", which this screen is in no position to know. The fork can be refused a
+       * token it was never given — {@link AppLockService} takes the token out of memory before showing the lock
+       * screen — so the sentence was told to people whose session was perfectly valid, and it sent them to sign
+       * in again to fix something signing in does not fix. Say what happened, and offer both ways on.
+       */
+      return 'Health Connect would not confirm your session. Try again, or sign in again.';
     }
     return 'Something went wrong while opening your records. Please try again.';
   });

@@ -15,11 +15,13 @@ import { Account } from 'app/core/auth/account.model';
 import { AccountService } from 'app/core/auth/account.service';
 import { ActingAsService } from 'app/core/auth/acting-as.service';
 import { AuthServerProvider } from 'app/core/auth/auth-jwt.service';
+import { SessionBootstrapService } from 'app/fork/session-bootstrap.service';
 import { Login } from './login.model';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
   private readonly router = inject(Router);
+  private readonly bootstrap = inject(SessionBootstrapService);
 
   constructor(
     private accountService: AccountService,
@@ -33,6 +35,7 @@ export class LoginService {
    */
   login(credentials: Login): Observable<Account | null> {
     this.actingAsService.clear();
+    this.bootstrap.reset();
     return this.authServerProvider.login(credentials).pipe(mergeMap(() => this.accountService.identity(true)));
   }
 
@@ -59,6 +62,7 @@ export class LoginService {
    */
   logout(): void {
     this.actingAsService.clear();
+    this.bootstrap.reset();
     this.authServerProvider
       .logout()
       .pipe(finalize(() => this.accountService.authenticate(null)))

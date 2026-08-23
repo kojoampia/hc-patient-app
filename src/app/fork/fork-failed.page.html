@@ -6,11 +6,15 @@
     <!-- Never a raw error string. -->
     <p class="hc-auth-lede hc-muted" role="alert">{{ message() }}</p>
 
-    @if (isAuthProblem()) {
-    <ion-button expand="block" color="primary" (click)="signOut()">Sign in again</ion-button>
-    } @else {
+    <!--
+      Try again is offered unconditionally, including for 401 and 403. It used to be hidden for those, leaving
+      signing out as the only control — and since the fork could fail for want of a token it did not need
+      (locked, or not yet signed in), that produced a screen a perfectly valid session could not get past.
+      Retrying costs one request; not offering it cost the whole session.
+    -->
     <ion-button expand="block" color="primary" (click)="retry()">Try again</ion-button>
-    <ion-button expand="block" fill="clear" color="dark" (click)="signOut()">Sign out</ion-button>
-    }
+    <ion-button expand="block" fill="clear" color="dark" (click)="signOut()">
+      @if (isAuthProblem()) { Sign in again } @else { Sign out }
+    </ion-button>
   </div>
 </ion-content>
