@@ -1,6 +1,8 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { MOBILE_NAV, MOBILE_TABS, activeIcon } from 'app/shell/mobile-nav';
+
 import { APP_ICONS } from './icons';
 
 /**
@@ -58,5 +60,20 @@ describe('every ion-icon the app names is registered', () => {
     expect(missing).toEqual([]);
     // Guards the guard: a regex that stopped matching would pass this file vacuously.
     expect(used.size).toBeGreaterThan(10);
+  });
+
+  /**
+   * Read from the model rather than scraped, because these names exist in no template: the filled variant of a tab
+   * icon is computed at render time, so the `-outline` pattern above cannot see it and would let the selected tab
+   * render as an empty box — the exact failure the scrape was written to stop.
+   */
+  it('registers the filled variant of every tab icon', () => {
+    const tabIcons = MOBILE_TABS.map(tab => MOBILE_NAV.find(item => item.path === tab)).map(item => item?.icon);
+
+    expect(tabIcons.filter(icon => icon === undefined)).toEqual([]);
+
+    const missing = tabIcons.filter((icon): icon is string => icon !== undefined).filter(icon => !(activeIcon(icon) in APP_ICONS));
+
+    expect(missing).toEqual([]);
   });
 });

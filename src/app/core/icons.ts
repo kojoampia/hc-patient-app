@@ -19,6 +19,9 @@
  * missed every icon bound through `[name]` or passed as an input — which was most of them, including the whole tab
  * bar. A list maintained by hand needs something that notices when it falls behind.</p>
  *
+ * <p>The five bare names are the filled counterparts of the five tab icons, used for the tab you are on — see
+ * `activeIcon` in shell/mobile-nav.ts.</p>
+ *
  * <p>Icons drawn by `hpm-icon` are a different set entirely and are not registered here; that component inlines its
  * own SVG paths and never touches ionicons.</p>
  */
@@ -26,7 +29,9 @@
 import { addIcons } from 'ionicons';
 import {
   alertCircleOutline,
+  briefcase,
   briefcaseOutline,
+  calendar,
   calendarOutline,
   cardOutline,
   checkmarkOutline,
@@ -36,7 +41,9 @@ import {
   documentTextOutline,
   ellipsisHorizontal,
   fileTrayOutline,
+  folder,
   folderOutline,
+  home,
   homeOutline,
   leafOutline,
   locationOutline,
@@ -44,6 +51,7 @@ import {
   mailOpenOutline,
   medkitOutline,
   peopleOutline,
+  person,
   personOutline,
   pulseOutline,
   shieldOutline,
@@ -53,7 +61,9 @@ import {
 /** Keyed by the name templates use, not by the export name — `addIcons` registers whatever key it is given. */
 export const APP_ICONS: Readonly<Record<string, string>> = {
   'alert-circle-outline': alertCircleOutline,
+  briefcase,
   'briefcase-outline': briefcaseOutline,
+  calendar,
   'calendar-outline': calendarOutline,
   'card-outline': cardOutline,
   'checkmark-outline': checkmarkOutline,
@@ -63,7 +73,9 @@ export const APP_ICONS: Readonly<Record<string, string>> = {
   'document-text-outline': documentTextOutline,
   'ellipsis-horizontal': ellipsisHorizontal,
   'file-tray-outline': fileTrayOutline,
+  folder,
   'folder-outline': folderOutline,
+  home,
   'home-outline': homeOutline,
   'leaf-outline': leafOutline,
   'location-outline': locationOutline,
@@ -71,6 +83,7 @@ export const APP_ICONS: Readonly<Record<string, string>> = {
   'mail-open-outline': mailOpenOutline,
   'medkit-outline': medkitOutline,
   'people-outline': peopleOutline,
+  person,
   'person-outline': personOutline,
   'pulse-outline': pulseOutline,
   'shield-outline': shieldOutline,

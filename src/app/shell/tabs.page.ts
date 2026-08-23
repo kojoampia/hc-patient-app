@@ -9,7 +9,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   IonIcon,
   IonLabel,
-  IonRouterOutlet,
   IonTabBar,
   IonTabButton,
   IonTabs,
@@ -23,7 +22,7 @@ import { ActingAsService } from 'app/core/auth/acting-as.service';
 import { PortalDataService } from 'app/portal/data/portal-data.service';
 import { SessionBootstrapService } from 'app/fork/session-bootstrap.service';
 import { ActingAsBannerComponent } from './acting-as-banner.component';
-import { MOBILE_NAV, MOBILE_TABS, MobileNavItem } from './mobile-nav';
+import { MOBILE_NAV, MOBILE_TABS, MobileNavItem, activeIcon } from './mobile-nav';
 import { BackButtonService } from './back-button.service';
 import { MoreSheetBus } from './more-sheet.bus';
 import { MoreSheetComponent } from './more-sheet.component';
@@ -37,7 +36,6 @@ import { RecordPickerComponent } from './record-picker.component';
     IonTabs,
     IonTabBar,
     IonTabButton,
-    IonRouterOutlet,
     IonIcon,
     IonLabel,
     IonModal,
@@ -57,8 +55,13 @@ export class TabsPage implements AfterViewInit {
   private readonly navController = inject(NavController);
   private readonly backButton = inject(BackButtonService);
 
-  /** The outlet whose per-tab stack the hardware back button pops (§8.4.8). */
-  readonly outlet = viewChild.required(IonRouterOutlet);
+  /**
+   * The outlet whose per-tab stack the hardware back button pops (§8.4.8).
+   *
+   * Read off `IonTabs` rather than queried directly: the outlet belongs to Ionic's own template, and the one this
+   * file used to declare was a duplicate that covered the app and ate every touch. See tabs.page.html.
+   */
+  readonly tabsRef = viewChild.required(IonTabs);
 
   readonly tabs = MOBILE_TABS;
   readonly nav = MOBILE_NAV;
@@ -72,6 +75,12 @@ export class TabsPage implements AfterViewInit {
   readonly switching = signal(false);
 
   readonly moreOpen = signal(false);
+
+  /** Which tab is on screen, so its icon can be the filled variant. Set by `ionTabsDidChange`, including on load. */
+  readonly activeTab = signal(MOBILE_TABS[0]);
+
+  /** Exposed for the template; see {@link activeIcon}. */
+  readonly activeIcon = activeIcon;
 
   readonly pickerOpen = computed(() => this.mustChoose() || this.switching());
 
@@ -107,7 +116,7 @@ export class TabsPage implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.backButton.register(this.outlet());
+    this.backButton.register(this.tabsRef().outlet);
   }
 
   openSwitch(): void {

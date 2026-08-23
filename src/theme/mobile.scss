@@ -31,6 +31,30 @@
 }
 
 /**
+ * `.hc-kv` is a single flex pair in the lifted stylesheet — label, then value — but every template here uses one
+ * `.hc-kv` as the whole definition list, six or eight children in it. On a wide screen that reads as several
+ * columns of pairs and looks deliberate. At 384px the flex line still refuses to wrap, so each value is squeezed
+ * into a column a character wide and the patient's address prints one letter per line, straight down the screen.
+ *
+ * A grid rather than a wrapped flex: two columns, one row per pair, and the children fall into place with no
+ * change to seven templates. It is also correct for the one container that really does hold a single pair.
+ */
+@media (max-width: 600px) {
+  .hc-kv {
+    display: grid;
+    grid-template-columns: minmax(76px, max-content) 1fr;
+    column-gap: 12px;
+    row-gap: 6px;
+    align-items: baseline;
+  }
+
+  /* The flex `min-width` was reserving the label column; the grid track does that now. */
+  .hc-kv__k {
+    min-width: 0;
+  }
+}
+
+/**
  * `.hc-tbl` carries `min-width: 520px`, so on a 390px viewport it overflows its container. The
  * lifted `.hc-tbl-wrap` already scrolls — the failure mode is a table rendered without that
  * wrapper, which on desktop merely looks wide and on a phone pushes the whole page sideways.

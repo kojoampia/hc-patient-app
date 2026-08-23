@@ -31,6 +31,19 @@ export interface MobileNavItem {
 export const MOBILE_TABS: readonly string[] = ['overview', 'record', 'schedules', 'cases', 'profile'];
 
 /**
+ * The filled counterpart of an outline icon, for the tab the reader is on.
+ *
+ * <p>Colour alone was carrying that job — navy against grey, on a 24px glyph — and it is both hard to see at a
+ * glance and the one distinction a colour-blind reader may not get at all. Ionic does not swap the glyph for you;
+ * the pair has to be named. Derived rather than stored because {@link MobileNavItem.icon} is already documented as
+ * the outline variant, and ionicons names the filled one by dropping the suffix, so a second field would be a
+ * second thing to keep in step for no new information.</p>
+ */
+export function activeIcon(icon: string): string {
+  return icon.endsWith('-outline') ? icon.slice(0, -'-outline'.length) : icon;
+}
+
+/**
  * All ten destinations, in the web's own display order, with the web's own grouping — health,
  * clinical, account. That grouping is the sidebar's, not a fresh opinion, so somebody who uses both
  * clients finds the same things in the same order.

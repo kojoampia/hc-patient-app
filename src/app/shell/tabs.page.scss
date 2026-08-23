@@ -9,6 +9,23 @@
   min-height: 0;
 
   /**
+   * <b>Without these three, the banner above is invisible and unreachable.</b>
+   *
+   * Ionic ships `ion-tabs { position: absolute; inset: 0; width: 100%; height: 100%; contain: layout size style }`.
+   * Absolute takes it out of the flex flow, so the `flex: 1` above does nothing and it covers the whole shell —
+   * including `hpm-acting-as-banner`, which is painted underneath it. The banner was rendering correctly all
+   * along, "Find a patient" button and all; it simply had the tabs on top of it, which is why there appeared to be
+   * no way back to the finder and no indication whose record was open.
+   *
+   * `contain` has to lose its `size` for this to work: with `size` the element ignores its contents when sizing,
+   * so `height: auto` would resolve to zero rather than to what the flex line gives it. `layout style` keeps the
+   * rest of the containment Ionic wants.
+   */
+  position: relative;
+  height: auto;
+  contain: layout style;
+
+  /**
    * §7.4.1 — THE INSET, and the reason this rule is scoped rather than global.
    *
    * The banner owns the top inset: it is the topmost element in the shell, so it takes

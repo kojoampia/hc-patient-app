@@ -15,13 +15,19 @@
 <div class="hpm-shell">
   <hpm-acting-as-banner [runCount]="runCount()" (switchRequested)="openSwitch()" (findRequested)="openFinder()" />
 
-  <ion-tabs>
-    <ion-router-outlet></ion-router-outlet>
-
+  <!--
+    NO <ion-router-outlet> HERE, deliberately. `IonTabs` renders its own, inside `div.tabs-inner`, sized to stop
+    above the tab bar. One declared here is projected as a SIBLING of that div, stays empty, takes the full height
+    of the shell, and — being later in the DOM at the same stacking level — paints over the whole app. It swallowed
+    every touch: no scrolling, no tap reaching a tile, the banner unreachable. Only the tab bar still worked,
+    because that carries z-index 10 and the stray outlet carried 0.
+  -->
+  <ion-tabs (ionTabsDidChange)="activeTab.set($event.tab)">
     <ion-tab-bar slot="bottom" [attr.aria-label]="'patientPortal.nav.ariaPrimary' | translate">
       @for (item of tabItems(); track item.path) {
       <ion-tab-button [tab]="item.path">
-        <ion-icon [name]="item.icon" aria-hidden="true"></ion-icon>
+        <!-- Filled when this is the tab you are on, outline otherwise — colour alone was carrying that. -->
+        <ion-icon [name]="item.path === activeTab() ? activeIcon(item.icon) : item.icon" aria-hidden="true"></ion-icon>
         <ion-label>{{ (item.shortLabelKey ?? item.labelKey) | translate }}</ion-label>
       </ion-tab-button>
       }
