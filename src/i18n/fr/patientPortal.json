@@ -63,7 +63,8 @@
       "copy": "Copier",
       "cancel": "Annuler",
       "save": "Enregistrer",
-      "saving": "Enregistrement…"
+      "saving": "Enregistrement…",
+      "viewAll": "Tout afficher"
     },
     "auth": {
       "eyebrow": "Abofonsa BridgeCare · Portail patient",
@@ -128,16 +129,18 @@
         "emergencies": "Urgences",
         "allergies": "Allergies",
         "diet": "Plan alimentaire",
-        "exercise": "Plan d’exercice"
+        "exercise": "Plan d’exercice",
+        "medications": "Médicaments"
       },
-      "heroNext": "Votre prochain rendez-vous est le {{ when }} avec {{ clinician }}. {{ open }} de vos {{ total }} dossiers sont encore ouverts.",
+      "heroNext": "Votre prochain rendez-vous est le {{ when }} avec {{ clinician }}.",
       "openRecord": "Ouvrir mon dossier",
       "onFile": "Dans votre dossier",
       "onFileSub": "Touchez une tuile pour l’ouvrir.",
       "viewVital": "Voir {{ name }} en détail",
       "lastReadings": "Les mesures derrière cette courbe",
       "recordedBy": "relevé le {{ when }} par {{ who }}",
-      "recordedByYou": "vous"
+      "recordedByYou": "vous",
+      "heroCases": "{{ open }} de vos {{ total }} dossiers sont encore ouverts."
     },
     "record": {
       "vitals": "Constantes",
@@ -159,7 +162,11 @@
         "activity": "Ouvrir le journal complet",
         "medications": "Ouvrir tous les médicaments",
         "reports": "Ouvrir tous les rapports"
-      }
+      },
+      "address": "Adresse",
+      "born": "Né(e) le",
+      "noVitals": "Aucun signe vital enregistré",
+      "phone": "Téléphone"
     },
     "cases": {
       "search": "Rechercher dossiers, symptômes, diagnostics…",
@@ -362,7 +369,8 @@
         },
         "error": {
           "revokeFailed": "Le retrait a échoué. Réessayez."
-        }
+        },
+        "revoke": "Révoquer"
       },
       "plan": {
         "choose": "Choisir une formule",
@@ -370,8 +378,13 @@
         "unavailable": "Les formules ne peuvent pas être affichées pour le moment. Votre dossier n'est pas affecté.",
         "error": {
           "failed": "Cette formule n'a pas pu être sélectionnée. Réessayez."
-        }
-      }
+        },
+        "none": "Aucun plan enregistré"
+      },
+      "careTeam": {
+        "none": "Aucune équipe de soins enregistrée"
+      },
+      "sex": "Sexe"
     },
     "filter": {
       "professional": "Filtrer par professionnel",

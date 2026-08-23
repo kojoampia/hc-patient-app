@@ -118,7 +118,8 @@
       "open": "Open",
       "save": "Save",
       "view": "View",
-      "show": "Show {{otherEntity}}"
+      "show": "Show {{otherEntity}}",
+      "close": "Close"
     },
     "detail": {
       "field": "Field",

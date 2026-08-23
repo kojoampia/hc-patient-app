@@ -63,7 +63,8 @@
       "copy": "Copy",
       "cancel": "Cancel",
       "save": "Save",
-      "saving": "Saving…"
+      "saving": "Saving…",
+      "viewAll": "View all"
     },
     "auth": {
       "eyebrow": "Abofonsa BridgeCare · Patient portal",
@@ -128,16 +129,18 @@
         "emergencies": "Emergencies",
         "allergies": "Allergies",
         "diet": "Diet plan",
-        "exercise": "Exercise plan"
+        "exercise": "Exercise plan",
+        "medications": "Medications"
       },
-      "heroNext": "Your next appointment is {{ when }} with {{ clinician }}. {{ open }} of your {{ total }} cases are still active.",
+      "heroNext": "Your next appointment is {{ when }} with {{ clinician }}.",
       "openRecord": "Open my record",
       "onFile": "On your file",
       "onFileSub": "Tap any tile to open it.",
       "viewVital": "See {{ name }} in detail",
       "lastReadings": "The readings behind it",
       "recordedBy": "recorded {{ when }} by {{ who }}",
-      "recordedByYou": "you"
+      "recordedByYou": "you",
+      "heroCases": "{{ open }} of your {{ total }} cases are still active."
     },
     "record": {
       "vitals": "Vitals",
@@ -159,7 +162,11 @@
         "activity": "Open the full activity trail",
         "medications": "Open all medications",
         "reports": "Open all reports"
-      }
+      },
+      "address": "Address",
+      "born": "Born",
+      "noVitals": "No vitals on file",
+      "phone": "Phone"
     },
     "cases": {
       "search": "Search cases, symptoms, diagnoses…",
@@ -362,7 +369,8 @@
         },
         "error": {
           "revokeFailed": "That could not be withdrawn. Try again."
-        }
+        },
+        "revoke": "Revoke"
       },
       "plan": {
         "choose": "Choose a plan",
@@ -370,8 +378,13 @@
         "unavailable": "Plans cannot be shown just now. Nothing about your record is affected.",
         "error": {
           "failed": "That plan could not be selected. Try again."
-        }
-      }
+        },
+        "none": "No plan on file"
+      },
+      "careTeam": {
+        "none": "No care team on file"
+      },
+      "sex": "Sex"
     },
     "filter": {
       "professional": "Filter by professional",
