@@ -30,7 +30,9 @@
         "session": "Session"
       },
       "collapseMenu": "Réduire le menu",
-      "expandMenu": "Développer le menu"
+      "expandMenu": "Développer le menu",
+      "visitations": "Visites",
+      "activity": "Journal d'activité"
     },
     "title": {
       "overview": "Contexte patient",

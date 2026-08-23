@@ -30,7 +30,9 @@
         "session": "Sitzung"
       },
       "collapseMenu": "Menü einklappen",
-      "expandMenu": "Menü ausklappen"
+      "expandMenu": "Menü ausklappen",
+      "visitations": "Besuche",
+      "activity": "Aktivitätsverlauf"
     },
     "title": {
       "overview": "Patientenkontext",
