@@ -486,7 +486,8 @@
       "switch": "Changer de dossier",
       "chooseTitle": "Quel dossier souhaitez-vous ouvrir ?",
       "chooseOwn": "Mon propre dossier",
-      "chooseFor": "Au nom de {{name}}"
+      "chooseFor": "Au nom de {{name}}",
+      "find": "Trouver un patient"
     },
     "invitations": {
       "title": "Nominations d'accompagnement",

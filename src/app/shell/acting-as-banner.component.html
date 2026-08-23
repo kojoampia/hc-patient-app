@@ -18,6 +18,21 @@
     }
   </span>
 
+  @if (canFind()) {
+    <!-- An administrator holds one choice after opening a record, so the switcher above cannot
+         offer a second patient — and the picker never could, since it can only list what is
+         already available. This is the way back to the search. -->
+    <ion-button
+      class="hpm-banner__switch"
+      size="small"
+      fill="clear"
+      (click)="findRequested.emit()"
+      [attr.aria-label]="'patientPortal.actingAs.find' | translate"
+    >
+      {{ 'patientPortal.actingAs.find' | translate }}
+    </ion-button>
+  }
+
   @if (canSwitch()) {
     <ion-button
       class="hpm-banner__switch"

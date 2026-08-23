@@ -486,7 +486,8 @@
       "switch": "Akte wechseln",
       "chooseTitle": "Welche Akte möchten Sie öffnen?",
       "chooseOwn": "Meine eigene Akte",
-      "chooseFor": "Im Namen von {{name}}"
+      "chooseFor": "Im Namen von {{name}}",
+      "find": "Patient finden"
     },
     "invitations": {
       "title": "Pflege-Nominierungen",

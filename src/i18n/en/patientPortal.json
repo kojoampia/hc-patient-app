@@ -486,7 +486,8 @@
       "switch": "Switch record",
       "chooseTitle": "Whose record would you like to open?",
       "chooseOwn": "My own record",
-      "chooseFor": "Acting for {{name}}"
+      "chooseFor": "Acting for {{name}}",
+      "find": "Find a patient"
     },
     "invitations": {
       "title": "Care nominations",
