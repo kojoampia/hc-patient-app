@@ -1,12 +1,13 @@
 /**
  * Lifted from hc-patient-dashboard
  *   src/main/webapp/app/login/login.service.spec.ts @ 12e418c
- * Divergence: none
+ * Divergence: the last two cases are ours — the web's `logout()` neither routes nor survives a failed request.
  * Re-sync: see PROVENANCE.md.
  */
 
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { Router } from '@angular/router';
+import { Observable, of, throwError } from 'rxjs';
 
 import { AccountService } from 'app/core/auth/account.service';
 import { ActingAsChoice, ActingAsService } from 'app/core/auth/acting-as.service';
@@ -26,16 +27,23 @@ import { LoginService } from './login.service';
 describe('LoginService and the acting-as selection', () => {
   let service: LoginService;
   let actingAs: ActingAsService;
+  let navigate: jest.Mock;
+  let authenticate: jest.Mock;
+  let serverLogout: jest.Mock<Observable<void>>;
 
   const own: ActingAsChoice = { patientId: 'patient-ophelia', name: 'Ophelia Gaisie', own: true };
   const delegated: ActingAsChoice = { patientId: 'patient-kojo', name: 'Kojo Ampia-Addison', own: false };
 
   beforeEach(() => {
     sessionStorage.clear();
+    navigate = jest.fn().mockResolvedValue(true);
+    authenticate = jest.fn();
+    serverLogout = jest.fn().mockReturnValue(of(undefined));
     TestBed.configureTestingModule({
       providers: [
-        { provide: AccountService, useValue: { identity: () => of(null), authenticate: () => undefined } },
-        { provide: AuthServerProvider, useValue: { login: () => of({}), logout: () => of(undefined) } },
+        { provide: AccountService, useValue: { identity: () => of(null), authenticate } },
+        { provide: AuthServerProvider, useValue: { login: () => of({}), logout: () => serverLogout() } },
+        { provide: Router, useValue: { navigate } },
       ],
     });
     service = TestBed.inject(LoginService);
@@ -65,5 +73,32 @@ describe('LoginService and the acting-as selection', () => {
     service.login({ username: 'someone-else', password: 'irrelevant', rememberMe: false });
 
     expect(sessionStorage.getItem('hc-acting-as')).toBeNull();
+  });
+
+  /**
+   * The trap this was written for. `ForkFailedPage` and `DeadEndPage` offer signing out as their only control, and
+   * neither navigated, so pressing it cleared the session and left the same screen on display — reported as a button
+   * that does nothing, which is exactly what it looks like from the outside.
+   */
+  it('leaves the screen it was pressed on', () => {
+    service.logout();
+
+    expect(navigate).toHaveBeenCalledWith(['/login']);
+  });
+
+  /**
+   * And it must do so when the session is already broken, which is the state the dead ends are reached in. Hanging
+   * `authenticate(null)` off `complete` meant a gateway that answered the logout with an error kept the person
+   * signed in locally — the one case where getting out matters was the one case that did not.
+   */
+  it('signs out locally even when the gateway refuses the request', () => {
+    serverLogout.mockReturnValue(throwError(() => new Error('401')));
+    selectTheDelegatedRecord();
+
+    service.logout();
+
+    expect(authenticate).toHaveBeenCalledWith(null);
+    expect(actingAs.header()).toBeNull();
+    expect(navigate).toHaveBeenCalledWith(['/login']);
   });
 });
