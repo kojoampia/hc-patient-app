@@ -173,6 +173,11 @@
         "clinician": "Clinicien",
         "status": "Statut",
         "open": "Ouvrir"
+      },
+      "archived": {
+        "title": "Archivés ({{count}})",
+        "hint": "Un membre de votre équipe soignante les a retirés de la liste active. Ils restent dans votre dossier.",
+        "stamp": "Archivé le {{when}} par {{who}}"
       }
     },
     "case": {

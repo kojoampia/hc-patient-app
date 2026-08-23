@@ -30,6 +30,7 @@ describe('derived counts are null, never a confident zero', () => {
   function streams(over: Record<string, unknown> = {}): Record<string, unknown> {
     return {
       cases$: new BehaviorSubject(loaded([])),
+      archivedCases$: new BehaviorSubject(loaded([])),
       vitals$: new BehaviorSubject(loaded([])),
       medications$: new BehaviorSubject(loaded([])),
       reports$: new BehaviorSubject(loaded([])),

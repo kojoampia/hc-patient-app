@@ -142,7 +142,10 @@ describe('PortalDataService', () => {
 
       build().cases$.subscribe();
 
-      expect(query).toHaveBeenCalledWith({ patientId: 'patient-kojo' });
+      // includeArchived rides along on the case query specifically: the api hides archived cases
+      // unless asked, and the portal splits one fetch into the live list, the archived list and the
+      // by-id map.
+      expect(query).toHaveBeenCalledWith({ patientId: 'patient-kojo', includeArchived: true });
     });
 
     it('discards rows the server should not have sent', () => {

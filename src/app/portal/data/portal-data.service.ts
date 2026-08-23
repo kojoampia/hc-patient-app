@@ -39,6 +39,7 @@ import { TaskService } from 'app/entities/patientMS/task/service/task.service';
 import { VisitationService } from 'app/entities/patientMS/visitation/service/visitation.service';
 
 import { PatientContextService } from './patient-context.service';
+import { byDateDesc } from './portal-format';
 import { LOADING, Resource, failed, loaded, mapResource } from './resource';
 
 /** Anything the portal lists carries the patient it belongs to. */
@@ -63,7 +64,32 @@ interface QueryableService<T> {
 export class PortalDataService {
   private readonly context = inject(PatientContextService);
 
-  readonly cases$ = this.scoped<IClinicalCase>(inject(ClinicalCaseService));
+  /**
+   * Every case, archived or not — one request, split three ways below.
+   *
+   * The api excludes archived cases from `GET /api/clinical-cases` unless asked, which is right for
+   * a clinician's queue and wrong for a patient's own history: their case did not stop having
+   * happened. The `Resource` wrapper survives each split, so a failed fetch still reads as failed on
+   * all three rather than as three empty lists.
+   */
+  private readonly allCases$ = this.scoped<IClinicalCase>(inject(ClinicalCaseService), { includeArchived: true });
+
+  /** The working list: what is still live. Every screen that counts or lists cases reads this. */
+  readonly cases$ = this.allCases$.pipe(
+    map(state => mapResource(state, cases => cases.filter(item => !item.archivedAt) as readonly IClinicalCase[])),
+    shareReplay({ bufferSize: 1, refCount: false }),
+  );
+
+  /** What a professional retired, newest first. Shown collapsed rather than mixed into the list. */
+  readonly archivedCases$ = this.allCases$.pipe(
+    map(state =>
+      mapResource(
+        state,
+        cases => [...cases].filter(item => item.archivedAt).sort(byDateDesc(item => item.archivedAt)) as readonly IClinicalCase[],
+      ),
+    ),
+    shareReplay({ bufferSize: 1, refCount: false }),
+  );
   readonly vitals$ = this.scoped<IStat>(inject(StatService));
   readonly medications$ = this.scoped<IMedication>(inject(MedicationService));
   readonly reports$ = this.scoped<IReport>(inject(ReportService));
@@ -81,8 +107,12 @@ export class PortalDataService {
    *
    * Keeps the Resource wrapper rather than collapsing to an empty map: a screen showing "case:
    * unknown" because the case list failed is telling the reader something false about their record.
+   *
+   * Built from every case rather than only the live ones, which is a fix rather than a nicety: a
+   * report attached to a case somebody later archived would find nothing here and render with its
+   * case name missing.
    */
-  readonly casesById$: Observable<Resource<ReadonlyMap<string, IClinicalCase>>> = this.cases$.pipe(
+  readonly casesById$: Observable<Resource<ReadonlyMap<string, IClinicalCase>>> = this.allCases$.pipe(
     map(state => mapResource(state, cases => new Map(cases.map(item => [item.id, item])) as ReadonlyMap<string, IClinicalCase>)),
     shareReplay({ bufferSize: 1, refCount: false }),
   );
@@ -117,7 +147,10 @@ export class PortalDataService {
    *     request. The banner says one person and the list shows another's medications. Outside the
    *     switchMap, `startWith` fires once on subscribe and never again — and the defect is back.
    */
-  private scoped<T extends PatientScoped>(service: QueryableService<T>): Observable<Resource<readonly T[]>> {
+  private scoped<T extends PatientScoped>(
+    service: QueryableService<T>,
+    extraParams: Record<string, unknown> = {},
+  ): Observable<Resource<readonly T[]>> {
     return this.context.patientIdState$.pipe(
       switchMap(idState => {
         // Loading and failed pass straight through from the profile. A collection cannot be in a
@@ -132,7 +165,7 @@ export class PortalDataService {
           return of(loaded([] as readonly T[]));
         }
 
-        return service.query({ patientId }).pipe(
+        return service.query({ patientId, ...extraParams }).pipe(
           map(response => loaded((response.body ?? []).filter(item => item.patientId === patientId) as readonly T[])),
           catchError((error: unknown) => of(failed<readonly T[]>(error))),
           startWith(LOADING as Resource<readonly T[]>),

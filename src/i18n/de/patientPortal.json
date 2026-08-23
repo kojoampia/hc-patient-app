@@ -173,6 +173,11 @@
         "clinician": "Behandelnde Person",
         "status": "Status",
         "open": "Öffnen"
+      },
+      "archived": {
+        "title": "Archiviert ({{count}})",
+        "hint": "Ein Mitglied Ihres Behandlungsteams hat diese aus der aktiven Liste genommen. Sie bleiben in Ihrer Akte.",
+        "stamp": "Archiviert am {{when}} von {{who}}"
       }
     },
     "case": {

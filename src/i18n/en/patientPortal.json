@@ -173,6 +173,11 @@
         "clinician": "Clinician",
         "status": "Status",
         "open": "Open"
+      },
+      "archived": {
+        "title": "Archived ({{count}})",
+        "hint": "A member of your care team retired these from the active list. They stay on your record.",
+        "stamp": "Archived {{when}} by {{who}}"
       }
     },
     "case": {

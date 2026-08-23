@@ -6,9 +6,9 @@
 
   <div class="hpm-cases__statuses">
     @for (option of statuses; track option) {
-      <button type="button" class="hc-toggle" [class.is-on]="status() === option" (click)="setStatus(option)">
-        {{ option | hpmStatus }}
-      </button>
+    <button type="button" class="hc-toggle" [class.is-on]="status() === option" (click)="setStatus(option)">
+      {{ option | hpmStatus }}
+    </button>
     }
   </div>
 
@@ -22,37 +22,67 @@
   >
     <div class="hc-grid">
       @for (item of filtered(); track item.id) {
-        <!--
+      <!--
           The whole card is the tap target, not a 16px chevron in a table's last column. The chevron
           stays as an affordance so it still reads as "this opens something".
         -->
-        <article
-          class="hc-card hc-card-pad hpm-cases__row"
-          role="button"
-          tabindex="0"
-          (click)="open(item.id)"
-          (keydown.enter)="open(item.id)"
-          [attr.aria-label]="'patientPortal.cases.openCase' | translate: { name: item.title ?? item.brief }"
-        >
-          <div class="hc-row hc-between hc-gap-8 hc-wrap">
-            <b class="hc-grow">{{ item.title ?? item.brief }}</b>
-            <span class="hc-pill" [class]="pill(item.status)">{{ item.status | hpmStatus }}</span>
-          </div>
+      <article
+        class="hc-card hc-card-pad hpm-cases__row"
+        role="button"
+        tabindex="0"
+        (click)="open(item.id)"
+        (keydown.enter)="open(item.id)"
+        [attr.aria-label]="'patientPortal.cases.openCase' | translate: { name: item.title ?? item.brief }"
+      >
+        <div class="hc-row hc-between hc-gap-8 hc-wrap">
+          <b class="hc-grow">{{ item.title ?? item.brief }}</b>
+          <span class="hc-pill" [class]="pill(item.status)">{{ item.status | hpmStatus }}</span>
+        </div>
 
-          @if (item.title && item.brief) {
-            <div class="hc-muted hc-tiny hpm-cases__brief">{{ item.brief }}</div>
-          }
+        @if (item.title && item.brief) {
+        <div class="hc-muted hc-tiny hpm-cases__brief">{{ item.brief }}</div>
+        }
 
-          <div class="hc-row hc-between hc-gap-8 hc-wrap hpm-cases__meta">
-            <span class="hc-muted hc-tiny">
-              <span class="hc-num">{{ item.caseNumber ?? '—' }}</span>
-              · <span class="hc-num">{{ formatInstantDay(item.openedAt) }}</span>
-              · {{ memberOf(item.assignedProfessionalId).name }}
-            </span>
-            <hpm-icon name="chev" [size]="16" [strokeWidth]="2.2" />
-          </div>
-        </article>
+        <div class="hc-row hc-between hc-gap-8 hc-wrap hpm-cases__meta">
+          <span class="hc-muted hc-tiny">
+            <span class="hc-num">{{ item.caseNumber ?? '—' }}</span>
+            · <span class="hc-num">{{ formatInstantDay(item.openedAt) }}</span>
+            · {{ memberOf(item.assignedProfessionalId).name }}
+          </span>
+          <hpm-icon name="chev" [size]="16" [strokeWidth]="2.2" />
+        </div>
+      </article>
       }
     </div>
   </hpm-stream>
+
+  @if (archivedRows().length) {
+  <!-- Below the working list and collapsed, because the working list answers "what is happening to
+         me" and an archived case does not. ion-accordion rather than a hand-rolled toggle: case
+         detail already uses it, so the gesture and the disclosure arrow are the ones already
+         learned on this app. -->
+  <ion-accordion-group class="hc-mt-16">
+    <ion-accordion value="archived">
+      <ion-item slot="header">
+        <ion-label>{{ 'patientPortal.cases.archived.title' | translate: { count: archivedRows().length } }}</ion-label>
+      </ion-item>
+
+      <div slot="content" class="hc-card-pad">
+        <p class="hc-muted hc-tiny" hpmTranslate="patientPortal.cases.archived.hint">
+          A member of your care team retired these from the active list. They stay on your record.
+        </p>
+
+        @for (item of archivedRows(); track item.id) {
+        <article class="hc-card hc-card-pad hc-mt-16" (click)="open(item.id)">
+          <b>{{ item.title ?? item.brief }}</b>
+          <div class="hc-muted hc-tiny hpm-cases__meta">
+            {{ 'patientPortal.cases.archived.stamp' | translate: { when: formatInstantDay(item.archivedAt), who: item.archivedById ?? '—' }
+            }}
+          </div>
+        </article>
+        }
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
+  }
 </hpm-portal-page>

@@ -22,6 +22,15 @@ export interface IClinicalCase {
   diagnosis?: string | null;
   assignedProfessionalId?: string | null;
   assignedRosterId?: string | null;
+  /**
+   * When a professional retired this case from the working queue, or null while it is live.
+   *
+   * A nullable instant rather than a boolean: what is asked about an archived case afterwards is
+   * who and why, and a boolean records that it happened and loses both.
+   */
+  archivedAt?: dayjs.Dayjs | null;
+  archivedById?: string | null;
+  archiveReason?: string | null;
   recommendations?: IRecommendation[] | null;
 }
 

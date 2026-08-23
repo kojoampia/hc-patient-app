@@ -10,6 +10,7 @@
 
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { IonAccordion, IonAccordionGroup, IonItem, IonLabel } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { IClinicalCase } from 'app/entities/patientMS/clinical-case/clinical-case.model';
@@ -38,6 +39,10 @@ import { byDateDesc, formatInstantDay, matches } from '../data/portal-format';
     SearchBoxComponent,
     PersonFilterComponent,
     StatusLabelPipe,
+    IonAccordion,
+    IonAccordionGroup,
+    IonItem,
+    IonLabel,
   ],
   templateUrl: './cases.page.html',
   styleUrl: './cases.page.scss',
@@ -53,6 +58,25 @@ export class CasesPage {
   });
 
   readonly cases = toSignal(this.data.cases$, { initialValue: LOADING as Resource<readonly IClinicalCase[]> });
+
+  /**
+   * Cases a professional retired, newest first.
+   *
+   * Kept out of the list above rather than filtered into it: the working list answers "what is
+   * happening to me", and an archived case does not. Shown at all because the api excluding them by
+   * default is right for a clinician's queue and wrong for a patient's own history.
+   *
+   * Read through `value` rather than `hpm-stream`: this section only renders once the list above has
+   * loaded, so a second loading state under a loaded one would be noise, and a failure here is
+   * already visible as the failure of the same request.
+   */
+  readonly archived = toSignal(this.data.archivedCases$, { initialValue: LOADING as Resource<readonly IClinicalCase[]> });
+
+  /** The archived rows, or none while the fetch is loading or failed. */
+  readonly archivedRows = computed<readonly IClinicalCase[]>(() => {
+    const state = this.archived();
+    return state.state === 'loaded' ? state.value : [];
+  });
 
   /**
    * The people who can be filtered by. Empty while the care team is loading or failed — offering a
