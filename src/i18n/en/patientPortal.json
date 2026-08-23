@@ -510,6 +510,22 @@
       "forbidden": "You do not have access to this part of the record.",
       "generic": "Something went wrong loading this. Please try again.",
       "retry": "Try again"
+    },
+    "finder": {
+      "title": "Find a patient",
+      "blurb": "You have no record of your own. Open a patient's record to see the portal as they see it — everything you do while it is open is recorded against your own account.",
+      "search": "Search",
+      "searchPlaceholder": "Name, email, phone or patient id",
+      "loading": "Loading patients…",
+      "count": "Showing {{ shown }} of {{ total }}",
+      "openNamed": "Open the record of {{ name }}",
+      "failed": "The patient list could not be loaded",
+      "failedBlurb": "This is a failed request, not an empty system. Try again, and check the connection if it keeps failing.",
+      "retry": "Try again",
+      "noMatch": "No patient matches that search",
+      "none": "There are no patient records yet",
+      "narrow": "More patients match than are shown. Narrow the search to find the one you want.",
+      "signOut": "Sign out"
     }
   }
 }

@@ -7,10 +7,10 @@
     <p class="hc-auth-lede hc-muted" role="alert">{{ message() }}</p>
 
     @if (isAuthProblem()) {
-      <ion-button expand="block" color="primary" (click)="signOut()">Sign in again</ion-button>
+    <ion-button expand="block" color="primary" (click)="signOut()">Sign in again</ion-button>
     } @else {
-      <ion-button expand="block" color="primary" (click)="retry()">Try again</ion-button>
-      <ion-button expand="block" fill="clear" color="dark" (click)="signOut()">Sign out</ion-button>
+    <ion-button expand="block" color="primary" (click)="retry()">Try again</ion-button>
+    <ion-button expand="block" fill="clear" color="dark" (click)="signOut()">Sign out</ion-button>
     }
   </div>
 </ion-content>

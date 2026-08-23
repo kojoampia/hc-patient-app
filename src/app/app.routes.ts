@@ -63,6 +63,14 @@ export const routes: Routes = [
   },
 
   {
+    // An administrator's landing place. Not under `tabs`: the shell is the patient's portal, and
+    // there is no patient until one is chosen here.
+    path: 'finder',
+    canActivate: [UserRouteAccessService],
+    loadComponent: () => import('app/finder/patient-finder.page').then(m => m.PatientFinderPage),
+  },
+
+  {
     path: 'fork-failed',
     canActivate: [UserRouteAccessService],
     loadComponent: () => import('app/fork/fork-failed.page').then(m => m.ForkFailedPage),

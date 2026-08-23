@@ -510,6 +510,22 @@
       "forbidden": "Vous n’avez pas accès à cette partie du dossier.",
       "generic": "Une erreur est survenue lors du chargement. Veuillez réessayer.",
       "retry": "Réessayer"
+    },
+    "finder": {
+      "title": "Trouver un patient",
+      "blurb": "Vous n'avez pas de dossier personnel. Ouvrez le dossier d'un patient pour voir le portail comme il le voit — tout ce que vous faites pendant qu'il est ouvert est enregistré sur votre propre compte.",
+      "search": "Rechercher",
+      "searchPlaceholder": "Nom, e-mail, téléphone ou identifiant patient",
+      "loading": "Chargement des patients…",
+      "count": "{{ shown }} sur {{ total }} affichés",
+      "openNamed": "Ouvrir le dossier de {{ name }}",
+      "failed": "La liste des patients n'a pas pu être chargée",
+      "failedBlurb": "Il s'agit d'une requête en échec, pas d'un système vide. Réessayez et vérifiez la connexion si l'échec persiste.",
+      "retry": "Réessayer",
+      "noMatch": "Aucun patient ne correspond à cette recherche",
+      "none": "Il n'y a encore aucun dossier patient",
+      "narrow": "Plus de patients correspondent que ceux affichés. Affinez la recherche pour trouver celui que vous cherchez.",
+      "signOut": "Se déconnecter"
     }
   }
 }
