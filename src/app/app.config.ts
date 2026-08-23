@@ -3,13 +3,7 @@
  * Font Awesome, the service worker and OpenTelemetry in it, none of which apply here.
  */
 
-import {
-  ApplicationConfig,
-  LOCALE_ID,
-  inject,
-  provideAppInitializer,
-  provideZoneChangeDetection,
-} from '@angular/core';
+import { ApplicationConfig, LOCALE_ID, inject, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { RouteReuseStrategy, provideRouter, withComponentInputBinding, withPreloading, PreloadAllModules } from '@angular/router';
 import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular';
@@ -18,6 +12,7 @@ import { importProvidersFrom } from '@angular/core';
 
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { AppLifecycleService } from 'app/core/native/app-lifecycle.service';
+import { DeepLinkService } from 'app/core/native/deep-link.service';
 import { AppLockService } from 'app/core/native/app-lock.service';
 import { BiometricsService } from 'app/core/native/biometrics.service';
 import { DevicePreferencesService } from 'app/core/native/device-preferences.service';
@@ -52,6 +47,7 @@ const initializeApp = async (): Promise<void> => {
   const preferences = inject(DevicePreferencesService);
   const biometrics = inject(BiometricsService);
   const lifecycle = inject(AppLifecycleService);
+  const deepLinks = inject(DeepLinkService);
   const lock = inject(AppLockService);
 
   /**
@@ -82,6 +78,13 @@ const initializeApp = async (): Promise<void> => {
    */
   lock.start();
   await lifecycle.start();
+
+  /**
+   * 5b. **Deep links**, after the lock, because a link can arrive while the app is locked and the
+   *     route it asks for must not be shown behind the unlock screen. Attaching the listener later
+   *     also means the cold-start decision above has already been made by the time one can fire.
+   */
+  await deepLinks.start();
 
   /**
    * 6. **Choose a language, or nothing is ever translated.**

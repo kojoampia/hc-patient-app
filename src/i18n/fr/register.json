@@ -22,7 +22,8 @@
         "fail": "<strong>Compte non créé !</strong> Merci d'essayer à nouveau plus tard.",
         "userexists": "<strong>Ce compte utilisateur existe déjà !</strong> Veuillez en choisir un autre.",
         "emailexists": "<strong>Cet email est déjà utilisé !</strong> Veuillez en choisir un autre."
-      }
+      },
+      "thenWeb": "Une fois votre compte activé, connectez-vous sur le web pour créer votre dossier. Cette application affiche un dossier existant — elle ne peut pas en créer un."
     }
   }
 }

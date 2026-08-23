@@ -11,6 +11,8 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Observable, catchError, of, switchMap } from 'rxjs';
 
 import { ActingAsService } from 'app/core/auth/acting-as.service';
+import { AccountService } from 'app/core/auth/account.service';
+import { Authority } from 'app/config/authority.constants';
 import { CareDelegationService, MineResponse, toActingAsChoices } from 'app/portal/data/care-delegation.service';
 import { OnboardingStatusService } from 'app/onboarding/onboarding-status.service';
 
@@ -26,6 +28,7 @@ export type ForkOutcome =
   | { kind: 'must-choose' }
   | { kind: 'onboarding-required' }
   | { kind: 'invitations-required' }
+  | { kind: 'finder' }
   | { kind: 'failed'; status: number | null };
 
 @Injectable({ providedIn: 'root' })
@@ -33,6 +36,7 @@ export class SessionBootstrapService {
   private readonly careDelegations = inject(CareDelegationService);
   private readonly onboardingStatus = inject(OnboardingStatusService);
   private readonly actingAs = inject(ActingAsService);
+  private readonly account = inject(AccountService);
 
   private readonly state = signal<ForkOutcome>({ kind: 'pending' });
 
@@ -63,7 +67,33 @@ export class SessionBootstrapService {
    */
   restart(): void {
     this.state.set({ kind: 'pending' });
+    const opened = this.actingAs.current();
     this.actingAs.clear();
+
+    /**
+     * An administrator, before anything is fetched.
+     *
+     * They have no `Profile` and never will, so "not onboarded" is their steady state rather than a
+     * stage they are partway through — and until 2026-08-23 the fork below resolved them to
+     * `onboarding-required` and stranded them on a dead end offering "Set up on the web". The web
+     * had the same defect in `onboardingGuard` and fixed it a day earlier.
+     *
+     * Checked first because `/care-delegations/mine` has nothing to say about somebody who holds no
+     * delegations and owns no record: the request is wasted at best, and at worst its failure sends
+     * an administrator to a retry screen for a question that was never theirs.
+     *
+     * `opened` is read before `clear()` above, so an administrator who has already chosen a patient
+     * goes back to the portal rather than to the finder. Without it, every re-entry to the shell
+     * would throw away their choice and ask again.
+     */
+    if (this.account.hasAnyAuthority(Authority.ADMIN)) {
+      if (opened) {
+        this.actingAs.open(opened);
+      }
+      this.state.set({ kind: opened ? 'portal' : 'finder' });
+      this.runs.update(n => n + 1);
+      return;
+    }
 
     this.careDelegations
       .mine()

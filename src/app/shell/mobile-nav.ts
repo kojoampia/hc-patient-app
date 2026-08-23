@@ -57,6 +57,12 @@ export const MOBILE_NAV: readonly MobileNavItem[] = [
     icon: 'alert-circle-outline',
     groupKey: 'patientPortal.nav.group.health',
   },
+  {
+    path: 'visitations',
+    labelKey: 'patientPortal.nav.visitations',
+    icon: 'location-outline',
+    groupKey: 'patientPortal.nav.group.health',
+  },
   { path: 'cases', labelKey: 'patientPortal.nav.cases', icon: 'briefcase-outline', groupKey: 'patientPortal.nav.group.clinical' },
   {
     path: 'medications',
@@ -77,6 +83,7 @@ export const MOBILE_NAV: readonly MobileNavItem[] = [
     icon: 'shield-outline',
     groupKey: 'patientPortal.nav.group.clinical',
   },
+  { path: 'activity', labelKey: 'patientPortal.nav.activity', icon: 'time-outline', groupKey: 'patientPortal.nav.group.account' },
   { path: 'profile', labelKey: 'patientPortal.nav.profile', icon: 'person-outline', groupKey: 'patientPortal.nav.group.account' },
 ];
 

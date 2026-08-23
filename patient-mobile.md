@@ -1,11 +1,19 @@
 # hc-patient-app — plan of record
 
-**Status: no code.** This repository holds a `.gitignore`, this file and `PROVENANCE.md`. **§1–§5 are the contract**,
-frozen as Phase D of `docs/onboarding.md` so that the client can be started without re-reading three backends.
-**§6–§8 are the plan**, added 2026-08-21: the decisions that were open, and the port they imply.
+**Status: built, and not walked on a device.** The app landed on 2026-08-21 (PR #2, `d19ca07`) — Ionic 9, Angular
+20.3, Capacitor 8, all thirteen portal screens, the Android release path and the iOS platform. This header said "no
+code" until 2026-08-23. What has _not_ happened is the by-hand verification every phase in §7.8 ends with: the five
+accounts and five outcomes of §8.3, airplane mode on every panel, biometric unlock and the no-lock-loop case, safe
+areas on a notched device. Treat Android as built-but-unwalked and **iOS as configured and unverified**, which is
+what its own commit says.
+
+**§1–§5 are the contract**, frozen as Phase D of `docs/onboarding.md` so that the client can be started without
+re-reading three backends. **§6–§8 are the plan**, added 2026-08-21: the decisions that were open, and the port they
+imply. **`PARITY.md` is the sweep against the web app** (2026-08-23) — what is at parity, what diverges on purpose,
+and the one real gap.
 
 The contract below is taken from **`docs/onboarding.md` §16, not from its §4–§10.** Those earlier sections describe
-what was *planned*; §16 records what was *built*, and the two differ in ways that matter to a client — the step
+what was _planned_; §16 records what was _built_, and the two differ in ways that matter to a client — the step
 endpoints are named rather than numbered, the status response carries `onboarded`, and `/mine` returns the patient's
 name. Where this file and the code disagree, **the code is right and this file is the bug**; §1–§5 were written on
 2026-08-20 against `api` `cec2c24` and `gateway` `b2314cf`, and the port plan against `web` `12e418c`.
@@ -17,13 +25,13 @@ name. Where this file and the code disagree, **the code is right and this file i
 There is no transaction anywhere in this journey, and no service that owns it end to end. **The client is the
 orchestrator**, and that is a deliberate consequence of the two backends being separate and Mongo running standalone.
 
-| Concern | Service | Why it cannot be the other one |
-| ------- | ------- | ------------------------------ |
-| Registration, activation, password reset, JWT | `gateway` | It is the only service with a `User` domain. `api` runs `skipUserManagement: true`. |
-| Creating a care angel's account | `gateway` (`POST /api/care-angels`) | Same reason — creating a user is something no other service can do. |
-| Sending any mail | `gateway` | `api` has the mail dependency in its pom and no `MailService`. |
-| The clinical record, onboarding, delegation | `api` | It owns the domain, and `PatientScope` is the whole authorization model. |
-| Membership plans | `gateway` proxy to Abofonsa (`GET /api/plans`) | A deliberate exception to discovery-based routing. |
+| Concern                                       | Service                                        | Why it cannot be the other one                                                      |
+| --------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Registration, activation, password reset, JWT | `gateway`                                      | It is the only service with a `User` domain. `api` runs `skipUserManagement: true`. |
+| Creating a care angel's account               | `gateway` (`POST /api/care-angels`)            | Same reason — creating a user is something no other service can do.                 |
+| Sending any mail                              | `gateway`                                      | `api` has the mail dependency in its pom and no `MailService`.                      |
+| The clinical record, onboarding, delegation   | `api`                                          | It owns the domain, and `PatientScope` is the whole authorization model.            |
+| Membership plans                              | `gateway` proxy to Abofonsa (`GET /api/plans`) | A deliberate exception to discovery-based routing.                                  |
 
 Everything under `/services/hcpatientservice/**` is `api`; everything under `/api/**` at the edge is the gateway. A
 client builds URLs through one place that knows that split, exactly as the web client's `ApplicationConfigService`
@@ -46,7 +54,7 @@ GET  /services/hcpatientservice/api/onboarding/status
 ### 2.1 · The five steps
 
 Named, not numbered. The five payloads are genuinely different shapes, and one numbered handler taking all five could
-only be typed as a map or as a wrapper of five optional blocks — both of which make the contract *harder* to implement
+only be typed as a map or as a wrapper of five optional blocks — both of which make the contract _harder_ to implement
 against, which is the opposite of what freezing it is for.
 
 ```
@@ -101,7 +109,7 @@ resumability the design has.
 { "status": "IN_PROGRESS", "step": 2, "profileId": "…", "onboarded": false }
 ```
 
-**The `noConditions` / `noAllergies` / `noMedications` flags are boxed booleans and null means *unanswered*** — which
+**The `noConditions` / `noAllergies` / `noMedications` flags are boxed booleans and null means _unanswered_** — which
 is a different state from "none", and the reason step 4 can tell them apart. Send `false`/`true` deliberately.
 Jackson 3 refuses to bind an absent property onto a primitive and reports only `"Failed to read request"` with no
 cause, so a client that omits a field it thinks is optional gets an error naming nothing.
@@ -118,7 +126,7 @@ cause, so a client that omits a field it thinks is optional gets an error naming
 
 ## 3 · Acting as another patient
 
-A care angel signs in as themselves and acts *as* the patient. Nothing is impersonated — every action is attributed to
+A care angel signs in as themselves and acts _as_ the patient. Nothing is impersonated — every action is attributed to
 the angel.
 
 ```
@@ -147,27 +155,29 @@ GET /services/hcpatientservice/api/care-delegations/mine
 ```
 
 ```jsonc
-{ "email": "ophelia@localhost",
-  "self": { "patientId": "patient-ophelia", "firstName": "Ophelia", "lastName": "Gaisie",
-            "onboardingStatus": "null" },          // {} when the caller has no record of their own
-  "delegations": [ { "id": "…", "patientId": "patient-kojo", "status": "ACTIVE",
-                     "angelEmail": "ophelia@localhost", "patientName": "Kojo Ampia-Addison" } ] }
+{
+  "email": "ophelia@localhost",
+  "self": { "patientId": "patient-ophelia", "firstName": "Ophelia", "lastName": "Gaisie", "onboardingStatus": "null" }, // {} when the caller has no record of their own
+  "delegations": [
+    { "id": "…", "patientId": "patient-kojo", "status": "ACTIVE", "angelEmail": "ophelia@localhost", "patientName": "Kojo Ampia-Addison" }
+  ]
+}
 ```
 
-`patientName` is on the row because a delegation otherwise carries only the *angel's* name, so on its own it cannot
+`patientName` is on the row because a delegation otherwise carries only the _angel's_ name, so on its own it cannot
 tell somebody whose record they are about to open — and a picker labelled with opaque ids is exactly the confusion the
 banner exists to prevent. This endpoint answers for a caller with **no profile at all**, because an angel who is not a
 patient is precisely that.
 
 ### 3.2 · The four cases, and the fork that traps people
 
-| What comes back | What the client does |
-| --------------- | -------------------- |
-| `self` and no delegations | Nothing to choose. The portal, on their own record. |
-| One delegation, no `self` | Auto-select it. One option is not a decision. |
+| What comes back                        | What the client does                                                                                      |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `self` and no delegations              | Nothing to choose. The portal, on their own record.                                                       |
+| One delegation, no `self`              | Auto-select it. One option is not a decision.                                                             |
 | `self` **and** one or more delegations | **Ask.** Do not choose on their behalf, and do not restore a previous choice made by a different account. |
-| Neither, but a `PENDING` nomination | The invitations screen — **not** the wizard. |
-| Neither, and no nomination | The wizard. |
+| Neither, but a `PENDING` nomination    | The invitations screen — **not** the wizard.                                                              |
+| Neither, and no nomination             | The wizard.                                                                                               |
 
 That fourth row is the one that has already been got wrong once. A nomination sitting at `PENDING` grants nothing, so
 it does not read as "acting for somebody"; a naive guard therefore sees no record of the caller's own and sends them
@@ -179,7 +189,7 @@ Two more, learned from the web client on 2026-08-20 and worth not repeating:
 - **Clear the selection on sign-in and on sign-out**, including when a session expires without an explicit sign-out.
   A selection that outlives its session is applied silently to whoever signs in next.
 - **Switching records must reload everything scoped to a patient.** The selection changing is not a cosmetic event:
-  if the profile lookup keeps resolving the signed-in account, the client shows the angel their *own* record under the
+  if the profile lookup keeps resolving the signed-in account, the client shows the angel their _own_ record under the
   patient's name, with the banner cheerfully naming the wrong person.
 
 ### 3.3 · The delegation endpoints
@@ -234,24 +244,24 @@ exist on the web and have no default worth inheriting.
 had rotted. `@ionic/angular@9` peers `@angular/core >=18.0.0`, so matching the web exactly costs nothing and the
 trade-off the question described — newer major against shared models — does not arise.
 
-| # | Decision | |
-| - | -------- | - |
-| 1 | **Ionic Angular + Capacitor, Angular 20** | Ionic owns the shell: tabs, page transitions, back gesture, safe areas, pull-to-refresh, keyboard. The web's `hc-*` CSS owns everything inside a page. |
-| 2 | **Portal only** | The 13 portal screens, acting-as, and sign-in. No onboarding wizard, no invitations screen. |
-| 3 | **Copy the shared TypeScript in, allow divergence** | Provenance header on every lifted file, `PROVENANCE.md` as the index, `tools/check-provenance.mjs` as the check. |
-| 4 | **The acting-as selection clears on cold start, on resume after >15 min backgrounded, on sign-out, and on 401** | Then the §3.2 fork runs again. |
-| 5 | **Token in the Keychain / Keystore, behind a biometric unlock** | On cold start and on long resume. `rememberMe` is forced `true` and the checkbox is not rendered. |
-| 6 | **Online-only, but three-state** | Every stream is `loading`, `loaded`, or `failed`. No caching in v1. |
-| 7 | **Android first** | iOS via `npx cap add ios` once the Android app is real. |
-| 8 | **This file is the plan** | Not a new document in `docs/`. One plan file per repo, as `docs/CLAUDE.md` requires. |
+| #   | Decision                                                                                                        |                                                                                                                                                        |
+| --- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | **Ionic Angular + Capacitor, Angular 20**                                                                       | Ionic owns the shell: tabs, page transitions, back gesture, safe areas, pull-to-refresh, keyboard. The web's `hc-*` CSS owns everything inside a page. |
+| 2   | **Portal only**                                                                                                 | The 13 portal screens, acting-as, and sign-in. No onboarding wizard, no invitations screen.                                                            |
+| 3   | **Copy the shared TypeScript in, allow divergence**                                                             | Provenance header on every lifted file, `PROVENANCE.md` as the index, `tools/check-provenance.mjs` as the check.                                       |
+| 4   | **The acting-as selection clears on cold start, on resume after >15 min backgrounded, on sign-out, and on 401** | Then the §3.2 fork runs again.                                                                                                                         |
+| 5   | **Token in the Keychain / Keystore, behind a biometric unlock**                                                 | On cold start and on long resume. `rememberMe` is forced `true` and the checkbox is not rendered.                                                      |
+| 6   | **Online-only, but three-state**                                                                                | Every stream is `loading`, `loaded`, or `failed`. No caching in v1.                                                                                    |
+| 7   | **Android first**                                                                                               | iOS via `npx cap add ios` once the Android app is real.                                                                                                |
+| 8   | **This file is the plan**                                                                                       | Not a new document in `docs/`. One plan file per repo, as `docs/CLAUDE.md` requires.                                                                   |
 
 Three of these deserve their reasoning recorded, because each is a place where the obvious choice is wrong.
 
 **Why Ionic rather than wrapping the existing app (1).** The web shell already has a mobile mode below its 940px
-breakpoint — a drawer and the same five-tab bar — so a Capacitor wrapper would have been *pixel*-identical for
+breakpoint — a drawer and the same five-tab bar — so a Capacitor wrapper would have been _pixel_-identical for
 almost no work. It was rejected because "the same look, style and feel" is not only pixels: a back gesture that does
-nothing, a page transition that is a repaint, and a tab bar that does not keep per-tab history all read as *not an
-app*. Ionic buys those, and because all visual truth lives in `_tokens.scss` and `_components.scss` and **nothing
+nothing, a page transition that is a repaint, and a tab bar that does not keep per-tab history all read as _not an
+app_. Ionic buys those, and because all visual truth lives in `_tokens.scss` and `_components.scss` and **nothing
 downstream hardcodes a hex**, buying them costs the templates and not the appearance.
 
 **Why portal-only (2), and what it obliges.** The wizard is five endpoints, five payload shapes and the resume rule;
@@ -259,7 +269,7 @@ the portal is the reason anyone opens the app twice. Shipping the portal first i
 **the §3.2 fork must still be implemented in full** — dropping the wizard does not drop the question of where an
 unonboarded user goes. Its two terminal branches become dead-end screens that open `patient.abofonsa.com` in the
 **system browser**, so the user's password manager and any existing session are available. Those screens must say
-*"finish this on the web, then come back"*; a screen that merely refuses is indistinguishable from a bug. §3.2's
+_"finish this on the web, then come back"_; a screen that merely refuses is indistinguishable from a bug. §3.2's
 fourth row is unchanged and still the trap: a `PENDING` nomination goes to the **invitations** dead end, never the
 onboarding one.
 
@@ -281,7 +291,7 @@ this working tree clean: the 2022 stock template it replaced listed neither.
 
 - **Dark mode.** Out of scope for v1. Do not import `@ionic/angular/css/palettes/dark.*.css` — half the app would
   invert and the `hc-*` half would not.
-- **A read-through cache.** Decision 6 makes a failed fetch *honest*; it does not make a train tunnel pleasant. The
+- **A read-through cache.** Decision 6 makes a failed fetch _honest_; it does not make a train tunnel pleasant. The
   next step is an in-session memory cache plus a "last updated HH:MM" line. Plan it rather than discovering it.
 - **`LONG_ABSENCE_MS`.** 15 minutes is a guess, and biometrics on every resume is aggressive for an app that is
   read-only in v1. It is one exported constant so it can be tuned from data rather than re-argued.
@@ -400,7 +410,8 @@ classes are dropped — the shell is rewritten.
 
 ```html
 <div class="hpm-shell">
-  <hpm-acting-as-banner />        <!-- ALWAYS rendered, above ion-tabs -->
+  <hpm-acting-as-banner />
+  <!-- ALWAYS rendered, above ion-tabs -->
   <ion-tabs>
     <ion-router-outlet />
     <ion-tab-bar slot="bottom"> …5 buttons… </ion-tab-bar>
@@ -418,7 +429,7 @@ Four consequences follow:
 1. **The banner now owns the top inset.** It takes `padding-top: var(--ion-safe-area-top)`, and `--ion-safe-area-top`
    is set to `0px` **scoped to `ion-tabs`** — not globally, because login and lock sit outside the shell and still
    need it. Otherwise the inset doubles. Only visible on a real notched device.
-2. **Two states, always rendered** — `actingAs.bannerOwn` when the choice is the user's own *and* a switch is
+2. **Two states, always rendered** — `actingAs.bannerOwn` when the choice is the user's own _and_ a switch is
    possible, `actingAs.banner` naming the patient otherwise. This is the web's own regression fix; `.hc-shell__acting-as`
    and `.is-own` port straight across.
 3. **Switching is the web's `switchRecord()` plus one mobile-only step.** Guard against re-selecting the same id,
@@ -435,10 +446,7 @@ collection are the same value. On a phone that renders as **"No allergies record
 request never arrived — and an allergy list is the worst possible place for those two to read alike.
 
 ```ts
-export type Resource<T> =
-  | { state: 'loading' }
-  | { state: 'loaded'; value: T }
-  | { state: 'failed'; status: number | null; error: unknown };
+export type Resource<T> = { state: 'loading' } | { state: 'loaded'; value: T } | { state: 'failed'; status: number | null; error: unknown };
 ```
 
 `PatientContextService` goes first, because everything depends on it. `profile$` becomes `profileState$` with
@@ -449,7 +457,7 @@ throwing a fully onboarded patient at the onboarding dead end, which in v1 is a 
 
 `PortalDataService` is rewritten around one private `scoped<T>(key, service)` helper that passes `loading` and
 `failed` through from the profile state, returns `loaded([])` when there is no patient id (no record is not a
-failure), keeps the **double filter** — server query parameter *and* client-side `patientId` check, defence in depth,
+failure), keeps the **double filter** — server query parameter _and_ client-side `patientId` check, defence in depth,
 unchanged — and places `startWith(LOADING)` **inside the `switchMap`, after `catchError`**.
 
 That placement earns its keep twice. It guarantees the sequence is always `loading → (loaded | failed)`. And because
@@ -535,7 +543,7 @@ web repo's `docker-publish.yml` (failing since 2026-07-30 against a Dockerfile i
 (publishes an nginx image this app does not have).
 
 **The JDK trap applies here through Gradle.** `/usr/lib/jvm/java-25-openjdk-amd64` is a JRE with no `javac`, and the
-`java` on `PATH` is Oracle 25, which *does* have one — so `java -version` will not catch it. Gradle's failure reads
+`java` on `PATH` is Oracle 25, which _does_ have one — so `java -version` will not catch it. Gradle's failure reads
 `does not provide the required capabilities: [JAVA_COMPILER]`, and a warm build **still installs a stale APK**,
 which is the part that wastes an afternoon. Pin `JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64` and
 `ANDROID_HOME=$HOME/Android/Sdk` in the README and in CI.
@@ -544,17 +552,17 @@ which is the part that wastes an afternoon. Pin `JAVA_HOME=/usr/lib/jvm/java-21-
 
 Each is PR-sized and ends in something testable by hand.
 
-| | Work | Done when |
-| - | ---- | --------- |
-| **0** | Docs and hygiene: this file, `PROVENANCE.md`, the new `.gitignore`, the stale lines in `docs/CLAUDE.md`. | `git status` clean on `master` for the first time. |
-| **1** | Scaffold and theme: `ionic start`, tsconfig paths, lint/prettier/jest, `theme/`, `merge-i18n.mjs`, `capacitor.config.ts`, `cap add android`. | One page shows an `ion-button color="primary"` beside an `.hc-card` with the right radius and shadow — **on a device**. i18n key-equality green. |
-| **2** | Core, auth, sign-in: lift `core/*`, write the token store, `LoginPage`, the `APP_INITIALIZER`, i18n in. | Sign in on a physical Android device against the quality stack; token in EncryptedSharedPreferences; kill and relaunch still signed in; **no `Authorization` header on `/api/authenticate`**. |
-| **3** | The fork, acting-as, dead ends. | The five accounts, five outcomes table in §8.3, by hand. |
-| **4** | Data layer: 15 models and services, `profileState$`, `PortalDataService`, `hpm-stream`. | Airplane mode shows failed-with-retry on every panel, **not** empty. Switching records flashes skeletons, never the previous patient's rows. |
-| **5** | The 13 screens, in the §8.1 order. | Each ships with loading/empty/failed specs, an `ion-refresher`, a More-sheet entry, and a side-by-side walk against the web. 13 PRs. |
-| **6** | Lifecycle and lock. | Background past the threshold → biometric → unlock → picker returns. Cancel the prompt → **no lock loop**. Revoke a delegation server-side → 401 → login, selection cleared. |
-| **7** | Polish and release: deep links, back-button policy, keyboard, safe areas on a notched device, splash and icon, cleartext off, signed build. | `assembleRelease` produces an installable signed artifact; CI green on a PR. |
-| **8** | iOS. | `cap add ios`, Keychain accessibility flags, `NSFaceIDUsageDescription`, and the same five fork outcomes. |
+|       | Work                                                                                                                                         | Done when                                                                                                                                                                                     |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **0** | Docs and hygiene: this file, `PROVENANCE.md`, the new `.gitignore`, the stale lines in `docs/CLAUDE.md`.                                     | `git status` clean on `master` for the first time.                                                                                                                                            |
+| **1** | Scaffold and theme: `ionic start`, tsconfig paths, lint/prettier/jest, `theme/`, `merge-i18n.mjs`, `capacitor.config.ts`, `cap add android`. | One page shows an `ion-button color="primary"` beside an `.hc-card` with the right radius and shadow — **on a device**. i18n key-equality green.                                              |
+| **2** | Core, auth, sign-in: lift `core/*`, write the token store, `LoginPage`, the `APP_INITIALIZER`, i18n in.                                      | Sign in on a physical Android device against the quality stack; token in EncryptedSharedPreferences; kill and relaunch still signed in; **no `Authorization` header on `/api/authenticate`**. |
+| **3** | The fork, acting-as, dead ends.                                                                                                              | The five accounts, five outcomes table in §8.3, by hand.                                                                                                                                      |
+| **4** | Data layer: 15 models and services, `profileState$`, `PortalDataService`, `hpm-stream`.                                                      | Airplane mode shows failed-with-retry on every panel, **not** empty. Switching records flashes skeletons, never the previous patient's rows.                                                  |
+| **5** | The 13 screens, in the §8.1 order.                                                                                                           | Each ships with loading/empty/failed specs, an `ion-refresher`, a More-sheet entry, and a side-by-side walk against the web. 13 PRs.                                                          |
+| **6** | Lifecycle and lock.                                                                                                                          | Background past the threshold → biometric → unlock → picker returns. Cancel the prompt → **no lock loop**. Revoke a delegation server-side → 401 → login, selection cleared.                  |
+| **7** | Polish and release: deep links, back-button policy, keyboard, safe areas on a notched device, splash and icon, cleartext off, signed build.  | `assembleRelease` produces an installable signed artifact; CI green on a PR.                                                                                                                  |
+| **8** | iOS.                                                                                                                                         | `cap add ios`, Keychain accessibility flags, `NSFaceIDUsageDescription`, and the same five fork outcomes.                                                                                     |
 
 ---
 
@@ -565,13 +573,13 @@ Each is PR-sized and ends in something testable by hand.
 `shell/mobile-nav.ts` replaces the web's `shell-nav.ts`, keeping the same five `MOBILE_TABS`, the same ten
 `MOBILE_NAV` items in the same order with the same i18n keys, and extending `NAV_OWNER` into `TAB_OWNER`:
 
-| Tab | Root | Also on this stack |
-| --- | ---- | ------------------ |
-| Overview | `overview` | `emergencies` |
-| Record | `record` | `visitations`, `activity`, `allergies` |
-| Schedules | `schedules` | — |
-| Cases | `cases` | `medications`, `reports`, `plans` |
-| Profile | `profile` | — |
+| Tab       | Root        | Also on this stack                     |
+| --------- | ----------- | -------------------------------------- |
+| Overview  | `overview`  | `emergencies`                          |
+| Record    | `record`    | `visitations`, `activity`, `allergies` |
+| Schedules | `schedules` | —                                      |
+| Cases     | `cases`     | `medications`, `reports`, `plans`      |
+| Profile   | `profile`   | —                                      |
 
 The grouping is the web's own sidebar grouping — health, clinical, account — rather than a fresh opinion.
 `allergies` is the one judgement call: it goes under `record` because on a phone it reads as record content, and
@@ -609,13 +617,13 @@ is a single full-bleed `ion-content` reusing the `.hc-auth*` classes.
 `SessionBootstrapService` implements §3.2 in one place, and these five accounts are the acceptance test — run by
 hand on a device in phase 3, again in phase 6:
 
-| Account | Expected |
-| ------- | -------- |
-| self, no delegations | straight in; banner in its `is-own` state, switcher hidden |
-| angel only, one delegation | auto-selected; banner names the patient |
-| self **and** a delegation | **asked**; modal undismissable; hardware back does not escape it |
-| fresh registration, no record | onboarding dead end, opening the web in the **system browser** |
-| `PENDING` nomination, no record | invitations dead end — **not** the onboarding one |
+| Account                         | Expected                                                         |
+| ------------------------------- | ---------------------------------------------------------------- |
+| self, no delegations            | straight in; banner in its `is-own` state, switcher hidden       |
+| angel only, one delegation      | auto-selected; banner names the patient                          |
+| self **and** a delegation       | **asked**; modal undismissable; hardware back does not escape it |
+| fresh registration, no record   | onboarding dead end, opening the web in the **system browser**   |
+| `PENDING` nomination, no record | invitations dead end — **not** the onboarding one                |
 
 One divergence from the web to record deliberately: when `/care-delegations/mine` **fails**, the web falls back to
 `setAvailable([])`, which is right for a desktop portal already showing the signed-in person. On mobile, combined
@@ -636,8 +644,8 @@ when they come back.
    `portal/data/portal-format.ts` is the only way to render it.
 3. **Instants are not calendar dates.** `formatDay` never shifts; the others render in the record's zone via
    `.utc()`. Ghana is UTC year-round, so a phone in another timezone exposes this in a way the browser never did — a
-   23:05 alert becomes 01:05 **the next day**, the wrong day on a clinical record. Lift `portal-format.ts` *and its
-   spec*; on the web only the test caught this.
+   23:05 alert becomes 01:05 **the next day**, the wrong day on a clinical record. Lift `portal-format.ts` _and its
+   spec_; on the web only the test caught this.
 4. **Read `onboarded`, never re-derive it from `status`** (§2.3). Getting it backwards sends every pre-existing
    patient to a dead end they cannot leave.
 5. **No delete affordance anywhere** (§4). The mobile reflex is `ion-item-sliding` with a red Delete — ban it.

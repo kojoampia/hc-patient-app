@@ -31,6 +31,25 @@ export const routes: Routes = [
   },
 
   {
+    // Unauthenticated, like /login: somebody creating an account has no token yet. The gateway owns
+    // all three of these because it is the only service with a User domain (§1).
+    path: 'register',
+    loadComponent: () => import('app/auth/register/register.page').then(m => m.RegisterPage),
+  },
+
+  {
+    path: 'reset-password',
+    loadComponent: () => import('app/auth/password-reset/password-reset-request.page').then(m => m.PasswordResetRequestPage),
+  },
+
+  {
+    // Reached from the mail's link, carrying ?key=. The deep-link filter routes it here rather than
+    // to the web app when this app is installed.
+    path: 'reset-password/finish',
+    loadComponent: () => import('app/auth/password-reset/password-reset-finish.page').then(m => m.PasswordResetFinishPage),
+  },
+
+  {
     /**
      * Outside the shell, and deliberately NOT guarded by forkGuard: the fork needs a token, and
      * being locked is precisely the state of having one that is not in memory. §8.2.
@@ -60,6 +79,14 @@ export const routes: Routes = [
     canActivate: [UserRouteAccessService],
     loadComponent: () => import('app/deadends/dead-end.page').then(m => m.DeadEndPage),
     data: { kind: 'invitations' },
+  },
+
+  {
+    // An administrator's landing place. Not under `tabs`: the shell is the patient's portal, and
+    // there is no patient until one is chosen here.
+    path: 'finder',
+    canActivate: [UserRouteAccessService],
+    loadComponent: () => import('app/finder/patient-finder.page').then(m => m.PatientFinderPage),
   },
 
   {

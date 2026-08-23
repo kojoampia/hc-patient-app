@@ -25,9 +25,10 @@ import { IClinicalCase, NewClinicalCase } from '../clinical-case.model';
 
 export type PartialUpdateClinicalCase = Partial<IClinicalCase> & Pick<IClinicalCase, 'id'>;
 
-type RestOf<T extends IClinicalCase | NewClinicalCase> = Omit<T, 'openedAt' | 'closedAt'> & {
+type RestOf<T extends IClinicalCase | NewClinicalCase> = Omit<T, 'openedAt' | 'closedAt' | 'archivedAt'> & {
   openedAt?: string | null;
   closedAt?: string | null;
+  archivedAt?: string | null;
 };
 
 export type RestClinicalCase = RestOf<IClinicalCase>;
@@ -45,7 +46,6 @@ export class ClinicalCaseService {
   protected applicationConfigService = inject(ApplicationConfigService);
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/clinical-cases', 'hcpatientservice');
-
 
   create(clinicalCase: NewClinicalCase): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(clinicalCase);
@@ -120,6 +120,7 @@ export class ClinicalCaseService {
       ...clinicalCase,
       openedAt: clinicalCase.openedAt?.toJSON() ?? null,
       closedAt: clinicalCase.closedAt?.toJSON() ?? null,
+      archivedAt: clinicalCase.archivedAt?.toJSON() ?? null,
     };
   }
 
@@ -128,6 +129,9 @@ export class ClinicalCaseService {
       ...restClinicalCase,
       openedAt: restClinicalCase.openedAt ? dayjs(restClinicalCase.openedAt) : undefined,
       closedAt: restClinicalCase.closedAt ? dayjs(restClinicalCase.closedAt) : undefined,
+      // Without this the field arrives as a string while the model says Dayjs — the kind of lie a
+      // template only reveals when something calls .format() on it.
+      archivedAt: restClinicalCase.archivedAt ? dayjs(restClinicalCase.archivedAt) : undefined,
     };
   }
 

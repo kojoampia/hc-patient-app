@@ -30,7 +30,9 @@
         "session": "Sitzung"
       },
       "collapseMenu": "Menü einklappen",
-      "expandMenu": "Menü ausklappen"
+      "expandMenu": "Menü ausklappen",
+      "visitations": "Besuche",
+      "activity": "Aktivitätsverlauf"
     },
     "title": {
       "overview": "Patientenkontext",
@@ -171,6 +173,11 @@
         "clinician": "Behandelnde Person",
         "status": "Status",
         "open": "Öffnen"
+      },
+      "archived": {
+        "title": "Archiviert ({{count}})",
+        "hint": "Ein Mitglied Ihres Behandlungsteams hat diese aus der aktiven Liste genommen. Sie bleiben in Ihrer Akte.",
+        "stamp": "Archiviert am {{when}} von {{who}}"
       }
     },
     "case": {
@@ -479,7 +486,8 @@
       "switch": "Akte wechseln",
       "chooseTitle": "Welche Akte möchten Sie öffnen?",
       "chooseOwn": "Meine eigene Akte",
-      "chooseFor": "Im Namen von {{name}}"
+      "chooseFor": "Im Namen von {{name}}",
+      "find": "Patient finden"
     },
     "invitations": {
       "title": "Pflege-Nominierungen",
@@ -503,6 +511,22 @@
       "forbidden": "Sie haben keinen Zugriff auf diesen Teil der Akte.",
       "generic": "Beim Laden ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
       "retry": "Erneut versuchen"
+    },
+    "finder": {
+      "title": "Patient finden",
+      "blurb": "Sie haben keine eigene Akte. Öffnen Sie die Akte einer Patientin oder eines Patienten, um das Portal so zu sehen wie sie — alles, was Sie dabei tun, wird Ihrem eigenen Konto zugeordnet.",
+      "search": "Suchen",
+      "searchPlaceholder": "Name, E-Mail, Telefon oder Patienten-ID",
+      "loading": "Patienten werden geladen…",
+      "count": "{{ shown }} von {{ total }} angezeigt",
+      "openNamed": "Akte von {{ name }} öffnen",
+      "failed": "Die Patientenliste konnte nicht geladen werden",
+      "failedBlurb": "Das ist eine fehlgeschlagene Anfrage, kein leeres System. Versuchen Sie es erneut und prüfen Sie die Verbindung, falls es weiterhin fehlschlägt.",
+      "retry": "Erneut versuchen",
+      "noMatch": "Kein Patient passt zu dieser Suche",
+      "none": "Es gibt noch keine Patientenakten",
+      "narrow": "Es passen mehr Patienten, als angezeigt werden. Grenzen Sie die Suche ein, um die gesuchte Person zu finden.",
+      "signOut": "Abmelden"
     }
   }
 }

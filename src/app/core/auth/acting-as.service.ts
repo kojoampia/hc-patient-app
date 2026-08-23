@@ -110,6 +110,26 @@ export class ActingAsService {
     this.changed$.next();
   }
 
+  /**
+   * Opens a record the caller found rather than one they were given.
+   *
+   * <p>For an administrator, who holds no delegations and so has nothing to switch between. The
+   * authority is the role and the backend re-checks it per request exactly as it re-checks a
+   * delegation; this only records which record is on screen, and the banner then says so.</p>
+   *
+   * <p>Simpler than the web's equivalent, and the difference is the absence of storage rather than
+   * an omission. The web has to persist the opened record <em>whole</em>, because its shell refetches
+   * delegations on every load and a remembered id would name a choice that response cannot contain.
+   * Nothing here persists at all (§6 decision 4), so a resume re-runs the fork and the administrator
+   * picks again — which for an administrative surface on a phone is the behaviour to want.</p>
+   *
+   * @param choice the patient to open, named as the banner should name them.
+   */
+  open(choice: ActingAsChoice): void {
+    this.choices.set([...this.choices().filter(existing => existing.patientId !== choice.patientId), choice]);
+    this.select(choice.patientId);
+  }
+
   /** The header value, or null when the portal has nothing to say. */
   header(): string | null {
     return this.current()?.patientId ?? null;

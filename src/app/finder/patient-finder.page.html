@@ -1,0 +1,66 @@
+<ion-content class="ion-padding hpm-finder" [fullscreen]="true">
+  <div class="hpm-finder__inner">
+    <h1 class="hc-auth-title" hpmTranslate="patientPortal.finder.title">Find a patient</h1>
+    <p class="hc-auth-lede hc-muted" hpmTranslate="patientPortal.finder.blurb">
+      You have no record of your own. Open a patient's record to see the portal as they see it — everything you do while it is open is
+      recorded against your own account.
+    </p>
+
+    <ion-searchbar
+      [value]="search()"
+      (ionInput)="search.set($any($event).detail.value ?? '')"
+      [placeholder]="'patientPortal.finder.searchPlaceholder' | translate"
+      [attr.aria-label]="'patientPortal.finder.search' | translate"
+      debounce="0"
+    ></ion-searchbar>
+
+    @switch (state()) { @case ('loading') {
+    <div class="hpm-finder__centred">
+      <ion-spinner aria-hidden="true"></ion-spinner>
+      <p class="hc-muted hc-tiny" hpmTranslate="patientPortal.finder.loading">Loading patients…</p>
+    </div>
+    } @case ('failed') {
+    <!-- Not an empty list. "Nobody matched" and "the request failed" look identical here and
+             mean opposite things, so the failed case says so and offers the retry. -->
+    <div class="hpm-finder__centred" role="alert">
+      <p hpmTranslate="patientPortal.finder.failed">The patient list could not be loaded</p>
+      <p class="hc-muted hc-tiny" hpmTranslate="patientPortal.finder.failedBlurb">
+        This is a failed request, not an empty system. Try again, and check the connection if it keeps failing.
+      </p>
+      <ion-button expand="block" color="primary" (click)="retry()" hpmTranslate="patientPortal.finder.retry">Try again</ion-button>
+    </div>
+    } @case ('ready') { @if (profiles().length) {
+    <p class="hc-muted hc-tiny">{{ 'patientPortal.finder.count' | translate: { shown: profiles().length, total: total() } }}</p>
+
+    <ion-list>
+      @for (profile of profiles(); track profile.id) {
+      <ion-item
+        button="true"
+        (click)="open(profile)"
+        [attr.aria-label]="'patientPortal.finder.openNamed' | translate: { name: nameOf(profile) }"
+      >
+        <ion-label>
+          <h2>{{ nameOf(profile) }}</h2>
+          <p>{{ profile.email }} @if (profile.mobilePhone) { · {{ profile.mobilePhone }} }</p>
+        </ion-label>
+      </ion-item>
+      }
+    </ion-list>
+
+    @if (moreThanShown()) {
+    <!-- The server knows the total, so this says how many were not shown rather than
+                 guessing the list might be incomplete. -->
+    <p class="hc-muted hc-tiny hc-mt-16" hpmTranslate="patientPortal.finder.narrow">
+      More patients match than are shown. Narrow the search to find the one you want.
+    </p>
+    } } @else if (search().trim()) {
+    <p class="hc-muted hpm-finder__centred" hpmTranslate="patientPortal.finder.noMatch">No patient matches that search</p>
+    } @else {
+    <p class="hc-muted hpm-finder__centred" hpmTranslate="patientPortal.finder.none">There are no patient records yet</p>
+    } } }
+
+    <ion-button expand="block" fill="clear" color="dark" (click)="signOut()" hpmTranslate="patientPortal.finder.signOut">
+      Sign out
+    </ion-button>
+  </div>
+</ion-content>

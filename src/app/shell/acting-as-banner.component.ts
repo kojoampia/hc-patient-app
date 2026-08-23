@@ -13,7 +13,9 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, input, ou
 import { IonButton } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
+import { AccountService } from 'app/core/auth/account.service';
 import { ActingAsService } from 'app/core/auth/acting-as.service';
+import { Authority } from 'app/config/authority.constants';
 
 @Component({
   selector: 'hpm-acting-as-banner',
@@ -25,6 +27,7 @@ import { ActingAsService } from 'app/core/auth/acting-as.service';
 export class ActingAsBannerComponent {
   private readonly actingAs = inject(ActingAsService);
   private readonly translate = inject(TranslateService);
+  private readonly account = inject(AccountService);
 
   /**
    * The live region's text, republished on each fork run.
@@ -48,12 +51,27 @@ export class ActingAsBannerComponent {
   readonly runCount = input(0);
 
   readonly switchRequested = output<void>();
+  readonly findRequested = output<void>();
 
   readonly current = this.actingAs.current;
   readonly isOwn = computed(() => !this.actingAs.actingForSomeoneElse());
 
   /** A switch is only offered when there is something to switch to. */
   readonly canSwitch = computed(() => this.actingAs.available().length > 1);
+
+  /**
+   * Whether to offer a way back to the finder.
+   *
+   * <p>An administrator reaches a record by searching for it, so after opening one they hold
+   * exactly one choice — which makes {@link canSwitch} false and leaves them with no route to a
+   * second patient short of signing out or waiting for the resume reset. The picker cannot help:
+   * it can only offer what is already in `available()`, and the whole point is to reach somebody
+   * who is not.</p>
+   *
+   * <p>Keyed on the role rather than on the choice count, because "I can search for anyone" is a
+   * property of being an administrator and not of how many records they happen to have opened.</p>
+   */
+  readonly canFind = computed(() => this.account.hasAnyAuthority(Authority.ADMIN));
 
   /**
    * The live region's text. Cleared and re-set on a microtask so the region observes a change even

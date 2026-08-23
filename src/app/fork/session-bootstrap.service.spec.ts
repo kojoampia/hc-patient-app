@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
+import { AccountService } from 'app/core/auth/account.service';
 import { ActingAsService } from 'app/core/auth/acting-as.service';
 import { CareDelegation, CareDelegationService, MineResponse } from 'app/portal/data/care-delegation.service';
 import { OnboardingStatusService } from 'app/onboarding/onboarding-status.service';
@@ -40,6 +41,7 @@ describe('SessionBootstrapService — the §3.2 fork', () => {
 
     TestBed.configureTestingModule({
       providers: [
+        { provide: AccountService, useValue: { hasAnyAuthority: () => false } },
         { provide: CareDelegationService, useValue: { mine } },
         { provide: OnboardingStatusService, useValue: { status } },
       ],

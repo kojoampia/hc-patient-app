@@ -51,6 +51,11 @@ export const forkGuard: CanActivateFn = (): Observable<boolean | UrlTree> => {
           // create a patient record purely to answer somebody else's nomination.
           return router.parseUrl('/invitations-required');
 
+        case 'finder':
+          // An administrator has no record of their own, so there is nothing behind the shell for
+          // them until they choose somebody's. Not a dead end: the finder is where they choose.
+          return router.parseUrl('/finder');
+
         case 'failed':
           return router.parseUrl('/fork-failed');
 

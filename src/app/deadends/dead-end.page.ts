@@ -44,9 +44,19 @@ export class DeadEndPage {
     this.isOnboarding()
       ? {
           title: 'Finish setting up your record',
+          /**
+           * Reworded on 2026-08-23, when registration landed in this app.
+           *
+           * Before that, everybody reaching this screen had registered elsewhere and was being told
+           * something they half expected. Now somebody can register on the phone, activate by mail,
+           * sign in — and arrive here on their very first run, having done nothing wrong. The copy
+           * has to read as the next step of a journey rather than as a refusal, which is why it now
+           * says what this app is for rather than only what is missing.
+           */
           body:
-            'Your account is ready, but your health record has not been set up yet. ' +
-            'That is done on the web — it only takes a few minutes. Come back here afterwards and sign in again.',
+            'Your account is ready. Setting up your health record is done on the web — it takes a few minutes, ' +
+            'and this app shows a record that already exists rather than creating one. ' +
+            'Come back here afterwards and sign in again.',
           action: 'Set up on the web',
         }
       : {

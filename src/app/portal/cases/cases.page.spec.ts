@@ -24,6 +24,7 @@ describe('CasesPage', () => {
   async function build(state: Resource<readonly IClinicalCase[]>): Promise<void> {
     const streams = {
       cases$: new BehaviorSubject(loaded([])),
+      archivedCases$: new BehaviorSubject(loaded([])),
       vitals$: new BehaviorSubject(loaded([])),
       medications$: new BehaviorSubject(loaded([])),
       reports$: new BehaviorSubject(loaded([])),
@@ -96,5 +97,4 @@ describe('CasesPage', () => {
     const buttons = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('ion-button'));
     expect(buttons.some(b => b.querySelector('ion-icon[name="ellipsis-horizontal"]'))).toBe(true);
   });
-
 });

@@ -19,7 +19,7 @@
     <p class="hc-auth-lede hc-muted">Abofonsa BridgeCare · Health Connect</p>
 
     @if (authenticationError()) {
-      <!--
+    <!--
         Rendered through hpmTranslate, which sets innerHTML — because this key's value CONTAINS
         markup by design ("<strong>Failed to sign in!</strong> Please check your credentials…"),
         as do nineteen other JHipster message keys.
@@ -31,7 +31,7 @@
         If a message ever needs to carry a value a user typed, it must be interpolated as a
         translate PARAMETER, never concatenated into the string.
       -->
-      <div class="hc-auth-error" role="alert" hpmTranslate="login.messages.error.authentication"></div>
+    <div class="hc-auth-error" role="alert" hpmTranslate="login.messages.error.authentication"></div>
     }
 
     <form [formGroup]="loginForm" (ngSubmit)="login()">
@@ -73,26 +73,33 @@
 
       <ion-button expand="block" type="submit" color="primary" [disabled]="loginForm.invalid || submitting()">
         @if (submitting()) {
-          <ion-spinner name="crescent" slot="start"></ion-spinner>
-        }
-        {{ 'login.form.button' | translate }}
+        <ion-spinner name="crescent" slot="start"></ion-spinner>
+        } {{ 'login.form.button' | translate }}
       </ion-button>
     </form>
 
     @if (!willNotPersist()) {
-      <!--
+    <!--
         Shown only when the secure store refused the token (§7.6). Saying nothing here would leave
         the user signed out on next launch with no explanation, which reads as the app losing their
         session at random.
       -->
-      <div class="hc-auth-note">
-        This device has no screen lock, so your sign-in will not be kept. You will need to sign in
-        again each time you open the app.
-      </div>
+    <div class="hc-auth-note">
+      This device has no screen lock, so your sign-in will not be kept. You will need to sign in again each time you open the app.
+    </div>
     }
 
+    <!--
+      Both links point at screens that did not exist until 2026-08-23. The forgot-password line was
+      already here as plain text, going nowhere: the interceptor had allowlisted the endpoints and
+      the i18n bundles carried the strings, and only the screens were missing.
+    -->
     <p class="hc-auth-foot hc-muted hc-sm">
-      {{ 'login.password.forgot' | translate }}
+      <a routerLink="/reset-password">{{ 'login.password.forgot' | translate }}</a>
+    </p>
+
+    <p class="hc-auth-foot hc-muted hc-sm">
+      <a routerLink="/register">{{ 'global.menu.account.register' | translate }}</a>
     </p>
   </div>
 </ion-content>

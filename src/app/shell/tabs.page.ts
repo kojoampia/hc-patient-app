@@ -117,6 +117,17 @@ export class TabsPage implements AfterViewInit {
   /**
    * Switching is the web's `switchRecord()` plus one mobile-only step (§7.4.3).
    */
+  /**
+   * Back to the patient search.
+   *
+   * <p>Navigation lives here rather than in the banner for the same reason `openSwitch` does: the
+   * shell owns where the shell goes. The finder sits outside the tabs stack, so this leaves it
+   * rather than pushing onto a tab — a patient search is not a page within a patient's record.</p>
+   */
+  openFinder(): void {
+    void this.navController.navigateRoot('/finder');
+  }
+
   async onChosen(patientId: string): Promise<void> {
     // Guard against re-selecting the same id: without it, tapping the record you already have open
     // resets every stream and pops every stack for no reason.

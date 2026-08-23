@@ -7,7 +7,7 @@
 
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { IonButton, IonContent, IonInput, IonInputPasswordToggle, IonSpinner } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -21,7 +21,18 @@ import TranslateDirective from 'app/shared/language/translate.directive';
   selector: 'hpm-login',
   templateUrl: './login.page.html',
   styleUrl: './login.page.scss',
-  imports: [ReactiveFormsModule, TranslateModule, TranslateDirective, BrandmarkComponent, IonContent, IonInput, IonInputPasswordToggle, IonButton, IonSpinner],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    TranslateModule,
+    TranslateDirective,
+    BrandmarkComponent,
+    IonContent,
+    IonInput,
+    IonInputPasswordToggle,
+    IonButton,
+    IonSpinner,
+  ],
 })
 export class LoginPage {
   private readonly accountService = inject(AccountService);

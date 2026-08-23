@@ -13,17 +13,17 @@
   rather than unlikely.
 -->
 <div class="hpm-shell">
-  <hpm-acting-as-banner [runCount]="runCount()" (switchRequested)="openSwitch()" />
+  <hpm-acting-as-banner [runCount]="runCount()" (switchRequested)="openSwitch()" (findRequested)="openFinder()" />
 
   <ion-tabs>
     <ion-router-outlet></ion-router-outlet>
 
     <ion-tab-bar slot="bottom" [attr.aria-label]="'patientPortal.nav.ariaPrimary' | translate">
       @for (item of tabItems(); track item.path) {
-        <ion-tab-button [tab]="item.path">
-          <ion-icon [name]="item.icon" aria-hidden="true"></ion-icon>
-          <ion-label>{{ (item.shortLabelKey ?? item.labelKey) | translate }}</ion-label>
-        </ion-tab-button>
+      <ion-tab-button [tab]="item.path">
+        <ion-icon [name]="item.icon" aria-hidden="true"></ion-icon>
+        <ion-label>{{ (item.shortLabelKey ?? item.labelKey) | translate }}</ion-label>
+      </ion-tab-button>
       }
 
       <!--
