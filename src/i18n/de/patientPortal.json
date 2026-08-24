@@ -63,7 +63,8 @@
       "copy": "Kopieren",
       "cancel": "Abbrechen",
       "save": "Speichern",
-      "saving": "Wird gespeichert…"
+      "saving": "Wird gespeichert…",
+      "viewAll": "Alle anzeigen"
     },
     "auth": {
       "eyebrow": "Abofonsa BridgeCare · Patientenportal",
@@ -128,16 +129,18 @@
         "emergencies": "Notfälle",
         "allergies": "Allergien",
         "diet": "Ernährungsplan",
-        "exercise": "Bewegungsplan"
+        "exercise": "Bewegungsplan",
+        "medications": "Medikamente"
       },
-      "heroNext": "Ihr nächster Termin ist am {{ when }} bei {{ clinician }}. {{ open }} von {{ total }} Fällen sind noch offen.",
+      "heroNext": "Ihr nächster Termin ist am {{ when }} bei {{ clinician }}.",
       "openRecord": "Meine Akte öffnen",
       "onFile": "In Ihrer Akte",
       "onFileSub": "Tippen Sie auf eine Kachel, um sie zu öffnen.",
       "viewVital": "{{ name }} im Detail ansehen",
       "lastReadings": "Die Messwerte dahinter",
       "recordedBy": "erfasst am {{ when }} von {{ who }}",
-      "recordedByYou": "Ihnen"
+      "recordedByYou": "Ihnen",
+      "heroCases": "{{ open }} von {{ total }} Fällen sind noch offen."
     },
     "record": {
       "vitals": "Vitalwerte",
@@ -159,7 +162,11 @@
         "activity": "Vollständigen Verlauf öffnen",
         "medications": "Alle Medikamente öffnen",
         "reports": "Alle Berichte öffnen"
-      }
+      },
+      "address": "Adresse",
+      "born": "Geboren",
+      "noVitals": "Keine Vitalwerte hinterlegt",
+      "phone": "Telefon"
     },
     "cases": {
       "search": "Fälle, Symptome, Diagnosen durchsuchen…",
@@ -362,7 +369,8 @@
         },
         "error": {
           "revokeFailed": "Das konnte nicht widerrufen werden. Versuchen Sie es erneut."
-        }
+        },
+        "revoke": "Widerrufen"
       },
       "plan": {
         "choose": "Tarif wählen",
@@ -370,8 +378,13 @@
         "unavailable": "Tarife können gerade nicht angezeigt werden. Ihre Akte ist davon nicht betroffen.",
         "error": {
           "failed": "Dieser Tarif konnte nicht ausgewählt werden. Versuchen Sie es erneut."
-        }
-      }
+        },
+        "none": "Kein Plan hinterlegt"
+      },
+      "careTeam": {
+        "none": "Kein Betreuungsteam hinterlegt"
+      },
+      "sex": "Geschlecht"
     },
     "filter": {
       "professional": "Nach Fachkraft filtern",

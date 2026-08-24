@@ -1,5 +1,18 @@
 /** Layout only. */
 
+/**
+ * The same rule, and for the same reason, as `portal-page.component.scss` — see the long note there. A modal's
+ * component is mounted inside an `.ion-page` exactly as a routed one is, so nesting `ion-header` and `ion-content`
+ * inside this host leaves `ion-content` with no height to take. Fixed here rather than waited for: the sheet is
+ * reached from every portal screen, and this is the identical defect one element along.
+ */
+:host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
 .hpm-more {
   --background: var(--hc-bg);
 }

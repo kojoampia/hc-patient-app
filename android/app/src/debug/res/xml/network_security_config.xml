@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  DEBUG BUILDS ONLY. This file lives in src/debug/res and therefore replaces the one in src/main/res
+  when, and only when, the debug build type is assembled. A release APK never contains it.
+
+  WHY IT EXISTS: the main config tried to grant cleartext with
+  `<debug-overrides cleartextTrafficPermitted="true">`, and that attribute is **silently ignored** —
+  Android's schema allows `cleartextTrafficPermitted` on `<base-config>` and `<domain-config>` only,
+  which is exactly what that file's own comment says about `<debug-overrides>` accepting nothing but
+  `<trust-anchors>`. The result was that `base-config cleartextTrafficPermitted="false"` applied to
+  every build, and the app could not speak http at all.
+
+  Found on 2026-08-23, on a physical device, the first time the app was walked: a request to the
+  quality stack failed with
+
+      "Cleartext HTTP traffic to localhost not permitted", code IOException
+
+  from a build the installed package flags confirm was DEBUGGABLE. No unit test can see this — it is
+  a platform policy applied to a real socket — and `assembleDebug` is perfectly happy.
+
+  A per-host `<domain-config>` is expressible HERE precisely because this file is debug-only: the
+  objection the main config raises against it ("that would apply to the RELEASE build too") does not
+  hold for a resource the release build never sees. So the hosts are named rather than opening
+  cleartext to everything, which is the narrower thing to do even in debug.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+            <!-- User CAs, so a developer can put a proxy in front of the gateway. Debug only. -->
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- The quality stack on jacserver: http on a private LAN. -->
+        <domain includeSubdomains="true">patient.healthconnect.local</domain>
+        <!-- The emulator's alias for the host machine, for `npm start`. -->
+        <domain includeSubdomains="false">10.0.2.2</domain>
+        <!-- `adb reverse` from a physical device to a port on the developer's machine. -->
+        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">127.0.0.1</domain>
+    </domain-config>
+</network-security-config>

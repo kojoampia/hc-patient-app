@@ -58,6 +58,27 @@ export class SessionBootstrapService {
   readonly runCount = this.runs.asReadonly();
 
   /**
+   * Forgets where the last session was sent, so the next one is decided by asking rather than by
+   * remembering.
+   *
+   * <p><b>This is what stops a failed fork becoming permanent.</b> The outcome lives in a root
+   * singleton, and `forkGuard` only re-runs the fork `if (!isResolved())` — deliberately, so that a
+   * navigation arriving mid-run waits rather than starting a second one. The cost of that, unnoticed
+   * until a physical device found it, is that <em>any</em> resolved outcome decides every later
+   * session too, without a single further request.</p>
+   *
+   * <p>The failure that matters is `failed`, because the fork can legitimately fail when there is no
+   * token to make its call with: {@link AppLockService} clears the in-memory token before showing
+   * the lock screen, and its own comment names this hazard. Once recorded, signing out and signing
+   * back in returned the user to "your session has expired" — the successful login never got as far
+   * as issuing a request. Hence the reset on both edges of a session, next to the acting-as clear
+   * that is already there for the same reason.</p>
+   */
+  reset(): void {
+    this.state.set({ kind: 'pending' });
+  }
+
+  /**
    * Runs the fork. Called on cold start, after an unlock, and after each of §6 decision 4's reset
    * triggers.
    *
@@ -134,6 +155,17 @@ export class SessionBootstrapService {
        * `toActingAsChoices` counts only ACTIVE delegations, which is correct for the picker and
        * exactly wrong for this question — so this reads the RAW list, not the choices.
        */
+      /**
+       * Asked again here, not only before the request. The check above is the fast path and depends on the account
+       * having been fetched by the time the fork runs; this one depends on nothing but the answer that just came
+       * back. An administrator legitimately has no record and no delegations — `/mine` returns 200 with an empty
+       * `self` — and reading that as "not onboarded" is how a valid user is kept out for having no records, which
+       * is the whole complaint. Two cheap checks beat one order-dependent one.
+       */
+      if (this.account.hasAnyAuthority(Authority.ADMIN)) {
+        return of<ForkOutcome>({ kind: 'finder' });
+      }
+
       const hasAnyNomination = (mine.delegations ?? []).length > 0;
       return of<ForkOutcome>({ kind: hasAnyNomination ? 'invitations-required' : 'onboarding-required' });
     }

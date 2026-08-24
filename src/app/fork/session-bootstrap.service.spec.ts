@@ -20,6 +20,7 @@ describe('SessionBootstrapService — the §3.2 fork', () => {
   let actingAs: ActingAsService;
   let mine: jest.Mock;
   let status: jest.Mock;
+  let hasAnyAuthority: jest.Mock;
 
   const SELF = { patientId: 'patient-ophelia', firstName: 'Ophelia', lastName: 'Gaisie' };
 
@@ -37,11 +38,12 @@ describe('SessionBootstrapService — the §3.2 fork', () => {
 
   beforeEach(() => {
     mine = jest.fn();
+    hasAnyAuthority = jest.fn().mockReturnValue(false);
     status = jest.fn().mockReturnValue(of({ status: null, step: null, profileId: 'p', onboarded: true }));
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: AccountService, useValue: { hasAnyAuthority: () => false } },
+        { provide: AccountService, useValue: { hasAnyAuthority } },
         { provide: CareDelegationService, useValue: { mine } },
         { provide: OnboardingStatusService, useValue: { status } },
       ],
@@ -176,6 +178,51 @@ describe('SessionBootstrapService — the §3.2 fork', () => {
       expect(service.outcome()).toEqual({ kind: 'failed', status: 0 });
       expect(actingAs.available()).toEqual([]);
       expect(actingAs.current()).toBeNull();
+    });
+
+    /**
+     * The trap, reduced to its mechanism. `forkGuard` re-runs the fork only `if (!isResolved())`, so a recorded
+     * failure decides every later session too — and the fork can fail for want of a token it was never given,
+     * because the lock screen takes the token out of memory before it is shown. The visible result was a
+     * successful login landing straight on "your session has expired", with no request made in between.
+     */
+    it('does not let a recorded failure decide the next session', () => {
+      mine.mockReturnValue(throwError(() => ({ status: 401 })));
+      service.restart();
+      expect(service.isResolved()).toBe(true);
+
+      service.reset();
+
+      // Unresolved again, which is what makes forkGuard ask rather than remember.
+      expect(service.isResolved()).toBe(false);
+      expect(service.outcome()).toEqual({ kind: 'pending' });
+    });
+  });
+
+  /**
+   * The complaint in one line: not having records must not keep a valid user out. An administrator has no
+   * `Profile` and never will, so `/mine` answers 200 with an empty `self` and no delegations — the same shape as
+   * a fresh registration, and read the same way it sends them to an onboarding dead end.
+   */
+  describe('an administrator, who has no records by construction', () => {
+    it('goes to the finder even when the account loads too late for the fast path', () => {
+      // False when restart() asks, true by the time the response is being read — the ordering that made the
+      // pre-request check alone insufficient.
+      hasAnyAuthority.mockReturnValueOnce(false).mockReturnValue(true);
+      givenMine({ self: {}, delegations: [] });
+
+      service.restart();
+
+      expect(service.outcome()).toEqual({ kind: 'finder' });
+    });
+
+    it('still short-circuits before the request when the account is already known', () => {
+      hasAnyAuthority.mockReturnValue(true);
+
+      service.restart();
+
+      expect(service.outcome()).toEqual({ kind: 'finder' });
+      expect(mine).not.toHaveBeenCalled();
     });
   });
 

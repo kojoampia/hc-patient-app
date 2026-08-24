@@ -1,7 +1,10 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-
 import { AppComponent } from './app/app.component';
 import { appConfig } from './app/app.config';
+import { registerAppIcons } from './app/core/icons';
+
+// Before anything renders: an unregistered ion-icon throws and draws nothing. See app/core/icons.ts.
+registerAppIcons();
 
 bootstrapApplication(AppComponent, appConfig).catch((error: unknown) => {
   // Nothing has rendered at this point, so there is no in-app surface to report on. A telemetry
