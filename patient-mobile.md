@@ -199,8 +199,8 @@ GET  /api/care-delegations              the delegations over the caller's own re
 POST /api/care-delegations/{id}/accept       PENDING → ACTIVE    (the nominee only)
 POST /api/care-delegations/{id}/decline      PENDING → DECLINED  (the nominee only)
 POST /api/care-delegations/{id}/revoke       → REVOKED           (either party)
-POST /api/care-delegations/{id}/activate     STANDBY → AWAITING_COUNTERSIGNATURE   (ROLE_PROFESSIONAL, with a reason)
-POST /api/care-delegations/{id}/countersign  AWAITING_COUNTERSIGNATURE → PENDING   (a *different* ROLE_PROFESSIONAL)
+POST /api/care-delegations/{id}/activate     STANDBY → AWAITING_COUNTERSIGNATURE   (ROLE_DOCTOR, with a reason)
+POST /api/care-delegations/{id}/countersign  AWAITING_COUNTERSIGNATURE → PENDING   (a *different* ROLE_DOCTOR)
 ```
 
 The last two are the only endpoints a patient never calls and the only ones gated on a role rather than a
