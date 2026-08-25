@@ -2,7 +2,7 @@
   "name": "hc-patient-app",
   "version": "0.0.1",
   "private": true,
-  "description": "Health Connect Patient \u2014 mobile portal (Ionic Angular + Capacitor)",
+  "description": "Health Connect Patient — mobile portal (Ionic Angular + Capacitor)",
   "license": "Apache-2.0",
   "engines": {
     "node": "^20.19.0 || ^22.12.0 || >=24.0.0"
@@ -28,6 +28,7 @@
     "cap:sync": "npm run build:prod && npx cap sync android",
     "android:debug": "npm run cap:sync:dev && cd android && ./gradlew assembleDebug",
     "android:release": "npm run cap:sync && cd android && ./gradlew assembleRelease",
+    "android:bundle": "npm run cap:sync && cd android && ./gradlew clean bundleRelease",
     "cap:sync:dev": "npm run build && npx cap sync android"
   },
   "dependencies": {

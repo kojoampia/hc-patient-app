@@ -1,0 +1,122 @@
+<hpm-portal-page titleKey="patientPortal.deleteAccount.title" backHref="/tabs/profile">
+  @if (actingForSomeoneElse()) {
+  <!--
+      §4: an angel acts FOR a patient, and that is not a mandate to end their record. The server
+      refuses this too — showing the control and letting it fail would read as a broken app.
+    -->
+  <section class="hc-card hc-card-pad">
+    <ion-icon class="hpm-delete__icon" name="people-outline" aria-hidden="true"></ion-icon>
+    <h2 class="hc-sm"><b hpmTranslate="patientPortal.deleteAccount.angel.title">Not available while acting for someone</b></h2>
+    <p class="hc-muted hc-sm" hpmTranslate="patientPortal.deleteAccount.angel.body">
+      You are viewing another person's record. Only they can ask for it to be deleted.
+    </p>
+  </section>
+  } @else if (isLoading()) {
+  <section class="hc-card hc-card-pad">
+    <p class="hc-muted hc-sm" hpmTranslate="patientPortal.deleteAccount.loading">Checking your account…</p>
+  </section>
+  } @else if (isFailed()) {
+  <section class="hc-card hc-card-pad">
+    <p class="hc-sm" hpmTranslate="patientPortal.deleteAccount.error.load">We could not check whether you have a deletion request open.</p>
+    <ion-button size="small" fill="outline" color="primary" (click)="reload()">
+      {{ 'patientPortal.deleteAccount.retry' | translate }}
+    </ion-button>
+  </section>
+  } @else if (pending(); as open) {
+  <!-- A request is already running. The date is the promise, so it is the largest thing here. -->
+  <section class="hc-card hc-card-pad hpm-delete__pending">
+    <ion-icon class="hpm-delete__icon" name="hourglass-outline" aria-hidden="true"></ion-icon>
+    <h2 class="hc-sm"><b hpmTranslate="patientPortal.deleteAccount.pending.title">Your record is scheduled for deletion</b></h2>
+    <p class="hc-sm">{{ 'patientPortal.deleteAccount.pending.body' | translate: { date: formatInstantDay(open.dueAt) } }}</p>
+    <p class="hc-muted hc-tiny">
+      {{ 'patientPortal.deleteAccount.pending.requested' | translate: { date: formatInstantDay(open.requestedAt) } }}
+    </p>
+
+    @if (actionError(); as err) {
+    <div class="hc-auth-error" role="alert">{{ err | translate }}</div>
+    }
+
+    <ion-button expand="block" color="primary" [disabled]="busy()" (click)="cancelRequest()">
+      {{ 'patientPortal.deleteAccount.pending.keep' | translate }}
+    </ion-button>
+    <p class="hc-muted hc-tiny" hpmTranslate="patientPortal.deleteAccount.pending.keepHint">
+      You can change your mind at any time until the deletion is carried out.
+    </p>
+  </section>
+  } @else if (confirming()) {
+  <!--
+      The second step. Differently worded from the first on purpose: "Request deletion" and
+      "Yes, delete my record" cannot be confused for one another by somebody tapping quickly.
+    -->
+  <section class="hc-card hc-card-pad hpm-delete__confirm">
+    <h2 class="hc-sm"><b hpmTranslate="patientPortal.deleteAccount.confirm.title">Delete your record?</b></h2>
+    <p class="hc-sm" hpmTranslate="patientPortal.deleteAccount.confirm.body">
+      This asks us to erase your health record. It cannot be undone once carried out.
+    </p>
+
+    <ul class="hc-sm hpm-delete__list">
+      <li hpmTranslate="patientPortal.deleteAccount.confirm.item.record">Your profile, conditions, medications and allergies</li>
+      <li hpmTranslate="patientPortal.deleteAccount.confirm.item.clinical">Your cases, reports, care plans and visits</li>
+      <li hpmTranslate="patientPortal.deleteAccount.confirm.item.delegations">Anyone's permission to act for you</li>
+    </ul>
+
+    <p class="hc-muted hc-sm" hpmTranslate="patientPortal.deleteAccount.confirm.window">
+      Your record will be deleted within 14 days of this request. You can withdraw it at any time before then.
+    </p>
+
+    <ion-textarea
+      class="hpm-delete__reason"
+      label-placement="stacked"
+      [label]="'patientPortal.deleteAccount.confirm.reasonLabel' | translate"
+      [placeholder]="'patientPortal.deleteAccount.confirm.reasonPlaceholder' | translate"
+      [autoGrow]="true"
+      [counter]="true"
+      [maxlength]="500"
+      [ngModel]="reason()"
+      (ngModelChange)="reason.set($event)"
+    ></ion-textarea>
+
+    @if (actionError(); as err) {
+    <div class="hc-auth-error" role="alert">{{ err | translate }}</div>
+    }
+
+    <!--
+        Keeping the record is the PRIMARY button, and the destructive one is the quiet outline
+        below it. The reflex is the opposite — a big red Delete — and it is wrong here: the two
+        outcomes are not equally recoverable, so they must not be equally easy to hit.
+      -->
+    <ion-button expand="block" color="primary" [disabled]="busy()" (click)="abandon()">
+      {{ 'patientPortal.deleteAccount.confirm.keep' | translate }}
+    </ion-button>
+    <ion-button expand="block" fill="outline" color="danger" [disabled]="busy()" (click)="confirm()">
+      {{ 'patientPortal.deleteAccount.confirm.proceed' | translate }}
+    </ion-button>
+  </section>
+  } @else {
+  <section class="hc-card hc-card-pad">
+    <h2 class="hc-sm"><b hpmTranslate="patientPortal.deleteAccount.intro.title">Delete your record</b></h2>
+    <p class="hc-sm" hpmTranslate="patientPortal.deleteAccount.intro.body">
+      You can ask us to delete your health record and everything in it. We carry it out within 14 days, and you can withdraw the request at
+      any point before then.
+    </p>
+    <p class="hc-muted hc-sm" hpmTranslate="patientPortal.deleteAccount.intro.review">
+      An administrator carries out the deletion, so that nothing is erased by a single tap.
+    </p>
+
+    @if (actionError(); as err) {
+    <div class="hc-auth-error" role="alert">{{ err | translate }}</div>
+    }
+
+    <ion-button expand="block" fill="outline" color="danger" (click)="startConfirm()">
+      {{ 'patientPortal.deleteAccount.intro.request' | translate }}
+    </ion-button>
+
+    <ion-button expand="block" fill="clear" color="dark" (click)="openPolicy()">
+      {{ 'patientPortal.deleteAccount.intro.policy' | translate }}
+    </ion-button>
+    <p class="hc-muted hc-tiny" hpmTranslate="patientPortal.deleteAccount.intro.policyHint">
+      The policy opens in your browser and says what we keep and for how long.
+    </p>
+  </section>
+  }
+</hpm-portal-page>

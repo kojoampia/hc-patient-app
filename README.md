@@ -50,14 +50,32 @@ npm run provenance         # diff lifted files against a sibling ../web checkout
 
 npm run cap:sync           # build:prod + npx cap sync android
 npm run android:debug      # cap:sync + ./gradlew assembleDebug
-npm run android:release    # cap:sync + ./gradlew assembleRelease
+npm run android:release    # cap:sync + ./gradlew assembleRelease   (APK — sideloading and lint)
+npm run android:bundle     # cap:sync + ./gradlew bundleRelease     (AAB — the Play upload)
 ```
+
+### Versioning
+
+`package.json`'s `version` is the **single source**. `android/app/build.gradle` parses it and
+derives both Android values — `versionName` is the string verbatim, `versionCode` is
+`major * 10000 + minor * 100 + patch`, so `0.0.1` → `1` and `1.2.3` → `10203`. Bump `package.json`
+and nothing else.
+
+Two guards live in that file, and both fail the build rather than the upload. A version that does
+not start `major.minor.patch` is rejected outright; so is a minor or patch above 99, because the
+formula stops being monotonic there (`1.0.100` and `1.1.0` would both derive `10100`).
+
+A prerelease shares its release's code — `1.2.0-rc.1` and `1.2.0` both derive `10200`. Pass
+`-PversionCode=<n>` to break the tie if both are ever uploaded. That override is also the way to
+re-upload a build Play rejected for something that is not the app — a signing mistake, a bad
+listing — where bumping the real version would misdescribe what changed.
 
 ### Signing a release
 
-`assembleRelease` produces an **unsigned** APK unless `android/keystore.properties` exists. That is
-deliberate: the release path stays buildable by people who should not hold the signing key, and an
-unsigned APK cannot be installed by accident.
+`assembleRelease` and `bundleRelease` produce an **unsigned** artifact unless
+`android/keystore.properties` exists. That is deliberate: the release path stays buildable by people
+who should not hold the signing key, and an unsigned artifact cannot be installed or uploaded by
+accident.
 
 To sign, create `android/keystore.properties` — which `.gitignore` already excludes, along with
 `*.keystore` and `*.jks`:
@@ -73,9 +91,32 @@ keyPassword=…
 means never being able to update this app on an installed device again; leaking it means somebody
 else can publish as this app. It is not in this repository and must not be.
 
-Deep links are configured for `patient.abofonsa.com` but will show a chooser rather than opening
-directly until `/.well-known/assetlinks.json` is published there with the release certificate's
-fingerprint — which cannot be produced before the keystore exists.
+### Two keys, and the one the deep links need
+
+Under Play App Signing — which is not optional for a new app — this keystore is the **upload key**.
+Google verifies the upload with it, then strips that signature and re-signs the artifact with a
+separate **app signing key** it holds. What lands on a handset is signed by Google's certificate,
+not by `hc-patient.jks`.
+
+That distinction decides one thing in this repo. Deep links are configured for
+`patient.abofonsa.com` but will show a chooser rather than opening directly until
+`/.well-known/assetlinks.json` is published there — and the SHA-256 in that file must be the **app
+signing certificate's**, copied from Play Console → Setup → App signing. The upload key's
+fingerprint is the wrong one and fails silently: Android simply does not verify the link, which is
+indistinguishable from not having published the file at all.
+
+Sideloaded builds signed directly by `hc-patient.jks` are the exception — they verify against the
+upload key's fingerprint. Publishing both fingerprints in `assetlinks.json` is legitimate and is
+what you want while the app is still being tested off-store.
+
+### Uploading
+
+Play takes an **App Bundle**, not an APK — `npm run android:bundle`, output at
+`android/app/build/outputs/bundle/release/app-release.aab`. `assembleRelease` stays because a
+signed APK is what you sideload for testing, and because of the lint pass below.
+
+The script runs `clean` first for the reason the CI workflow does: a warm Gradle build will happily
+package stale web assets, and a stale artifact is worse when it is the one somebody uploads.
 
 ### Why `assembleRelease` matters even unsigned
 
@@ -185,7 +226,7 @@ npx cap open ios          # needs macOS + Xcode
 3. **Run §8.3's five fork outcomes on a device.** They are phase 8's stated acceptance and none of
    them has been exercised on iOS.
 4. **Check the safe areas on a notched device.** The acting-as banner owns the top inset and
-   `--ion-safe-area-top` is zeroed *scoped to `ion-tabs`* (§7.4.1); if that is wrong the inset
+   `--ion-safe-area-top` is zeroed _scoped to `ion-tabs`_ (§7.4.1); if that is wrong the inset
    doubles, and it is invisible anywhere but a real notched screen.
 5. **CI does not build iOS.** The workflow's Android job runs on `ubuntu-latest`; an iOS job needs a
    `macos-latest` runner, which is a cost decision rather than a technical one.

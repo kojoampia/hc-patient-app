@@ -67,6 +67,19 @@ export const TABS_ROUTES: Routes = [
     path: 'emergencies',
     loadComponent: () => import('app/portal/emergencies/emergencies.page').then(m => m.EmergenciesPage),
   },
+  /*
+   * Deliberately NOT in MOBILE_NAV, so it appears in neither the tab bar nor the More sheet. It is
+   * reached from the profile screen, which is a tab root — one tap from anywhere, and not sitting
+   * in a list beside "Activity" where a destructive path has no business being.
+   *
+   * It is still a real route rather than a modal, because Google Play's reviewer has to be able to
+   * FIND it: "we could not locate the account deletion option" is a standard rejection, and a
+   * screen with an address can be named in the review notes.
+   */
+  {
+    path: 'delete-account',
+    loadComponent: () => import('app/portal/account/account-deletion.page').then(m => m.AccountDeletionPage),
+  },
   {
     path: '',
     redirectTo: 'overview',

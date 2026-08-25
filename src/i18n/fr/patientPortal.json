@@ -540,6 +540,50 @@
       "none": "Il n'y a encore aucun dossier patient",
       "narrow": "Plus de patients correspondent que ceux affichés. Affinez la recherche pour trouver celui que vous cherchez.",
       "signOut": "Se déconnecter"
+    },
+    "deleteAccount": {
+      "link": "Supprimer votre dossier",
+      "title": "Supprimer votre dossier",
+      "loading": "Vérification de votre compte…",
+      "retry": "Réessayer",
+      "intro": {
+        "title": "Supprimer votre dossier",
+        "body": "Vous pouvez nous demander de supprimer votre dossier médical et tout ce qu'il contient. Nous le faisons dans un délai de 14 jours, et vous pouvez retirer votre demande à tout moment avant cela.",
+        "review": "Un administrateur effectue la suppression, afin que rien ne soit effacé d'une seule pression.",
+        "request": "Demander la suppression",
+        "policy": "Lire la politique de confidentialité",
+        "policyHint": "La politique s'ouvre dans votre navigateur et indique ce que nous conservons et pendant combien de temps."
+      },
+      "confirm": {
+        "title": "Supprimer votre dossier ?",
+        "body": "Cette demande nous invite à effacer votre dossier médical. Elle est irréversible une fois exécutée.",
+        "item": {
+          "record": "Votre profil, vos pathologies, vos médicaments et vos allergies",
+          "clinical": "Vos dossiers cliniques, comptes rendus, plans de soins et visites",
+          "delegations": "Toute autorisation donnée à quelqu'un d'agir en votre nom"
+        },
+        "window": "Votre dossier sera supprimé dans les 14 jours suivant cette demande. Vous pouvez la retirer à tout moment avant cette échéance.",
+        "reasonLabel": "Pourquoi partez-vous ? (facultatif)",
+        "reasonPlaceholder": "Vous n'êtes pas obligé de nous le dire.",
+        "keep": "Conserver mon dossier",
+        "proceed": "Oui, supprimer mon dossier"
+      },
+      "pending": {
+        "title": "Votre dossier est programmé pour suppression",
+        "body": "Nous supprimerons votre dossier et tout ce qu'il contient d'ici le {{date}}.",
+        "requested": "Demandé le {{date}}",
+        "keep": "Finalement, conserver mon dossier",
+        "keepHint": "Vous pouvez changer d'avis à tout moment jusqu'à ce que la suppression soit effectuée."
+      },
+      "angel": {
+        "title": "Indisponible lorsque vous agissez pour autrui",
+        "body": "Vous consultez le dossier d'une autre personne. Elle seule peut en demander la suppression."
+      },
+      "error": {
+        "load": "Nous n'avons pas pu vérifier si une demande de suppression est en cours.",
+        "raise": "Nous n'avons pas pu enregistrer votre demande. Veuillez réessayer.",
+        "cancel": "Nous n'avons pas pu retirer votre demande. Veuillez réessayer."
+      }
     }
   }
 }

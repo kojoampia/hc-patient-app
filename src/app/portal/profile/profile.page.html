@@ -142,8 +142,20 @@
   </div>
 
   <!--
-    NO DELETE AFFORDANCE ANYWHERE (§4). Sixteen resources refuse DELETE for anyone but ROLE_ADMIN —
-    patient and angel alike — and archiving, the replacement, does not exist yet. The mobile reflex
-    is ion-item-sliding with a red Delete; it is banned (§8.4.5).
+    NO DELETE AFFORDANCE ANYWHERE (§4), and this link is not one. Sixteen resources refuse DELETE
+    for anyone but ROLE_ADMIN — patient and angel alike — and the mobile reflex of ion-item-sliding
+    with a red Delete is still banned (§8.4.5). What the account screen offers is a REQUEST: it
+    records that the patient wants to be erased, shows the date it is owed by, and lets them take it
+    back. The erasure itself stays where it has always been, with an administrator.
+
+    Outside the @switch on purpose, so it is reachable from every tab of this screen rather than
+    only from whichever one happens to be open. Google Play requires an app that creates accounts to
+    offer deletion from inside the app, and "one tap from a bottom-tab root" is what makes that
+    findable by a reviewer as well as by a patient.
   -->
+  <div class="hc-mt-16">
+    <ion-button expand="block" fill="clear" color="dark" size="small" routerLink="/tabs/delete-account">
+      {{ 'patientPortal.deleteAccount.link' | translate }}
+    </ion-button>
+  </div>
 </hpm-portal-page>
