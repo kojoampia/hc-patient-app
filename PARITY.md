@@ -231,3 +231,55 @@ Phase E B1 rather than re-recording it as deliberate.
 `[x]` Built, 2026-08-23, on both apps. Labels reuse each screen's own title, so tapping
 "Visitations" opens a page headed "Visitations", and all three locales already carried those strings
 under `title.*`.
+
+## Decisions — 2026-08-25
+
+### Asking to be deleted, on both apps and answered by an administrator
+
+**Decided: build it**, because Google Play requires an app that lets people create accounts to offer
+account deletion from inside the app — and this app added registration on 2026-08-23, which is what
+brought the requirement with it. Play also requires a deletion route that works **without** the app,
+for somebody who has uninstalled or cannot sign in; that is `abofonsa.com/delete-account`, on the
+marketing site.
+
+The shape follows what this codebase already believed rather than what the store asked for.
+`ProfileResource.delete` has been `ROLE_ADMIN`-only since patient data became undeletable, and its
+comment points at "what is meant to replace it" — a patient-raised request, an administrator-carried
+erasure. So the patient's side of this is a `DeletionRequest` document and nothing more: **no client
+in this platform calls anything that deletes.** The most a patient can do is start a fourteen-day
+clock and stop it again.
+
+Five repositories, and the whole of it is one contract:
+
+| Repo                | What landed                                                                                                                            |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `hc-patient/api`    | `DeletionRequest` + `PatientErasureService`, `/api/deletion-requests` — patient-scoped raise/cancel, `ROLE_ADMIN` list/complete/reject |
+| `hc-patient/mobile` | `/tabs/delete-account`, linked from Profile, two-step confirm, pending state with the date                                             |
+| `hc-patient/web`    | `/portal/delete-account`, same three endpoints and the same i18n keys                                                                  |
+| `hc-admin/app`      | The console queue, with the erasure behind a typed patient id                                                                          |
+| `hc-abofonsa-web`   | `/privacy` and `/delete-account`, static rather than CMS content                                                                       |
+
+Three things the work turned up that are worth keeping.
+
+**An angel must not be able to do this.** A care delegation grants full read and write over somebody
+else's record — §4's whole subject — so a deletion path that honoured `X-Acting-As` would make
+erasure a thing a delegate could do _to_ a patient. Refused server-side and hidden client-side, and
+the server check is the one that counts. An administrator with a patient open is refused for the
+mirror-image reason: they can already complete a request, and what they must not be able to do is
+manufacture the patient's consent for one.
+
+**Completing the erasure cuts the account off immediately, and the tests say so out loud.** The
+erasure takes the `Profile` with it, which is what `PatientScope` resolves a token's email into — so
+the very next request from that account resolves to no patient and is refused. A test written
+expecting `400` got `403` and the code was right; the assertion now documents it.
+
+**The gateway route was missing and nothing said so.** `hc-admin`'s gateway routed only
+`/services/hcadminservice/**`, so the console's queue would have 404'd at its own gateway and read as
+a broken screen. Added in `hc-admin/deploy/prod-server/compose.yml`, copying the route
+`hc-professional` already carries. **Not yet applied to a running gateway** — that is a deploy the
+architect owns.
+
+`[x]` Built, 2026-08-25, on both apps. `[ ]` The route above still has to be deployed, and the
+Spanish `patientPortal` bundle still has no `deleteAccount.*` — that file deliberately does not exist
+yet (`web/src/main/webapp/i18n/es/README.md`), so a Spanish reader sees the English strings. For an
+irreversible action that is worth closing sooner than the clinical bundles it is queued behind.

@@ -540,6 +540,50 @@
       "none": "There are no patient records yet",
       "narrow": "More patients match than are shown. Narrow the search to find the one you want.",
       "signOut": "Sign out"
+    },
+    "deleteAccount": {
+      "link": "Delete your record",
+      "title": "Delete your record",
+      "loading": "Checking your account…",
+      "retry": "Try again",
+      "intro": {
+        "title": "Delete your record",
+        "body": "You can ask us to delete your health record and everything in it. We carry it out within 14 days, and you can withdraw the request at any point before then.",
+        "review": "An administrator carries out the deletion, so that nothing is erased by a single tap.",
+        "request": "Request deletion",
+        "policy": "Read the privacy policy",
+        "policyHint": "The policy opens in your browser and says what we keep and for how long."
+      },
+      "confirm": {
+        "title": "Delete your record?",
+        "body": "This asks us to erase your health record. It cannot be undone once carried out.",
+        "item": {
+          "record": "Your profile, conditions, medications and allergies",
+          "clinical": "Your cases, reports, care plans and visits",
+          "delegations": "Anyone's permission to act for you"
+        },
+        "window": "Your record will be deleted within 14 days of this request. You can withdraw it at any time before then.",
+        "reasonLabel": "Why are you leaving? (optional)",
+        "reasonPlaceholder": "You do not have to tell us.",
+        "keep": "Keep my record",
+        "proceed": "Yes, delete my record"
+      },
+      "pending": {
+        "title": "Your record is scheduled for deletion",
+        "body": "We will delete your record and everything in it by {{date}}.",
+        "requested": "Requested on {{date}}",
+        "keep": "Keep my record after all",
+        "keepHint": "You can change your mind at any time until the deletion is carried out."
+      },
+      "angel": {
+        "title": "Not available while acting for someone",
+        "body": "You are viewing another person's record. Only they can ask for it to be deleted."
+      },
+      "error": {
+        "load": "We could not check whether you have a deletion request open.",
+        "raise": "We could not record your request. Please try again.",
+        "cancel": "We could not withdraw your request. Please try again."
+      }
     }
   }
 }

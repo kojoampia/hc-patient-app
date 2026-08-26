@@ -1,0 +1,39 @@
+/**
+ * Nothing here hardcodes a hex — all visual truth is in theme/_tokens.scss (README, "Two things
+ * that will bite"). This file only positions.
+ */
+
+.hpm-delete {
+  &__icon {
+    display: block;
+    font-size: 32px;
+    margin-bottom: 8px;
+    color: var(--hc-grey);
+  }
+
+  &__list {
+    margin: 0 0 12px;
+    padding-left: 20px;
+
+    li {
+      margin-bottom: 4px;
+    }
+  }
+
+  &__reason {
+    margin: 12px 0;
+  }
+
+  /*
+   * The pending panel is the one state where the screen is reporting a commitment rather than
+   * offering a choice, so it is set apart — a left rule in the warn colour, the same device the
+   * acting-as banner uses for "something about this view is not ordinary".
+   */
+  &__pending {
+    border-left: 3px solid var(--hc-warn);
+  }
+
+  &__confirm {
+    border-left: 3px solid var(--hc-danger);
+  }
+}

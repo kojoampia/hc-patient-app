@@ -129,6 +129,11 @@ export const TAB_OWNER: Readonly<Record<string, string | undefined>> = {
 
   schedules: 'schedules',
 
+  // Not a MOBILE_NAV entry — see tabs.routes.ts. It still needs an owner, or the tab bar would
+  // highlight whichever tab the reader happened to arrive from while they are on a screen that
+  // plainly belongs to their account.
+  'delete-account': 'profile',
+
   cases: 'cases',
   medications: 'cases',
   reports: 'cases',

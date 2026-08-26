@@ -27,6 +27,40 @@ if (hasKeystore) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
+/**
+ * Version, derived from package.json — which is the SINGLE SOURCE. Bump it there and nowhere else.
+ *
+ * These two were hardcoded `1` / `"1.0"` while package.json said `0.0.1`, which is the state that
+ * ends with two different builds carrying the same versionCode and Play rejecting the second one
+ * at upload with nothing in the repository to explain why.
+ *
+ * versionCode = major * 10000 + minor * 100 + patch, so 0.0.1 → 1 and 1.2.3 → 10203. It is
+ * monotonic for as long as minor and patch stay under 100, which is what the guard below enforces —
+ * without it, 1.0.100 and 1.1.0 both produce 10100 and the collision surfaces months later at the
+ * Console rather than here.
+ *
+ * PRERELEASE SUFFIXES SHARE A CODE. `1.2.0-rc.1` and `1.2.0` both derive 10200, because only the
+ * numeric core is parsed. If both are ever uploaded, pass `-PversionCode=<n>` to disambiguate the
+ * second — that override also exists for re-uploading a build rejected for something other than
+ * its code (a signing mistake, a bad listing), where bumping the app's real version would be a lie.
+ */
+def packageJson = new groovy.json.JsonSlurper().parseText(rootProject.file("../package.json").text)
+def appVersionName = packageJson.version
+def semver = (appVersionName =~ /^(\d+)\.(\d+)\.(\d+)/)
+if (!semver.find()) {
+    throw new GradleException(
+        "package.json version '${appVersionName}' does not start with major.minor.patch, " +
+        "so no Android versionCode can be derived from it.")
+}
+def (major, minor, patch) = [semver.group(1) as int, semver.group(2) as int, semver.group(3) as int]
+if (minor > 99 || patch > 99) {
+    throw new GradleException(
+        "package.json version '${appVersionName}' has a minor or patch above 99. The versionCode " +
+        "formula (major * 10000 + minor * 100 + patch) stops being monotonic there. Bump the next " +
+        "component up, or change the formula here and in the README together.")
+}
+def appVersionCode = (project.findProperty("versionCode") ?: (major * 10000 + minor * 100 + patch)) as int
+
 android {
     namespace = "net.jojoaddison.hcpatient"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -34,8 +68,8 @@ android {
         applicationId "net.jojoaddison.hcpatient"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode appVersionCode
+        versionName appVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

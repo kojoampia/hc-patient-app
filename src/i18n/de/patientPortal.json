@@ -540,6 +540,50 @@
       "none": "Es gibt noch keine Patientenakten",
       "narrow": "Es passen mehr Patienten, als angezeigt werden. Grenzen Sie die Suche ein, um die gesuchte Person zu finden.",
       "signOut": "Abmelden"
+    },
+    "deleteAccount": {
+      "link": "Akte löschen",
+      "title": "Akte löschen",
+      "loading": "Ihr Konto wird geprüft…",
+      "retry": "Erneut versuchen",
+      "intro": {
+        "title": "Akte löschen",
+        "body": "Sie können uns bitten, Ihre Gesundheitsakte und alles darin zu löschen. Wir führen das innerhalb von 14 Tagen aus, und Sie können den Antrag bis dahin jederzeit zurückziehen.",
+        "review": "Ein Administrator führt die Löschung aus, damit nichts durch eine einzige Berührung gelöscht wird.",
+        "request": "Löschung beantragen",
+        "policy": "Datenschutzerklärung lesen",
+        "policyHint": "Die Erklärung öffnet sich in Ihrem Browser und nennt, was wir aufbewahren und wie lange."
+      },
+      "confirm": {
+        "title": "Akte wirklich löschen?",
+        "body": "Damit bitten Sie uns, Ihre Gesundheitsakte zu löschen. Einmal ausgeführt, lässt sich das nicht rückgängig machen.",
+        "item": {
+          "record": "Ihr Profil, Ihre Diagnosen, Medikamente und Allergien",
+          "clinical": "Ihre Fälle, Berichte, Behandlungspläne und Besuche",
+          "delegations": "Jede Vollmacht, in Ihrem Namen zu handeln"
+        },
+        "window": "Ihre Akte wird innerhalb von 14 Tagen nach diesem Antrag gelöscht. Sie können ihn bis dahin jederzeit zurückziehen.",
+        "reasonLabel": "Warum gehen Sie? (optional)",
+        "reasonPlaceholder": "Sie müssen es uns nicht sagen.",
+        "keep": "Akte behalten",
+        "proceed": "Ja, meine Akte löschen"
+      },
+      "pending": {
+        "title": "Ihre Akte ist zur Löschung vorgemerkt",
+        "body": "Wir löschen Ihre Akte und alles darin bis zum {{date}}.",
+        "requested": "Beantragt am {{date}}",
+        "keep": "Akte doch behalten",
+        "keepHint": "Sie können es sich jederzeit anders überlegen, bis die Löschung ausgeführt ist."
+      },
+      "angel": {
+        "title": "Nicht verfügbar, während Sie für jemanden handeln",
+        "body": "Sie sehen die Akte einer anderen Person. Nur sie kann deren Löschung beantragen."
+      },
+      "error": {
+        "load": "Wir konnten nicht prüfen, ob ein Löschantrag offen ist.",
+        "raise": "Wir konnten Ihren Antrag nicht erfassen. Bitte versuchen Sie es erneut.",
+        "cancel": "Wir konnten Ihren Antrag nicht zurückziehen. Bitte versuchen Sie es erneut."
+      }
     }
   }
 }

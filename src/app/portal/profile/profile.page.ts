@@ -9,6 +9,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { IonButton, IonLabel, IonSegment, IonSegmentButton } from '@ionic/angular';
+import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { switchMap } from 'rxjs';
 import dayjs from 'dayjs/esm';
@@ -56,6 +57,7 @@ const TABS: readonly { readonly id: ProfileTab; readonly labelKey: string }[] = 
     IonSegmentButton,
     IonLabel,
     IonButton,
+    RouterLink,
   ],
   templateUrl: './profile.page.html',
   styleUrl: './profile.page.scss',
