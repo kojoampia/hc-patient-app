@@ -11,11 +11,15 @@ What `hc-patient-app` does and does not do, measured against `hc-patient-dashboa
 
 Status legend: `[x]` at parity · `[~]` deliberate divergence · `[ ]` gap.
 
-> **All four gaps below were closed on 2026-08-23.** The sweep is left as it was written, because it
-> is a dated record of what the two apps looked like and the reasoning is worth keeping — but do not
-> read the `[ ]` markers in "Gaps" and "Shared gaps" as current. **[Decisions](#decisions--2026-08-23)
-> at the end of this file is what is true now**, and two of the four went against what the sweep
-> argued for.
+> **All four gaps below were closed on 2026-08-23.** The sweep's _prose_ is left as it was written,
+> because it is a dated record of what the two apps looked like and the reasoning is worth keeping.
+> The _markers_ are not: each of the four now reads `[x]` and names what closed it, because a reader
+> landing on one entry does not see this banner. **[Decisions](#decisions--2026-08-23) at the end of
+> this file is what is true now**, and two of the four went against what the sweep argued for.
+>
+> Marker corrected 2026-08-30. Until then the four headings still read `[ ]`, which had already been
+> believed once in another repository: `docs/android-publishing-steps.md` cited "no registration, no
+> password reset" as a live gap two days after the screens shipped.
 
 ## The short version
 
@@ -30,7 +34,10 @@ apps have equally.
 
 ## Gaps
 
-### `[ ]` An administrator signing in reaches a dead end
+### `[x]` An administrator signing in reaches a dead end
+
+**Closed 2026-08-23** — [the finder is ported](#the-finder-is-ported-and-an-administrator-gets-it-on-the-phone),
+against what this entry argued for. The fork answers `finder` for `ROLE_ADMIN`.
 
 `fork.guard.ts` / `session-bootstrap.service.ts` has no `ROLE_ADMIN` branch. An administrator has no
 `Profile` and never will, so the fork resolves: no acting-as choices → no nominations → `kind:
@@ -51,7 +58,11 @@ The plan does not address administrators anywhere. Two defensible answers — re
 message naming the web console, or route them somewhere that admits they have no record here — and
 picking between them is a product decision, not a defect fix.
 
-### `[ ]` No account surfaces: no registration, no password reset
+### `[x]` No account surfaces: no registration, no password reset
+
+**Closed 2026-08-23** — [both landed](#registration-and-password-reset-both-land-on-mobile). `app.routes.ts`
+routes `register`, `reset-password` and `reset-password/finish`, and the interceptor entries below stopped
+being plumbing without a purpose. This is the entry `docs/android-publishing-steps.md` read as still open.
 
 `auth.interceptor.ts` already allowlists `api/register`, `api/account/reset-password/init` and
 `api/account/reset-password/finish` as unauthenticated paths — the plumbing anticipates screens that
@@ -62,7 +73,10 @@ or recover from the phone; they have to reach the web app.
 `layouts/*`, so this reads as unfinished rather than decided. It may well be the right scope for v1 —
 but the interceptor entries are a standing hint that somebody expected otherwise.
 
-### `[ ]` Nothing surfaces archived clinical cases
+### `[x]` Nothing surfaces archived clinical cases
+
+**Closed 2026-08-23** — [shown collapsed on both apps](#archived-cases-appear-on-both-apps-collapsed),
+with the date and the archivist. Whether to render `archiveReason` stays open.
 
 `hc-patient-service` gained archiving on 2026-08-22. Neither app is wrong today: `GET
 /api/clinical-cases` excludes archived cases by default, so both quietly stopped showing them with no
@@ -106,7 +120,10 @@ function is covered by the portal screens themselves.
 
 ## Shared gaps — the two apps have these equally
 
-### `[ ]` `visitations` and `activity` are routed but not in the navigation
+### `[x]` `visitations` and `activity` are routed but not in the navigation
+
+**Closed 2026-08-23** — [added to both apps](#visitations-and-activity-join-the-navigation). Ten nav
+entries became twelve, which also closed `patient-web.md` Phase E B1.
 
 Both apps route all thirteen screens and list ten in the navigation. `shell-nav.ts` on the web and
 `mobile-nav.ts` here both omit visitations and activity, so both are reachable only by a link from
