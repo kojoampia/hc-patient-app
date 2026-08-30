@@ -145,7 +145,11 @@ describe('PortalDataService', () => {
       // includeArchived rides along on the case query specifically: the api hides archived cases
       // unless asked, and the portal splits one fetch into the live list, the archived list and the
       // by-id map.
-      expect(query).toHaveBeenCalledWith({ patientId: 'patient-kojo', includeArchived: true });
+      // objectContaining rather than an exact match: the request also carries `page` and `size`
+      // since 2026-08-31, because the portal was reading only the server's default first page.
+      // What this test is for is the patientId, and pinning the whole object made it fail for a
+      // reason it was never asked to have an opinion about. portal-data.paging.spec.ts owns paging.
+      expect(query).toHaveBeenCalledWith(expect.objectContaining({ patientId: 'patient-kojo', includeArchived: true }));
     });
 
     it('discards rows the server should not have sent', () => {
