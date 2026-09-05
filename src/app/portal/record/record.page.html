@@ -53,8 +53,19 @@
       @if (selected(); as vital) {
         <div class="hc-mt-16">
           <div class="hc-row hc-between hc-gap-8 hc-wrap">
+            <!--
+              docs/backlog.md item 6: this passed `name` to a string that declares `when` and `who`.
+              ngx-translate leaves an unmatched placeholder as literal text, so the caption printed
+              the raw braces on the handset, in all three locales. The undated branch is a second
+              string rather than an empty `when` — a reading the record does not date would
+              otherwise read "recorded — by …", which is a placeholder by another name.
+            -->
             <span class="hc-muted hc-tiny">
-              {{ 'patientPortal.overview.recordedBy' | translate: { name: recorderOf(vital) } }}
+              @if (vital.recordedAt) {
+                {{ 'patientPortal.overview.recordedBy' | translate: { when: formatInstantDay(vital.recordedAt), who: recorderOf(vital) } }}
+              } @else {
+                {{ 'patientPortal.overview.recordedByUndated' | translate: { who: recorderOf(vital) } }}
+              }
             </span>
             <button type="button" class="hc-toggle" [class.is-on]="showTable()" (click)="showTable.set(!showTable())">
               {{ 'patientPortal.chart.table' | translate }}

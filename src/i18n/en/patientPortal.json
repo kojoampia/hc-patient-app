@@ -139,6 +139,7 @@
       "viewVital": "See {{ name }} in detail",
       "lastReadings": "The readings behind it",
       "recordedBy": "recorded {{ when }} by {{ who }}",
+      "recordedByUndated": "recorded by {{ who }}",
       "recordedByYou": "you",
       "heroCases": "{{ open }} of your {{ total }} cases are still active."
     },
