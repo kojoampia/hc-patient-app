@@ -139,6 +139,7 @@
       "viewVital": "Voir {{ name }} en détail",
       "lastReadings": "Les mesures derrière cette courbe",
       "recordedBy": "relevé le {{ when }} par {{ who }}",
+      "recordedByUndated": "relevé par {{ who }}",
       "recordedByYou": "vous",
       "heroCases": "{{ open }} de vos {{ total }} dossiers sont encore ouverts."
     },

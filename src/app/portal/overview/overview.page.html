@@ -58,8 +58,13 @@
 
       @if (currentVital(); as vital) {
         <div class="hc-mt-16">
+          <!-- The same defect as record.page.html, on the screen every unresolved route landed on. See docs/backlog.md item 6. -->
           <span class="hc-muted hc-tiny">
-            {{ 'patientPortal.overview.recordedBy' | translate: { name: recorderOf(vital) } }}
+            @if (vital.recordedAt) {
+              {{ 'patientPortal.overview.recordedBy' | translate: { when: formatInstantDay(vital.recordedAt), who: recorderOf(vital) } }}
+            } @else {
+              {{ 'patientPortal.overview.recordedByUndated' | translate: { who: recorderOf(vital) } }}
+            }
           </span>
           <hpm-trend-chart [data]="vital.trend" [unit]="vital.unit" />
         </div>

@@ -30,6 +30,7 @@ import { ActivityLogService } from 'app/entities/patientMS/activity-log/service/
 import { IconComponent } from 'app/shared/ui/icon/icon.component';
 import { AvatarComponent } from 'app/shared/ui/avatar/avatar.component';
 import { StreamComponent } from 'app/shared/ui/stream/stream.component';
+import { PortalNavService } from 'app/shell/portal-nav.service';
 
 import { CareTeamMember, PatientContextService } from '../data/patient-context.service';
 import { PortalDataService } from '../data/portal-data.service';
@@ -70,6 +71,7 @@ export class CaseDetailPage {
   private readonly context = inject(PatientContextService);
   private readonly data = inject(PortalDataService);
   private readonly activityLogs = inject(ActivityLogService);
+  private readonly portalNav = inject(PortalNavService);
 
   private readonly patientIdState = toSignal(this.context.patientIdState$, { initialValue: LOADING as Resource<string | null> });
   private readonly careTeamById = toSignal(this.context.careTeamById$, { initialValue: new Map<string, CareTeamMember>() });
@@ -86,6 +88,15 @@ export class CaseDetailPage {
 
   readonly formatDay = formatDay;
   readonly formatInstantDay = formatInstantDay;
+
+  /**
+   * Where the header's back button goes — the root of whichever tab stack this case was opened on.
+   *
+   * §8.1 registers `case/:id` under all five tabs so that opening a case does not move the reader
+   * out of the list they were scanning; the fixed `/tabs/cases` this template carried undid exactly
+   * that. Read lazily, at first render: a case detail belongs to one stack for its whole life.
+   */
+  readonly backHref = computed(() => this.portalNav.currentTabRoot('cases'));
 
   /** Whether the "Log activity" dialog is up. */
   readonly logging = signal(false);

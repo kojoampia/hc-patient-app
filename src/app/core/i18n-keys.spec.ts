@@ -26,21 +26,28 @@ describe('translation keys', () => {
    * JHipster convention. A checker that only walked segment by segment would report a hundred false positives and
    * be switched off, which is worse than not having one.
    */
-  function resolves(bundle: unknown, parts: readonly string[]): boolean {
+  function lookup(bundle: unknown, parts: readonly string[]): string | undefined {
     if (parts.length === 0) {
-      return typeof bundle === 'string';
+      return typeof bundle === 'string' ? bundle : undefined;
     }
     if (typeof bundle !== 'object' || bundle === null) {
-      return false;
+      return undefined;
     }
     const node = bundle as Record<string, unknown>;
     for (let taken = parts.length; taken > 0; taken--) {
       const joined = parts.slice(0, taken).join('.');
-      if (joined in node && resolves(node[joined], parts.slice(taken))) {
-        return true;
+      if (joined in node) {
+        const found = lookup(node[joined], parts.slice(taken));
+        if (found !== undefined) {
+          return found;
+        }
       }
     }
-    return false;
+    return undefined;
+  }
+
+  function resolves(bundle: unknown, parts: readonly string[]): boolean {
+    return lookup(bundle, parts) !== undefined;
   }
 
   function sources(dir: string): string[] {
@@ -79,6 +86,78 @@ describe('translation keys', () => {
     expect(missing).toEqual([]);
     // Guards the guard: a regex that stopped matching would pass this vacuously.
     expect(used.size).toBeGreaterThan(100);
+  });
+
+  /**
+   * Every placeholder a string declares must be supplied where that string is used — in every locale.
+   *
+   * <p>This is the check `docs/backlog.md` item 6 asks for, and it exists because the obvious one does not work.
+   * `patientPortal.overview.recordedBy` reads `recorded {{ when }} by {{ who }}` and both call sites passed
+   * `{ name }`; ngx-translate leaves an unmatched placeholder as literal text, so the caption rendered its own
+   * braces to the patient, in all three locales, for as long as the screen has existed. The key EXISTS in all
+   * three, so the two tests above pass on it — key parity says nothing about what is inside the string.</p>
+   *
+   * <p><b>Asserting the rendered text contains no braces would pass vacuously.</b> Page specs import
+   * `TranslateModule.forRoot()` with no loader, so the pipe emits the KEY rather than the English value and the
+   * literal can never appear under the harness. The comparison has to be between the bundle and the call site,
+   * which is what this is.</p>
+   *
+   * <p>One direction only: a placeholder declared and not passed renders as visible rubbish, which is the defect.
+   * A param passed and not declared is dead weight and renders nothing — there is one today
+   * (`patientPortal.overview.greeting` is handed `name` by a string that no longer names anybody), and failing on
+   * it would be this test insisting on a tidy-up rather than reporting a defect.</p>
+   */
+  describe('placeholder parity', () => {
+    /** `'some.key' | translate: { a: …, b: … }` — the template form. */
+    const PIPE = /['"]([a-zA-Z][a-zA-Z0-9]*(?:\.[a-zA-Z0-9_]+)+)['"]\s*\|\s*translate\s*:\s*(\{[^{}]*\})/g;
+    /** `translate.instant('some.key', { a: … })` and its `get`/`stream` siblings — the service form. */
+    const SERVICE = /\.(?:instant|get|stream)\(\s*['"]([a-zA-Z][a-zA-Z0-9]*(?:\.[a-zA-Z0-9_]+)+)['"]\s*,\s*(\{[^{}]*\})/g;
+
+    /** Property names in an object literal, shorthand (`{ count }`) included. */
+    function paramsOf(literal: string): Set<string> {
+      return new Set([...literal.matchAll(/[{,]\s*([a-zA-Z_$][\w$]*)\s*[:,}]/g)].map(match => match[1]));
+    }
+
+    /** `{{ name }}` — ngx-translate's own interpolation, which is not Angular's and is not compiled. */
+    function placeholdersOf(value: string): Set<string> {
+      return new Set([...value.matchAll(/\{\{\s*([\w.]+)\s*\}\}/g)].map(match => match[1]));
+    }
+
+    /** Every place a key is used WITH params. Keys used without any are none of this test's business. */
+    const sites: { key: string; params: Set<string>; file: string }[] = [];
+
+    beforeAll(() => {
+      for (const file of sources(APP)) {
+        const text = readFileSync(file, 'utf8');
+        for (const pattern of [PIPE, SERVICE]) {
+          for (const [, key, literal] of text.matchAll(pattern)) {
+            if (roots.has(key.split('.')[0])) {
+              sites.push({ key, params: paramsOf(literal), file: file.slice(APP.length + 1) });
+            }
+          }
+        }
+      }
+    });
+
+    it('supplies every placeholder the string declares, in every locale', () => {
+      const unsupplied = sites.flatMap(({ key, params, file }) =>
+        locales.flatMap(([locale, bundle]) => {
+          const value = lookup(bundle, key.split('.'));
+          // A key that resolves nowhere is the first test's finding, not this one's.
+          if (value === undefined) {
+            return [];
+          }
+          const missing = [...placeholdersOf(value)].filter(name => !params.has(name));
+          return missing.length === 0
+            ? []
+            : [`${key} in ${locale} wants {${missing.join(', ')}} — ${file} passes {${[...params].join(', ')}}`];
+        }),
+      );
+
+      expect(unsupplied).toEqual([]);
+      // Guards the guard: a regex that stopped matching would pass this on an empty set.
+      expect(sites.length).toBeGreaterThan(15);
+    });
   });
 
   /** The locales are kept in lockstep, so a key added to one and forgotten in the others is a defect on its own. */

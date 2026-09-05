@@ -139,6 +139,7 @@
       "viewVital": "{{ name }} im Detail ansehen",
       "lastReadings": "Die Messwerte dahinter",
       "recordedBy": "erfasst am {{ when }} von {{ who }}",
+      "recordedByUndated": "erfasst von {{ who }}",
       "recordedByYou": "Ihnen",
       "heroCases": "{{ open }} von {{ total }} Fällen sind noch offen."
     },

@@ -9,7 +9,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { IonButton, IonLabel, IonSegment, IonSegmentButton } from '@ionic/angular';
-import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { switchMap } from 'rxjs';
 import dayjs from 'dayjs/esm';
@@ -19,6 +18,7 @@ import { IProfile } from 'app/entities/patientMS/profile/profile.model';
 import { MembershipService } from 'app/entities/patientMS/membership/service/membership.service';
 import { ActingAsService } from 'app/core/auth/acting-as.service';
 import { AvatarComponent } from 'app/shared/ui/avatar/avatar.component';
+import { PortalNavService } from 'app/shell/portal-nav.service';
 import { StreamComponent } from 'app/shared/ui/stream/stream.component';
 import TranslateDirective from 'app/shared/language/translate.directive';
 
@@ -57,7 +57,6 @@ const TABS: readonly { readonly id: ProfileTab; readonly labelKey: string }[] = 
     IonSegmentButton,
     IonLabel,
     IonButton,
-    RouterLink,
   ],
   templateUrl: './profile.page.html',
   styleUrl: './profile.page.scss',
@@ -69,6 +68,7 @@ export class ProfilePage {
   private readonly membershipService = inject(MembershipService);
   private readonly data = inject(PortalDataService);
   private readonly actingAs = inject(ActingAsService);
+  private readonly portalNav = inject(PortalNavService);
 
   /** Bumped after a revocation so the list re-reads rather than showing what was true a moment ago. */
   private readonly delegationRefresh = signal(0);
@@ -202,5 +202,17 @@ export class ProfilePage {
           this.planError.set('patientPortal.profile.plan.error.failed');
         },
       });
+  }
+
+  /**
+   * Opens the account-deletion request screen.
+   *
+   * Through `PortalNavService` rather than the `routerLink="/tabs/delete-account"` this used to
+   * carry: `TAB_OWNER` puts the screen on the profile stack, so the address is
+   * `/tabs/profile/delete-account`, and §8.1's rule that no template writes a `/tabs/...` URL exists
+   * precisely so this link does not have to be found and edited when that changes again.
+   */
+  openDeletion(): void {
+    void this.portalNav.go('delete-account', 'profile');
   }
 }

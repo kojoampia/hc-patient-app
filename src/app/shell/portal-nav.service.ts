@@ -9,13 +9,15 @@
  */
 
 import { Injectable, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 
-import { TAB_OWNER, tabOwnerOf } from './mobile-nav';
+import { MOBILE_TABS, TAB_OWNER, tabOwnerOf } from './mobile-nav';
 
 @Injectable({ providedIn: 'root' })
 export class PortalNavService {
   private readonly nav = inject(NavController);
+  private readonly router = inject(Router);
 
   /** The absolute route for a portal path, e.g. `medications` -> `/tabs/cases/medications`. */
   urlFor(path: string, fromTab?: string): string {
@@ -41,5 +43,22 @@ export class PortalNavService {
   /** Switch tabs without stacking history — what a tab bar button does. */
   goRoot(path: string): Promise<boolean> {
     return this.nav.navigateRoot(this.urlFor(path));
+  }
+
+  /**
+   * The root of the tab stack the reader is on right now.
+   *
+   * For a screen registered under all five tabs — `case/:id` — "back" has to mean the list they came
+   * from, and the URL is the only thing that knows which stack that is. The case detail header
+   * carried a fixed `/tabs/cases`, which sends somebody who opened a case from Record or Overview
+   * into a different tab; harmless while `case/:id` resolved nowhere at all, and live the moment it
+   * did.
+   *
+   * @param fallback the tab to name when the reader is somewhere outside the shell.
+   */
+  currentTabRoot(fallback = 'overview'): string {
+    const segments = this.router.url.split(/[/?#]/).filter(Boolean);
+    const tab: string | undefined = segments[0] === 'tabs' ? segments[1] : undefined;
+    return `/tabs/${tab !== undefined && MOBILE_TABS.includes(tab) ? tab : fallback}`;
   }
 }

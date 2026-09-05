@@ -1,4 +1,4 @@
-<hpm-portal-page titleKey="patientPortal.nav.cases" backHref="/tabs/cases">
+<hpm-portal-page titleKey="patientPortal.nav.cases" [backHref]="backHref()">
   <!--
     The whole screen hangs off the case list, so its three states are the page's three states. The
     failed branch is why `missing` requires isLoaded: a dropped connection must render a retry, not
