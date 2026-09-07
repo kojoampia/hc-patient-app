@@ -161,7 +161,7 @@ Baseline for the whole first pass: **`12e418c`** (`kojoampia/hc-patient-dashboar
 | `app/portal/allergies/allergies.page.ts` | `app/portal/allergies/allergies.component.ts` | 12e418c | adapted to Resource<T>; template rewritten for Ionic |
 | `app/portal/schedules/schedules.page.ts` | `app/portal/schedules/schedules.component.ts` | 12e418c | adapted to Resource<T>; template rewritten for Ionic |
 | `app/portal/record/record.page.ts` | `app/portal/record/record.component.ts` | 12e418c | adapted to Resource<T>; template rewritten for Ionic |
-| `app/portal/profile/profile.page.ts` | `app/portal/profile/profile.component.ts` | 12e418c | adapted to Resource<T>; template rewritten for Ionic |
+| `app/portal/profile/profile.page.ts` | `app/portal/profile/profile.component.ts` | 9cd3417 | adapted to Resource<T>; template rewritten for Ionic |
 | `app/portal/overview/overview.page.ts` | `app/portal/overview/overview.component.ts` | 12e418c | adapted to Resource<T>; template rewritten for Ionic |
 
 All thirteen screens are ADAPTATIONS, not lifts (§7.2 rewrites every template, and the component
