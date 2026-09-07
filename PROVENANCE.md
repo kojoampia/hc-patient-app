@@ -55,7 +55,7 @@ Baseline for the whole first pass: **`12e418c`** (`kojoampia/hc-patient-dashboar
 | Target | Origin (`web`) | SHA | Divergence |
 | ------ | -------------- | --- | ---------- |
 | `theme/_tokens.scss` | `content/scss/_tokens.scss` | 12e418c | `$hc-ok` and `$hc-warn` darkened for AA — see Known divergences |
-| `theme/_components.scss` | `content/scss/_components.scss` | 12e418c | none |
+| `theme/_components.scss` | `content/scss/_components.scss` | 12e418c | web's `.hc-plan` block not taken — see Known divergences |
 | `theme/_utilities.scss` | `content/scss/_utilities.scss` | 12e418c | none |
 | `i18n/en/*.json` | `i18n/en/*.json` | 12e418c | none |
 | `i18n/fr/*.json` | `i18n/fr/*.json` | 12e418c | 1 key added — `health.status.OUT_OF_SERVICE` |
@@ -254,6 +254,7 @@ Recorded here as well as in the file headers, because these are the ones somebod
 
 | Where | Divergence | Why |
 | ----- | ---------- | --- |
+| `theme/_components.scss` | The `.hc-plan` block web added for backlog item 12 is not copied | That block exists because the web chooser was laying a plan card out as an `.hc-kv` row. This app never had that defect — its plan cards are already `hc-card hc-card-pad` — and item 12 puts mobile's layout out of scope, so copying ~110 lines of unreachable CSS into the bundle buys nothing. Take it if and when the Ionic chooser grows a feature list. |
 | `theme/_tokens.scss` | `$hc-warn` `#b4741a` → `#8f5c14` (3.50:1 → 5.15:1); `$hc-ok` `#2e7d5b` → `#286d4f` (4.39:1 → 5.44:1) | On their own backgrounds the web values fail AA and are marginal respectively; measured, not estimated. Worse at phone pill sizes. **Raise on the web repo** — the fix belongs there too. |
 | `i18n/fr/health.json` | `health.status.OUT_OF_SERVICE` added as "HORS SERVICE"; `DOWN` changed "HORS SERVICE" → "INDISPONIBLE" | The key was missing in `fr` upstream. "HORS SERVICE" is the literal reading of OUT_OF_SERVICE, so it moved there, and DOWN took a distinct word — otherwise two different statuses render identically on a health screen. **This edits an existing web string; raise it upstream.** |
 | `i18n/de/*.json` | 10 keys added: `entity.validation.patternLogin`, `health.status.OUT_OF_SERVICE`, and 8 × `metrics.cache.*` | All missing upstream. `health.status.*` keeps the untranslated-literal convention the rest of that block already uses in `de`. **Raise upstream.** |
