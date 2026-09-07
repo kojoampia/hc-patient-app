@@ -91,13 +91,13 @@
           }
         </hpm-stream>
 
-        @if (plans().length) {
+        @if (orderedPlans().length) {
           <div class="hc-sec-head hc-mt-16">
             <div><h3 hpmTranslate="patientPortal.profile.plan.choose">Change plan</h3></div>
           </div>
 
           <div class="hc-grid">
-            @for (plan of plans(); track plan.code) {
+            @for (plan of orderedPlans(); track plan.code) {
               <article class="hc-card hc-card-pad">
                 <div class="hc-row hc-between hc-gap-8 hc-wrap">
                   <b class="hc-grow">{{ plan.name }}</b>

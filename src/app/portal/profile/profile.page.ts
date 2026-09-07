@@ -141,6 +141,27 @@ export class ProfilePage {
   /** The tiers on offer, empty when Abofonsa cannot be reached. */
   readonly plans = toSignal(this.membershipPlanService.plans(), { initialValue: [] as readonly MembershipPlan[] });
 
+  /**
+   * The tiers in the order the content API asks for them to be shown.
+   *
+   * `displayOrder` is the other product's decision about how a price ladder reads, and this app took
+   * whatever order the response happened to be in until 2026-09-07 — `web` had sorted since item 12,
+   * so the two clients would have presented the same three plans differently the moment Abofonsa
+   * stopped returning them in order. One product, two answers, which is the milder cousin of the
+   * failure the "never restate a plan price" comment in the template exists to prevent.
+   *
+   * Three properties of this are deliberate. `??` catches `null` as well as `undefined`; a tier with
+   * no order sorts **last**, so an unordered addition on their side appends rather than silently
+   * taking the top of the ladder; and `Array#sort` is stable per ES2019 with the comparator
+   * returning 0 on a tie, so tiers sharing a `displayOrder` keep the order they arrived in. The copy
+   * is what keeps `sort` off the signal's own array.
+   */
+  readonly orderedPlans = computed(() =>
+    [...this.plans()].sort(
+      (left, right) => (left.displayOrder ?? Number.MAX_SAFE_INTEGER) - (right.displayOrder ?? Number.MAX_SAFE_INTEGER),
+    ),
+  );
+
   readonly choosingPlan = signal(false);
   readonly planError = signal<string | null>(null);
 
