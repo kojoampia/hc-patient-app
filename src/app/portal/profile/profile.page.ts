@@ -1,6 +1,6 @@
 /**
  * Adapted from hc-patient-dashboard
- *   src/main/webapp/app/portal/profile/profile.component.ts @ 12e418c
+ *   src/main/webapp/app/portal/profile/profile.component.ts @ 9cd3417
  * Divergence: Resource<T> streams (§7.5); the five tabs become an ion-segment; and the acting-as
  *   guard in §4 is enforced here rather than assumed — see `canManageAngel`.
  * Re-sync: see PROVENANCE.md.

@@ -109,8 +109,13 @@ describe('ProfilePage — the order of the plan cards', () => {
     // `displayOrder` keep the order they arrived in. Fed so that response order is NOT alphabetical:
     // a secondary sort key — the obvious thing to add to "make ties deterministic" — would answer
     // PEAR first and quietly overrule the other product's own ordering.
+    //
+    // MELON LEADS THE FIXTURE FOR A SECOND REASON. With the tie fed first the response order and the
+    // sorted order coincided, so this test — sitting inside the spec written to stop the tiers being
+    // rendered unsorted — was the one case a template still iterating `plans()` passed. Leading with
+    // the tier that sorts last costs nothing, changes no expectation, and closes that.
     const tie = plan({ id: 'plan-tie', code: 'TIE', name: 'TIE Plan', displayOrder: 1 });
-    await build([tie, pear, melon]);
+    await build([melon, tie, pear]);
 
     expect(cards()).toHaveLength(3);
     expect(names()).toEqual(['TIE Plan', 'PEAR Plan', 'MELON Plan']);
