@@ -106,9 +106,25 @@
                     locale from Abofonsa via the gateway proxy. No CurrencyPipe, no arithmetic, no
                     "from ₵X" — two products quoting different numbers for one tier is what
                     restating causes.
+
+                    `priceCurrency` is a second field the same response supplies, and printing it
+                    beside the amount is not restating anything — it is the difference between
+                    "5,000" and "GHS 5,000" on a product somebody is being asked to pay for. Both
+                    clients dropped it until 2026-09-07. It stays two interpolations of two fields
+                    on purpose: joining them in TypeScript would be one string this app composed,
+                    which is where restating starts.
+
+                    `&ngsp;`, not a plain space — Angular drops whitespace-only text nodes, and the
+                    pill's flex gap is a visual gap only, so without it the price is announced and
+                    copied as "GHS3,000".
                   -->
                   @if (plan.priceAmount) {
-                    <span class="hc-pill hc-pill--gold">{{ plan.priceAmount }}</span>
+                    <span class="hc-pill hc-pill--gold">
+                      @if (plan.priceCurrency) {
+                        <span>{{ plan.priceCurrency }}&ngsp;</span>
+                      }
+                      <span>{{ plan.priceAmount }}</span>
+                    </span>
                   }
                 </div>
                 @if (plan.forWho) {
