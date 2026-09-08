@@ -73,7 +73,16 @@
         </p>
 
         @for (item of archivedRows(); track item.id) {
-        <article class="hc-card hc-card-pad hc-mt-16" (click)="open(item.id)">
+        <!-- Same keyboard contract as the working list above: the whole card is the tap target, so
+             it needs the role, the tab stop and the Enter handler a <button> would have given it. -->
+        <article
+          class="hc-card hc-card-pad hc-mt-16"
+          role="button"
+          tabindex="0"
+          (click)="open(item.id)"
+          (keydown.enter)="open(item.id)"
+          [attr.aria-label]="'patientPortal.cases.openCase' | translate: { name: item.title ?? item.brief }"
+        >
           <b>{{ item.title ?? item.brief }}</b>
           <div class="hc-muted hc-tiny hpm-cases__meta">
             {{ 'patientPortal.cases.archived.stamp' | translate: { when: formatInstantDay(item.archivedAt), who: item.archivedById ?? '—' }

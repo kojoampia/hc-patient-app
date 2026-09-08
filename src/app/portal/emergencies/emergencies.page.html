@@ -66,7 +66,7 @@
                 registered under all five tabs, and opening it from here must keep the reader on the
                 Overview stack rather than throwing them into Cases.
               -->
-              <span>· <a (click)="openCase(item.caseId)">{{ label }}</a></span>
+              <span>· <a role="link" tabindex="0" (click)="openCase(item.caseId)" (keydown.enter)="openCase(item.caseId)">{{ label }}</a></span>
             }
           </div>
 
