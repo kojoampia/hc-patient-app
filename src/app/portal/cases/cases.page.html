@@ -73,7 +73,28 @@
         </p>
 
         @for (item of archivedRows(); track item.id) {
-        <article class="hc-card hc-card-pad hc-mt-16" (click)="open(item.id)">
+        <!-- Same keyboard contract as the working list above: the whole card is the tap target, so it
+             needs the role, the tab stop and the key handlers a <button> would have given it.
+
+             ENTER **AND** SPACE. A role="button" must activate on both — that is what the role promises,
+             and a user who presses Space on a focused card otherwise just scrolls the page underneath
+             it. `keydown.space` is prevented by Angular's own handler so the scroll does not also
+             happen. The linter cannot see this: click-events-have-key-events is satisfied by Enter
+             alone, so the incomplete contract passes. The working card above has the same gap and is
+             left alone here — one fix per commit — but it is the same defect.
+
+             NO aria-label on the <article>. An accessible name on a container REPLACES its subtree for
+             a screen reader, so labelling this "Open the case X" would silence the archived stamp
+             below and make an archived card indistinguishable from a working one by ear. The card's
+             own content is the better name. -->
+        <article
+          class="hc-card hc-card-pad hc-mt-16"
+          role="button"
+          tabindex="0"
+          (click)="open(item.id)"
+          (keydown.enter)="open(item.id)"
+          (keydown.space)="open(item.id)"
+        >
           <b>{{ item.title ?? item.brief }}</b>
           <div class="hc-muted hc-tiny hpm-cases__meta">
             {{ 'patientPortal.cases.archived.stamp' | translate: { when: formatInstantDay(item.archivedAt), who: item.archivedById ?? '—' }

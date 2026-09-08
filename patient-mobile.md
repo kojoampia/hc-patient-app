@@ -544,20 +544,47 @@ release from 2.8.8 to 4.0.0-alpha.13 flattens the contents of an `@if`/`@for` bl
 templates keep their own shape. **There is no newer version to bump to** — that was the first thing checked, and the
 count of disagreeing templates is 12 at every version.
 
-**What that costs, stated plainly because an earlier draft of this section got it wrong.** It claimed
-correctness in templates was still gated by `@angular-eslint/eslint-plugin-template` under
-`npm run lint`, and that only whitespace was out of scope. **Neither is true.** That plugin and
-`@angular-eslint/template-parser` are both in `devDependencies` and both wired to nothing: the plugin
-is absent from `plugins`, no override sets the template parser for `*.html`, and `lint` runs
-`eslint . --ext .js,.mjs,.ts`, which never opens a template. Forcing it proves the point —
-`npx eslint src/app/portal/allergies/allergies.page.html` fails with _"The extension for the file
-(`.html`) is non-standard."_ So after this change the 12 templates are checked by the AOT compiler in
-`build:prod` and by nothing else; the a11y, `banana-in-box` and binding-`eqeqeq` rules run nowhere.
+**What that costs is formatting and nothing else — but only since backlog item 21, 2026-09-08.** Until
+then it cost correctness too, and the section you are reading got that wrong twice. Its first draft
+claimed template correctness was gated by `@angular-eslint/eslint-plugin-template` under `npm run lint`
+when the plugin and `@angular-eslint/template-parser` were in `devDependencies` and wired to nothing:
+the plugin absent from `plugins`, no override setting the template parser for `*.html`, and `lint`
+running `eslint . --ext .js,.mjs,.ts`, which never opens a template. Forcing it proved the point —
+`npx eslint src/app/portal/allergies/allergies.page.html` answered _"The extension for the file
+(`.html`) is non-standard."_ The correction then over-swung and said the templates were checked by the
+AOT compiler and nothing else, which item 21 made false in turn.
 
-That gap predates this work and is not caused by it — dropping `*.html` from prettier removes a
-_whitespace_ check that was never passing anyway. It is filed as **item 21** rather than fixed here,
-because wiring the template linter up is a new gate that will surface its own backlog and does not
-belong inside a formatting change.
+**Item 21 wired it up rather than removing the packages**, because the a11y rules alone justify the
+gate in an app read by patients. The shape:
+
+- `.eslintrc.json` gained an `"files": ["*.html"]` override extending `template/recommended` and
+  `template/accessibility`. Wiring it meant moving the script configuration — `parser`, `plugins`,
+  `extends`, `parserOptions` and `rules` — from the file's top level into a `["*.js","*.mjs","*.ts"]`
+  override, because a top-level `parserOptions.project` applies to every file eslint opens and a
+  `.html` handed to `@typescript-eslint`'s type-aware rules fails on missing parser services. The
+  move is nesting only: `eslint --print-config` is byte-identical before and after for a page, a
+  spec, a tool script and `jest.config.js`.
+- `npm run lint` is now `eslint . --ext .js,.mjs,.ts,.html`, and CI's existing `npm run lint` step
+  therefore covers templates with no new step.
+- **Measured before any rule was set:** the two extended configs found **10 problems in 5 files**
+  (`click-events-have-key-events` ×5, `interactive-supports-focus` ×5) across the 30 `.html` templates — plus, since review, the twelve
+  `shared/ui` components whose markup is inline and which the `*.html` override alone did not reach;
+  the whole
+  plugin (`template/all`, 29 rules) found **673**, from 9 of them. All 10 were fixed in the markup.
+  There is no `eslint-disable` in any template.
+- The fixes were one shape: four inline `<a (click)="openCase(…)">` case links with no `href`, so
+  nothing made them focusable and nothing activated them from a keyboard, and the **archived** case
+  card in `cases.page.html`, which had none of the `role`/`tabindex`/`(keydown.enter)` contract the
+  working card six lines above it already carried. That last one is the item's argument in one file.
+- **Nineteen of the 29 rules are at error**; the other ten are off, each named in `.eslintrc.json`
+  with a one-line reason and the count still behind it — 364 `i18n` (an extraction pipeline this app
+  does not use), 161 `no-call-expression`, 60 `attributes-order`, 41 `prefer-self-closing-tags`,
+  22 `no-duplicate-attributes` (all of them `class="…" [class]="…"`, which Angular merges), 8 `no-any`,
+  8 `no-inline-styles`, and three at zero. The list lives in the config so it cannot drift from what
+  the config does.
+
+Dropping `*.html` from prettier in item 16 removed a _whitespace_ check that was never passing anyway,
+and did not cause any of the above.
 
 Everything else Prettier is pointed at **is** formatted to the pinned 3.1.0 and **checked in CI**, which is the half
 that matters: 61 files disagreed with the pin for months because nothing ran `prettier:check` — no CI step, no

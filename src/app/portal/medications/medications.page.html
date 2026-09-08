@@ -65,7 +65,17 @@
             <span class="hc-num">{{ formatDay(item.startedOn ?? item.createdDate) }}</span>
             · {{ memberOf(item.prescribedById).name }}
             @if (caseLabel(item.caseId); as label) {
-              · <a (click)="openCase(item.caseId); $event.stopPropagation()">{{ label }}</a>
+              ·
+              <!-- The Enter handler stops propagation for the same reason the click handler does: this
+                   anchor sits inside the article's own role="button"/(keydown.enter), so without it
+                   Enter on the focused case link would open the medication rather than the case. -->
+              <a
+                role="link"
+                tabindex="0"
+                (click)="openCase(item.caseId); $event.stopPropagation()"
+                (keydown.enter)="openCase(item.caseId); $event.stopPropagation()"
+                >{{ label }}</a
+              >
             }
           </div>
         </article>

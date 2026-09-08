@@ -46,7 +46,7 @@
               <!-- source decides before authorId: an entry the patient wrote is "You", not a clinician. -->
               {{ authorName(item) }}
               @if (caseLabel(item.caseId); as label) {
-                · <a (click)="openCase(item.caseId)">{{ label }}</a>
+                · <a role="link" tabindex="0" (click)="openCase(item.caseId)" (keydown.enter)="openCase(item.caseId)">{{ label }}</a>
               }
             </div>
           </div>

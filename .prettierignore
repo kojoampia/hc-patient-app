@@ -33,15 +33,30 @@
 # `src/index.html` has no control flow and does conform — it is excluded with the rest so there is
 # one rule about HTML here rather than two.
 #
-# BE CLEAR ABOUT WHAT THIS COSTS: templates are now checked by nothing but the AOT compiler in
-# `build:prod`. An earlier draft of this comment claimed `npm run lint` still gated their
-# correctness through @angular-eslint/eslint-plugin-template — IT DOES NOT. That plugin and
-# @angular-eslint/template-parser are both in devDependencies and both wired to nothing: the plugin
-# is not in `plugins`, the template parser is configured nowhere, and `lint` runs
-# `eslint . --ext .js,.mjs,.ts`, which never opens a `.html` file at all. So a11y rules,
-# banana-in-box, and template `eqeqeq` run nowhere. That gap predates this file and is backlog
-# item 21; it is written down here because this is where somebody will come looking for the
-# reassurance the earlier draft wrongly gave them.
+# BE CLEAR ABOUT WHAT THIS COSTS: formatting, and only formatting. Template CORRECTNESS is gated,
+# as of backlog item 21 (2026-09-08). `.eslintrc.json` has an `*.html` override that parses
+# templates with @angular-eslint/template-parser and runs @angular-eslint/eslint-plugin-template
+# over them; `npm run lint` is `eslint . --ext .js,.mjs,.ts,.html`; and CI runs `npm run lint`.
+# All eleven a11y rules, `banana-in-box`, `no-negated-async` and template `eqeqeq` are at error, and
+# `process-inline-templates` extends them to the twelve components in shared/ui that declare their
+# markup inline rather than in an .html file. Eleven of the plugin's 29 rules are deliberately off —
+# each named in `.eslintrc.json` with its reason and the count still behind it, which is the right
+# place for that list rather than here.
+#
+# TWO LIMITS OF THE PLUGIN, so nobody reads more assurance into the line above than it carries. It is
+# @angular-eslint 17 against Angular 20, and it does not visit expressions in `@if`/`@for`/`@switch`
+# BLOCK HEADERS, nor the bodies of `@empty` and `@defer`'s `@placeholder`/`@loading`/`@error`. So
+# `eqeqeq` is at error and cannot see `@if (a() == 1)`, and a keyboardless `(click)` inside an
+# `@empty` block lints clean — measured, not assumed. This repo has 97 `@if` and five `@empty`
+# blocks, and `prefer-control-flow` is on, so it actively encourages putting conditions where the
+# checks cannot reach. Upgrading the plugin is the fix; it is not this item's.
+#
+# The paragraph above replaces one that was wrong in both directions on the same subject. Item 16's
+# first draft claimed this gate already existed when the plugin was in `devDependencies` and wired
+# to nothing; the correction then over-swung and said templates were checked by nothing but the AOT
+# compiler, which stopped being true the moment item 21 landed. It is spelled out here rather than
+# deleted because this is where somebody comes looking for the reassurance, and the file has now
+# misled a reader once in each direction.
 *.html
 
 # --- generated: build output -------------------------------------------------
