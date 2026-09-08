@@ -2,9 +2,9 @@
   <div class="hpm-forkfail__inner">
     <ion-icon class="hpm-forkfail__icon" name="cloud-offline-outline" aria-hidden="true"></ion-icon>
 
-    <h1 class="hc-auth-title">We could not open your records</h1>
-    <!-- Never a raw error string. -->
-    <p class="hc-auth-lede hc-muted" role="alert">{{ message() }}</p>
+    <h1 class="hc-auth-title">{{ 'patientPortal.forkFailed.title' | translate }}</h1>
+    <!-- Never a raw error string, and never an English one: `message()` is a KEY. -->
+    <p class="hc-auth-lede hc-muted" role="alert">{{ message() | translate }}</p>
 
     <!--
       Try again is offered unconditionally, including for 401 and 403. It used to be hidden for those, leaving
@@ -12,9 +12,13 @@
       (locked, or not yet signed in), that produced a screen a perfectly valid session could not get past.
       Retrying costs one request; not offering it cost the whole session.
     -->
-    <ion-button expand="block" color="primary" (click)="retry()">Try again</ion-button>
+    <ion-button expand="block" color="primary" (click)="retry()">{{ 'patientPortal.stream.retry' | translate }}</ion-button>
     <ion-button expand="block" fill="clear" color="dark" (click)="signOut()">
-      @if (isAuthProblem()) { Sign in again } @else { Sign out }
+      @if (isAuthProblem()) {
+      {{ 'patientPortal.forkFailed.signInAgain' | translate }}
+      } @else {
+      {{ 'patientPortal.nav.signOut' | translate }}
+      }
     </ion-button>
   </div>
 </ion-content>

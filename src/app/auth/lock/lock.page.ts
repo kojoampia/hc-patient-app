@@ -29,15 +29,20 @@ export class LockPage implements OnInit, OnDestroy {
   /** 'cancelled' | 'unavailable' | 'failed', or null before the first attempt. */
   readonly outcome = signal<string | null>(null);
 
+  /**
+   * A translation KEY, not a sentence — the template pipes it through `translate`. Returning the
+   * English here and interpolating it would put one more untranslated string on the one screen a
+   * returning patient meets before anything else (backlog item 22).
+   */
   readonly message = computed(() => {
     switch (this.outcome()) {
       case 'unavailable':
         // The device has no screen lock at all. There is nothing to unlock WITH, so the only
         // honest offer is signing in again — and §7.6 says refuse to keep the token on such a
         // device anyway.
-        return 'This device has no screen lock, so your session cannot be kept. Please sign in again.';
+        return 'patientPortal.lock.error.unavailable';
       case 'failed':
-        return 'We could not verify it was you. Try again, or sign in with your password.';
+        return 'patientPortal.lock.error.failed';
       case 'cancelled':
         return null;
       default:
@@ -76,7 +81,9 @@ export class LockPage implements OnInit, OnDestroy {
       return;
     }
     this.busy.set(true);
-    const result = await this.lock.unlock('Unlock to see your health record');
+    // A key: BiometricsService translates it, because the string lands in the OS prompt rather
+    // than in a template where the pipe could reach it.
+    const result = await this.lock.unlock('patientPortal.lock.reason');
     this.busy.set(false);
 
     if (result === 'unlocked') {

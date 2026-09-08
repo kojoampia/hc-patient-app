@@ -34,6 +34,7 @@ import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { ActionSheetController, AlertController, IonRouterOutlet, ModalController, PopoverController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 import { NativePromptGuard, withPrompt } from 'app/core/native/with-prompt';
 
@@ -71,6 +72,7 @@ export class BackButtonService {
   private readonly popovers = inject(PopoverController);
   private readonly router = inject(Router);
   private readonly promptGuard = inject(NativePromptGuard);
+  private readonly translate = inject(TranslateService);
 
   private outlet?: IonRouterOutlet;
   private started = false;
@@ -192,14 +194,17 @@ export class BackButtonService {
    * `withPrompt` because a native alert backgrounds nothing but the confirm dialog can be dismissed
    * by the system in ways that look like a resume — and more importantly because `App.exitApp()`
    * must not be preceded by a lock. Suppressing here keeps the two from racing.
+   *
+   * The four strings are built by a controller rather than by a template, so no `translate` pipe
+   * can reach them and they shipped as English in a three-locale app until backlog item 22.
    */
   private async confirmExit(): Promise<void> {
     const alert = await this.alerts.create({
-      header: 'Close BridgeCare?',
-      message: 'You will need to unlock again next time.',
+      header: this.translate.instant('patientPortal.exit.title') as string,
+      message: this.translate.instant('patientPortal.exit.body') as string,
       buttons: [
-        { text: 'Stay', role: 'cancel' },
-        { text: 'Close', role: 'confirm' },
+        { text: this.translate.instant('patientPortal.exit.stay') as string, role: 'cancel' },
+        { text: this.translate.instant('patientPortal.action.close') as string, role: 'confirm' },
       ],
     });
 

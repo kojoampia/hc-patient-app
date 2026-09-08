@@ -32,7 +32,8 @@
       "collapseMenu": "Collapse the menu",
       "expandMenu": "Expand the menu",
       "visitations": "Visitations",
-      "activity": "Activity trail"
+      "activity": "Activity trail",
+      "more": "More"
     },
     "title": {
       "overview": "Patient context",
@@ -107,7 +108,11 @@
       "count": "Cases",
       "share": "Share",
       "who": "Professional",
-      "case": "Case"
+      "case": "Case",
+      "trendSummary": "{{ firstValue }} {{ unit }} on {{ firstLabel }} to {{ lastValue }} {{ unit }} on {{ lastLabel }}, trending {{ direction }}.",
+      "trendUp": "up",
+      "trendDown": "down",
+      "trendLevel": "level"
     },
     "overview": {
       "greeting": "Your health, at a glance",
@@ -501,7 +506,8 @@
       "chooseTitle": "Whose record would you like to open?",
       "chooseOwn": "My own record",
       "chooseFor": "Acting for {{name}}",
-      "find": "Find a patient"
+      "find": "Find a patient",
+      "chooseLede": "You can act for more than one person. Everything you see next belongs to whoever you pick."
     },
     "invitations": {
       "title": "Care nominations",
@@ -585,6 +591,45 @@
         "raise": "We could not record your request. Please try again.",
         "cancel": "We could not withdraw your request. Please try again."
       }
+    },
+    "lock": {
+      "title": "Abofonsa BridgeCare is locked",
+      "lede": "You have been away for a while. Unlock to see your health record again.",
+      "unlock": "Unlock",
+      "usePassword": "Use password",
+      "reason": "Unlock to see your health record",
+      "promptTitle": "Unlock BridgeCare",
+      "error": {
+        "unavailable": "This device has no screen lock, so your session cannot be kept. Please sign in again.",
+        "failed": "We could not verify it was you. Try again, or sign in with your password."
+      }
+    },
+    "forkFailed": {
+      "title": "We could not open your records",
+      "signInAgain": "Sign in again",
+      "error": {
+        "session": "Health Connect would not confirm your session. Try again, or sign in again.",
+        "generic": "Something went wrong while opening your records. Please try again."
+      }
+    },
+    "deadEnd": {
+      "signInAsSomeoneElse": "Sign in as someone else",
+      "browserNote": "The link opens in your browser, so your saved password is available there.",
+      "onboarding": {
+        "title": "Finish setting up your record",
+        "body": "Your account is ready. Setting up your health record is done on the web — it takes a few minutes, and this app shows a record that already exists rather than creating one. Come back here afterwards and sign in again.",
+        "action": "Set up on the web"
+      },
+      "invitations": {
+        "title": "You have an invitation waiting",
+        "body": "Someone has asked you to be their care angel. You do not have a record of your own, so there is nothing to show here yet. Accept or decline the invitation on the web, then come back.",
+        "action": "Open my invitations"
+      }
+    },
+    "exit": {
+      "title": "Close BridgeCare?",
+      "body": "You will need to unlock again next time.",
+      "stay": "Stay"
     }
   }
 }

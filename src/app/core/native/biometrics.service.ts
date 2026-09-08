@@ -9,6 +9,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { BiometricAuth, BiometryError, BiometryErrorType } from '@aparajita/capacitor-biometric-auth';
+import { TranslateService } from '@ngx-translate/core';
 
 import { NativePromptGuard, withPrompt } from './with-prompt';
 
@@ -25,6 +26,7 @@ export type UnlockOutcome = 'unlocked' | 'cancelled' | 'unavailable' | 'failed';
 @Injectable({ providedIn: 'root' })
 export class BiometricsService {
   private readonly promptGuard = inject(NativePromptGuard);
+  private readonly translate = inject(TranslateService);
 
   /**
    * Whether this device can keep a token at all.
@@ -56,20 +58,26 @@ export class BiometricsService {
    *
    * `allowDeviceCredential: true` so a patient whose fingerprint is not recognised — wet hands, a
    * cut, a cold morning — can use their PIN rather than being locked out of their own record.
+   *
+   * `reasonKey` is a TRANSLATION KEY, not a sentence. These three strings are drawn by the OS, not
+   * by a template, so no `translate` pipe can reach them and they shipped as English in an app with
+   * three locales until backlog item 22 — on the dialog a returning patient meets first.
    */
-  async unlock(reason: string): Promise<UnlockOutcome> {
+  async unlock(reasonKey: string): Promise<UnlockOutcome> {
     const security = await this.check();
     if (!security.deviceIsSecure) {
       return 'unavailable';
     }
+
+    const reason = this.translate.instant(reasonKey) as string;
 
     try {
       await withPrompt(this.promptGuard, () =>
         BiometricAuth.authenticate({
           reason,
           allowDeviceCredential: true,
-          cancelTitle: 'Use password',
-          androidTitle: 'Unlock BridgeCare',
+          cancelTitle: this.translate.instant('patientPortal.lock.usePassword') as string,
+          androidTitle: this.translate.instant('patientPortal.lock.promptTitle') as string,
           androidSubtitle: reason,
         }),
       );

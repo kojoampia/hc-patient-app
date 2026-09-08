@@ -544,6 +544,33 @@ release from 2.8.8 to 4.0.0-alpha.13 flattens the contents of an `@if`/`@for` bl
 templates keep their own shape. **There is no newer version to bump to** — that was the first thing checked, and the
 count of disagreeing templates is 12 at every version.
 
+**`core/i18n-templates.spec.ts` reads the templates against the bundles — backlog item 22, 2026-09-09.** The two
+i18n checks that existed before it both compare bundles: `merge-i18n.mjs` fails on unequal key sets, and
+`core/i18n-keys.spec.ts` resolves every key the app names. **Neither can see a string that never became a key**,
+which is how `lock.page.html` came to import `TranslateModule` and use it zero times, and `tabs.page.html` to
+translate an `aria-label` two lines above an untranslated `<ion-label>`. This spec parses every template with
+Angular's own `parseTemplate` — the `.html` files **and** the 12 inline `template:` strings in `shared/ui`, because
+item 21's lesson is that a check scoped to one form silently exempts the other — and fails on a text node that is
+not a translation. Three things make it trustworthy rather than merely present:
+
+- it understands `hpmTranslate`, which assigns to `innerHTML`, so the English placeholder inside such an element is
+  not reported. That is 72 of the app's 99 text nodes; without it the check reports 65 defects that are not defects
+  and gets switched off within a week;
+- the allowlist is nine entries, each with a reason — a brand wordmark, a middot between two bound values, `%` after
+  a number, the punctuation inside four SVG chart tooltips, and the pager's two guillemets — and it is asserted
+  **exact**, so it cannot rot into a suppression list;
+- it **guards the guard**. Counts of templates found, inline templates found, text nodes examined, nodes exempted by
+  the directive and nodes actually judged all carry floors, because the main assertion is `expect([]).toEqual([])`
+  and passes vacuously the moment the walker stops walking. Verified by mutation: breaking file discovery and
+  over-matching the directive each leave the main test green and are caught only here.
+
+The strings it moved were the lock screen, the fork-failure screen, both dead ends, the record picker, the More tab
+and the sign-in note — plus, in the same pass, the copy those screens render **from TypeScript**, which no template
+walker can see: `dead-end.page.ts`, `fork-failed.page.ts` and `lock.page.ts` now return translation KEYS, and the
+two strings the OS draws (`BiometricsService`'s biometric prompt) and the four the exit confirm draws
+(`BackButtonService`) are translated through `TranslateService.instant`. A controller-built alert and an OS dialog
+are outside every template check there can be; they are the residual risk here and are worth a second look in review.
+
 **What that costs is formatting and nothing else — but only since backlog item 21, 2026-09-08.** Until
 then it cost correctness too, and the section you are reading got that wrong twice. Its first draft
 claimed template correctness was gated by `@angular-eslint/eslint-plugin-template` under `npm run lint`
@@ -582,6 +609,10 @@ gate in an app read by patients. The shape:
   22 `no-duplicate-attributes` (all of them `class="…" [class]="…"`, which Angular merges), 8 `no-any`,
   8 `no-inline-styles`, and three at zero. The list lives in the config so it cannot drift from what
   the config does.
+- **Do not read that 364 as noise.** The rule is correctly off and its reason no longer asserts there
+  is nothing behind the number: about 280 of the hits are attributes and genuinely are noise here, but
+  ~84 are text nodes, and among them were real untranslated English strings in an app shipping three
+  locales. That is backlog item 22, closed 2026-09-09 — see §7.7.
 
 Dropping `*.html` from prettier in item 16 removed a _whitespace_ check that was never passing anyway,
 and did not cause any of the above.

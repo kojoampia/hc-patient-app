@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { ActionSheetController, AlertController, IonRouterOutlet, ModalController, PopoverController } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { NativePromptGuard } from 'app/core/native/with-prompt';
 import { BackButtonService } from './back-button.service';
@@ -105,6 +106,9 @@ describe('BackButtonService', () => {
     router = { url: '/tabs/overview' };
 
     TestBed.configureTestingModule({
+      // The exit confirm is built by a controller rather than a template, so the service translates
+      // its own four strings and needs TranslateService (backlog item 22).
+      imports: [TranslateModule.forRoot()],
       providers: [
         BackButtonService,
         NativePromptGuard,
@@ -202,7 +206,10 @@ describe('BackButtonService', () => {
     it('asks before exiting from a tab root', async () => {
       await pressBack();
 
-      expect(alerts.create).toHaveBeenCalledWith(expect.objectContaining({ header: 'Close BridgeCare?' }));
+      // The KEY, not "Close BridgeCare?" — `TranslateModule.forRoot()` carries no loader, so
+      // `instant` echoes what it was given. Asserting the English would mean asserting the alert
+      // is NOT translated, which is the defect backlog item 22 removed from this controller.
+      expect(alerts.create).toHaveBeenCalledWith(expect.objectContaining({ header: 'patientPortal.exit.title' }));
       expect(exitAlert.present).toHaveBeenCalled();
     });
 

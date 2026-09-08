@@ -72,9 +72,11 @@ export class AppLockService {
    *
    * Returns the outcome so the lock screen can word its own failure — this service does not know
    * what a lock screen looks like.
+   *
+   * `reasonKey` is passed through untouched; {@link BiometricsService.unlock} translates it.
    */
-  async unlock(reason: string): Promise<UnlockOutcome> {
-    const outcome = await this.biometrics.unlock(reason);
+  async unlock(reasonKey: string): Promise<UnlockOutcome> {
+    const outcome = await this.biometrics.unlock(reasonKey);
     if (outcome !== 'unlocked') {
       return outcome;
     }
