@@ -27,114 +27,123 @@
     "src/assets/i18n/*.json",
     "src/environments/i18n-hash.ts"
   ],
-  "parser": "@typescript-eslint/parser",
-  "plugins": ["@angular-eslint/eslint-plugin", "@typescript-eslint"],
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
-    "plugin:@angular-eslint/recommended",
-    "prettier",
-    "eslint-config-prettier"
-  ],
   "env": {
     "browser": true,
     "es6": true,
     "commonjs": true
   },
-  "parserOptions": {
-    "ecmaVersion": 2018,
-    "sourceType": "module",
-    "project": ["./tsconfig.app.json", "./tsconfig.spec.json", "./tsconfig.tools.json"]
-  },
-  "rules": {
-    "@angular-eslint/component-selector": [
-      "error",
-      {
-        "type": "element",
-        "prefix": "hpm",
-        "style": "kebab-case"
-      }
-    ],
-    "@angular-eslint/directive-selector": [
-      "error",
-      {
-        "type": "attribute",
-        "prefix": "hpm",
-        "style": "camelCase"
-      }
-    ],
-    "@angular-eslint/relative-url-prefix": "error",
-    // DIVERGENCE from the web config, which does not set this rule and so gets its default of
-    // "Component" only. Ionic's routed screens are Pages by convention — the CLI generates them
-    // that way, patient-mobile.md §8.1 names all thirteen as pages, and the shell distinguishes a
-    // Page (a tab destination) from a Component (anything inside one). Both suffixes are allowed
-    // rather than replacing one with the other.
-    "@angular-eslint/component-class-suffix": ["error", { "suffixes": ["Component", "Page"] }],
-    "@typescript-eslint/ban-types": [
-      "error",
-      {
-        "extendDefaults": true,
-        "types": {
-          "{}": false
-        }
-      }
-    ],
-    "@typescript-eslint/explicit-function-return-type": ["error", { "allowExpressions": true }],
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/member-ordering": [
-      "error",
-      {
-        "default": [
-          "public-static-field",
-          "protected-static-field",
-          "private-static-field",
-          // Private instance fields come before public ones, which is the reverse of the usual
-          // advice, because `inject()` has to run first: class field initialisers execute before
-          // constructor parameter properties are assigned, so a public field derived from an
-          // injected service can only work if the service field is declared above it.
-          "private-instance-field",
-          "public-instance-field",
-          "protected-instance-field",
-          "constructor",
-          "public-static-method",
-          "protected-static-method",
-          "private-static-method",
-          "public-instance-method",
-          "protected-instance-method",
-          "private-instance-method"
-        ]
-      }
-    ],
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-floating-promises": "off",
-    "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/no-shadow": ["error"],
-    "@typescript-eslint/no-unnecessary-condition": "error",
-    "@typescript-eslint/no-unsafe-argument": "off",
-    "@typescript-eslint/no-unsafe-assignment": "off",
-    "@typescript-eslint/no-unsafe-call": "off",
-    "@typescript-eslint/no-unsafe-member-access": "off",
-    "@typescript-eslint/no-unused-vars": "off",
-    "@typescript-eslint/prefer-nullish-coalescing": "error",
-    "@typescript-eslint/prefer-optional-chain": "error",
-    "@typescript-eslint/unbound-method": "off",
-    "arrow-body-style": "error",
-    "curly": "error",
-    "eqeqeq": ["error", "always", { "null": "ignore" }],
-    "guard-for-in": "error",
-    "no-bitwise": "error",
-    "no-caller": "error",
-    "no-console": ["error", { "allow": ["warn", "error"] }],
-    "no-eval": "error",
-    "no-labels": "error",
-    "no-new": "error",
-    "no-new-wrappers": "error",
-    "object-shorthand": ["error", "always", { "avoidExplicitReturnArrows": true }],
-    "radix": "error",
-    "spaced-comment": ["warn", "always"]
-  },
   "overrides": [
+    {
+      // THE SCRIPT CONFIGURATION, which was this file's top level until backlog item 21. It had to
+      // move into an override so that templates could get one of their own: `parser`, `extends` and
+      // `parserOptions.project` at the top level apply to EVERY file eslint opens, and a `.html`
+      // file handed to @typescript-eslint's type-aware rules fails with "you have used a rule which
+      // requires parser services" rather than being linted. Nothing here changed except its nesting
+      // — the file list is exactly the three extensions `npm run lint` passed to `--ext` before.
+      "files": ["*.js", "*.mjs", "*.ts"],
+      "parser": "@typescript-eslint/parser",
+      "plugins": ["@angular-eslint/eslint-plugin", "@typescript-eslint"],
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:@angular-eslint/recommended",
+        "prettier",
+        "eslint-config-prettier"
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module",
+        "project": ["./tsconfig.app.json", "./tsconfig.spec.json", "./tsconfig.tools.json"]
+      },
+      "rules": {
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "type": "element",
+            "prefix": "hpm",
+            "style": "kebab-case"
+          }
+        ],
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            "type": "attribute",
+            "prefix": "hpm",
+            "style": "camelCase"
+          }
+        ],
+        "@angular-eslint/relative-url-prefix": "error",
+        // DIVERGENCE from the web config, which does not set this rule and so gets its default of
+        // "Component" only. Ionic's routed screens are Pages by convention — the CLI generates them
+        // that way, patient-mobile.md §8.1 names all thirteen as pages, and the shell distinguishes a
+        // Page (a tab destination) from a Component (anything inside one). Both suffixes are allowed
+        // rather than replacing one with the other.
+        "@angular-eslint/component-class-suffix": ["error", { "suffixes": ["Component", "Page"] }],
+        "@typescript-eslint/ban-types": [
+          "error",
+          {
+            "extendDefaults": true,
+            "types": {
+              "{}": false
+            }
+          }
+        ],
+        "@typescript-eslint/explicit-function-return-type": ["error", { "allowExpressions": true }],
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/member-ordering": [
+          "error",
+          {
+            "default": [
+              "public-static-field",
+              "protected-static-field",
+              "private-static-field",
+              // Private instance fields come before public ones, which is the reverse of the usual
+              // advice, because `inject()` has to run first: class field initialisers execute before
+              // constructor parameter properties are assigned, so a public field derived from an
+              // injected service can only work if the service field is declared above it.
+              "private-instance-field",
+              "public-instance-field",
+              "protected-instance-field",
+              "constructor",
+              "public-static-method",
+              "protected-static-method",
+              "private-static-method",
+              "public-instance-method",
+              "protected-instance-method",
+              "private-instance-method"
+            ]
+          }
+        ],
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-floating-promises": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-shadow": ["error"],
+        "@typescript-eslint/no-unnecessary-condition": "error",
+        "@typescript-eslint/no-unsafe-argument": "off",
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/prefer-nullish-coalescing": "error",
+        "@typescript-eslint/prefer-optional-chain": "error",
+        "@typescript-eslint/unbound-method": "off",
+        "arrow-body-style": "error",
+        "curly": "error",
+        "eqeqeq": ["error", "always", { "null": "ignore" }],
+        "guard-for-in": "error",
+        "no-bitwise": "error",
+        "no-caller": "error",
+        "no-console": ["error", { "allow": ["warn", "error"] }],
+        "no-eval": "error",
+        "no-labels": "error",
+        "no-new": "error",
+        "no-new-wrappers": "error",
+        "object-shorthand": ["error", "always", { "avoidExplicitReturnArrows": true }],
+        "radix": "error",
+        "spaced-comment": ["warn", "always"]
+      }
+    },
     {
       // Node build tooling, not browser code. Covered by tsconfig.tools.json so the type-aware
       // rules still run on it — this override only corrects the environment and the two rules that
@@ -168,6 +177,90 @@
         // jest.requireActual() is typed `any`; spreading it is the documented way to mock part of
         // a module.
         "@typescript-eslint/no-unsafe-return": "off"
+      }
+    },
+    {
+      // ANGULAR TEMPLATES — backlog item 21.
+      //
+      // @angular-eslint/eslint-plugin-template and @angular-eslint/template-parser have been in
+      // devDependencies and in node_modules since the port, wired to nothing: the plugin was not in
+      // `plugins`, the parser was configured nowhere, and `npm run lint` ran `--ext .js,.mjs,.ts`,
+      // which never opens a `.html` file. `npx eslint <a template>` answered "the extension for the
+      // file (.html) is non-standard". So the 30 templates were checked by the AOT compiler in
+      // `build:prod` and by nothing else, while .prettierignore sat next to them saying a gate
+      // existed. This override and the `--ext ...,.html` in package.json are that gate.
+      //
+      // MEASURED BEFORE ANY RULE BELOW WAS SET, 2026-09-08, on 8f5eddc:
+      //   - the two configs extended here     10 problems in 5 files, from 2 rules
+      //   - the whole plugin (template/all)  673 problems, from 9 of its 29 rules
+      // All 10 were fixed in the templates, not silenced; there is no eslint-disable in any of them.
+      // The 10 rules NOT enabled are listed at the bottom with the count still behind each, because
+      // a rule quietly switched off to keep a build green is the defect items 16 and 17 were about.
+      "files": ["*.html"],
+      "extends": [
+        // banana-in-box, eqeqeq, no-negated-async. 0 violations, so this costs nothing today, and
+        // `[(x)]` mistyped as `([x])` is a two-character error that renders as a plain attribute
+        // and fails silently — nothing else here would catch it.
+        "plugin:@angular-eslint/template/recommended",
+        // ALL ELEVEN a11y rules, at error. This is a patient-facing app and much of its readership
+        // is elderly. The only two rules that fired were exactly the defect that matters — a tap
+        // target with no keyboard path — so this config is the reason the item was worth doing.
+        "plugin:@angular-eslint/template/accessibility"
+      ],
+      "rules": {
+        // --- ON, beyond the two configs above -----------------------------------------------
+        // Each of these was already at 0. They lock in what the templates do today rather than
+        // asking anybody to change one, which is why they are cheap enough to turn on now.
+
+        // A <button> with no type submits the form it is in. 0 violations.
+        "@angular-eslint/template/button-has-type": "error",
+        // attr="{{ x }}" stringifies its value; [attr]="x" does not. 0 violations.
+        "@angular-eslint/template/no-interpolation-in-attributes": "error",
+        // A positive tabindex reorders the whole document's tab sequence, not just its own
+        // element — an a11y rule in everything but name. 0 violations.
+        "@angular-eslint/template/no-positive-tabindex": "error",
+        // Every template here is already @if/@for, and .prettierignore's whole reason for excluding
+        // *.html is that no prettier version indents inside those blocks. This keeps the repo on
+        // the syntax that argument was made about. 0 violations.
+        "@angular-eslint/template/prefer-control-flow": "error",
+        // 0 violations because @for makes `track` mandatory; this covers a reintroduced *ngFor.
+        "@angular-eslint/template/use-track-by-function": "error",
+
+        // --- OFF, each with the reason and the count still behind it ------------------------
+        // Counts measured 2026-09-08 with `template/all`, after the five a11y fixes in this branch.
+
+        // 364. Wants Angular's own i18n attributes so its extractor can find the strings. This app
+        // translates through @ngx-translate and the hpmTranslate directive; there is no extraction
+        // pipeline for the rule to serve, so every one of the 364 is a false positive.
+        "@angular-eslint/template/i18n": "off",
+        // 161. Bans every method call in a binding. These pages are signal-based and call helpers
+        // (caseLabel, formatDay, memberOf, pill) throughout; turning it on is a rewrite of all 30
+        // templates and of the components behind them, not a fix.
+        "@angular-eslint/template/no-call-expression": "off",
+        // 60. A sort order for attributes: structural, then inputs, then outputs. No defect sits
+        // behind any of them, and these templates are hand-formatted on purpose.
+        "@angular-eslint/template/attributes-order": "off",
+        // 41. A preference for <tag /> over <tag></tag>. Formatting, and prettier is deliberately
+        // pointed away from these files.
+        "@angular-eslint/template/prefer-self-closing-tags": "off",
+        // 22. Every one is `class="hc-pill" [class]="pill(x)"` — a static class beside a bound one,
+        // which Angular merges, and which is the idiom these pages use for status colouring. The
+        // rule reads the pair as one attribute written twice.
+        "@angular-eslint/template/no-duplicate-attributes": "off",
+        // 8. All eight are $any($event…) on an Ionic event whose detail the framework types
+        // loosely. Moving the cast into the component would relocate the gap, not close it.
+        "@angular-eslint/template/no-any": "off",
+        // 8. Five are computed — [style.background], [style.width.%], [style.height.px] — and
+        // cannot be classes because the value is data; the other three size a skeleton placeholder.
+        "@angular-eslint/template/no-inline-styles": "off",
+        // 0. Would require NgOptimizedImage on every <img>. Capacitor serves this app's assets from
+        // the bundle, so the srcset and preconnect machinery that rule exists for buys nothing.
+        "@angular-eslint/template/prefer-ngsrc": "off",
+        // 0 each. Thresholds (default 5) on how involved one condition, or a whole template, may
+        // get. A template that has genuinely earned a complex condition should be argued about in
+        // review rather than refused by a number that happens to be five.
+        "@angular-eslint/template/conditional-complexity": "off",
+        "@angular-eslint/template/cyclomatic-complexity": "off"
       }
     }
   ]

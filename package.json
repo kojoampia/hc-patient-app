@@ -20,7 +20,7 @@
     "test": "jest --config jest.config.js",
     "test:watch": "npm run test -- --watch",
     "test:ci": "jest --config jest.config.js --ci --coverage --maxWorkers=2",
-    "lint": "eslint . --ext .js,.mjs,.ts",
+    "lint": "eslint . --ext .js,.mjs,.ts,.html",
     "lint:fix": "npm run lint -- --fix",
     "prettier:check": "prettier --check \"{,src/**/,tools/**/,.github/**/}*.{md,json,yml,cjs,mjs,js,ts,css,scss}\"",
     "prettier:format": "prettier --write \"{,src/**/,tools/**/,.github/**/}*.{md,json,yml,cjs,mjs,js,ts,css,scss}\"",
