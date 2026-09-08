@@ -6,16 +6,7 @@
 
 import { AfterViewInit, ChangeDetectionStrategy, Component, computed, effect, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  IonIcon,
-  IonLabel,
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
-  IonModal,
-  ModalController,
-  NavController,
-} from '@ionic/angular';
+import { IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs, IonModal, ModalController, NavController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { ActingAsService } from 'app/core/auth/acting-as.service';

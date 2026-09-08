@@ -49,7 +49,6 @@ export class EmergencyService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/emergencies', 'hcpatientservice');
 
-
   create(emergency: NewEmergency): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(emergency);
     return this.http

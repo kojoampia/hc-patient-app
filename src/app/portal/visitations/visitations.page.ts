@@ -61,7 +61,7 @@ export class VisitationsPage {
   caseLabel(caseId: string | null | undefined): string {
     const cases = this.casesById();
     const record = caseId && cases.state === 'loaded' ? cases.value.get(caseId) : undefined;
-    return record ? (record.title ?? record.brief ?? '') : '';
+    return record ? record.title ?? record.brief ?? '' : '';
   }
 
   openCase(caseId: string | null | undefined): void {

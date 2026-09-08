@@ -45,9 +45,9 @@ describe('Account Service', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule.withRoutes([]), TranslateModule.forRoot()],
-    providers: [StateStorageService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-});
+      imports: [RouterTestingModule.withRoutes([]), TranslateModule.forRoot()],
+      providers: [StateStorageService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    });
 
     service = TestBed.inject(AccountService);
     applicationConfigService = TestBed.inject(ApplicationConfigService);

@@ -1,6 +1,17 @@
 /** Layout only. */
-.hpm-allergies__banner { border-left: 4px solid var(--hc-danger); }
-.hpm-allergies__icon { background: var(--hc-danger-bg); color: var(--hc-danger); }
-.hpm-allergies__severe { border-left: 4px solid var(--hc-danger); }
-.hpm-allergies__kv { margin-top: 8px; }
-.hpm-allergies__blockedDot { background: var(--hc-danger); }
+.hpm-allergies__banner {
+  border-left: 4px solid var(--hc-danger);
+}
+.hpm-allergies__icon {
+  background: var(--hc-danger-bg);
+  color: var(--hc-danger);
+}
+.hpm-allergies__severe {
+  border-left: 4px solid var(--hc-danger);
+}
+.hpm-allergies__kv {
+  margin-top: 8px;
+}
+.hpm-allergies__blockedDot {
+  background: var(--hc-danger);
+}

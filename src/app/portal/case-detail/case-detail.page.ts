@@ -12,17 +12,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import {
-  IonAccordion,
-  IonAccordionGroup,
-  IonButton,
-  IonInput,
-  IonItem,
-  IonLabel,
-  IonModal,
-  IonSpinner,
-  IonTextarea,
-} from '@ionic/angular';
+import { IonAccordion, IonAccordionGroup, IonButton, IonInput, IonItem, IonLabel, IonModal, IonSpinner, IonTextarea } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import dayjs from 'dayjs/esm';
 

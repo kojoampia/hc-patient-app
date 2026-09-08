@@ -47,7 +47,6 @@ export class ConditionService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/conditions', 'hcpatientservice');
 
-
   create(condition: NewCondition): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(condition);
     return this.http

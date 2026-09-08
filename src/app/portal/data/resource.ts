@@ -18,10 +18,7 @@
 
 import { HttpErrorResponse } from '@angular/common/http';
 
-export type Resource<T> =
-  | { state: 'loading' }
-  | { state: 'loaded'; value: T }
-  | { state: 'failed'; status: number | null; error: unknown };
+export type Resource<T> = { state: 'loading' } | { state: 'loaded'; value: T } | { state: 'failed'; status: number | null; error: unknown };
 
 /**
  * Shared instance. The loading state carries no data, so allocating a new object per emission would

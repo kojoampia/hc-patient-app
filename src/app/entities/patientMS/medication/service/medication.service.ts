@@ -48,7 +48,6 @@ export class MedicationService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/medications', 'hcpatientservice');
 
-
   create(medication: NewMedication): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(medication);
     return this.http

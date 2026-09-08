@@ -64,7 +64,7 @@ export class EmergenciesPage {
   caseLabel(caseId: string | null | undefined): string {
     const cases = this.casesById();
     const record = caseId && cases.state === 'loaded' ? cases.value.get(caseId) : undefined;
-    return record ? (record.title ?? record.brief ?? '') : '';
+    return record ? record.title ?? record.brief ?? '' : '';
   }
 
   /** Opens on THIS tab's stack — see the class comment. */

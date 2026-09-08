@@ -181,10 +181,10 @@ components, mobile. The bridge has to sit between tokens and components; the fil
 so nothing is same-origin and there is no dev-server proxy. It is cross-origin by design and safe
 because `CapacitorHttp` patches XHR onto the native client, where CORS does not apply.
 
-| Build | Value |
-| ----- | ----- |
+| Build       | Value                                                                                 |
+| ----------- | ------------------------------------------------------------------------------------- |
 | development | `http://patient.healthconnect.local/` — the quality stack on `jacserver`, private LAN |
-| production | `https://patient.abofonsa.com/` |
+| production  | `https://patient.abofonsa.com/`                                                       |
 
 Point development at a local gateway when running one: `http://10.0.2.2:5505/` from the Android
 emulator, `http://<your-lan-ip>:5505/` from a physical device.
@@ -204,14 +204,14 @@ npx cap open ios          # needs macOS + Xcode
 
 ### What is configured
 
-| Concern | Where | Note |
-| --- | --- | --- |
-| Face ID prompt | `NSFaceIDUsageDescription` | **Required.** iOS *terminates* the app the first time it touches Face ID without it — its absence is a crash, not a missing prompt. |
-| Cleartext | `NSAppTransportSecurity` | `NSAllowsArbitraryLoads: false`. `NSAllowsLocalNetworking: true` so a dev build can reach `patient.healthconnect.local` over http **without** weakening ATS for the public internet — the narrow tool Android could not offer (see `network_security_config.xml`). |
-| Export compliance | `ITSAppUsesNonExemptEncryption: false` | Avoids the prompt on every App Store submission. |
-| Keychain accessibility | `core/native/secure-store.ts` | `whenUnlockedThisDeviceOnly` → `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`. Verified against the plugin's Swift: the JS proxy forwards it on every `setItem`, and its own default is `whenUnlocked` — so awaiting the store's `ready` promise is what stops a race writing a token that migrates to a new device in an encrypted backup. |
-| Keychain surviving uninstall | `SessionTokenService.clearIfFirstRun` | Detected with a Preferences flag. Verified: Capacitor Preferences on iOS is `UserDefaults.standard`, which **is** cleared on uninstall while the Keychain is not — which is exactly what makes the detection work. |
-| Icon and splash | `Assets.xcassets` | Generated from the BridgeCare seal. The icon is deliberately **RGB with no alpha** — the App Store rejects a transparent icon. |
+| Concern                      | Where                                  | Note                                                                                                                                                                                                                                                                                                                                        |
+| ---------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Face ID prompt               | `NSFaceIDUsageDescription`             | **Required.** iOS _terminates_ the app the first time it touches Face ID without it — its absence is a crash, not a missing prompt.                                                                                                                                                                                                         |
+| Cleartext                    | `NSAppTransportSecurity`               | `NSAllowsArbitraryLoads: false`. `NSAllowsLocalNetworking: true` so a dev build can reach `patient.healthconnect.local` over http **without** weakening ATS for the public internet — the narrow tool Android could not offer (see `network_security_config.xml`).                                                                          |
+| Export compliance            | `ITSAppUsesNonExemptEncryption: false` | Avoids the prompt on every App Store submission.                                                                                                                                                                                                                                                                                            |
+| Keychain accessibility       | `core/native/secure-store.ts`          | `whenUnlockedThisDeviceOnly` → `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`. Verified against the plugin's Swift: the JS proxy forwards it on every `setItem`, and its own default is `whenUnlocked` — so awaiting the store's `ready` promise is what stops a race writing a token that migrates to a new device in an encrypted backup. |
+| Keychain surviving uninstall | `SessionTokenService.clearIfFirstRun`  | Detected with a Preferences flag. Verified: Capacitor Preferences on iOS is `UserDefaults.standard`, which **is** cleared on uninstall while the Keychain is not — which is exactly what makes the detection work.                                                                                                                          |
+| Icon and splash              | `Assets.xcassets`                      | Generated from the BridgeCare seal. The icon is deliberately **RGB with no alpha** — the App Store rejects a transparent icon.                                                                                                                                                                                                              |
 
 ### What still needs a Mac, and a person
 

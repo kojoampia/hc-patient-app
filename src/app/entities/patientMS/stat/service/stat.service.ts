@@ -47,7 +47,6 @@ export class StatService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/stats', 'hcpatientservice');
 
-
   create(stat: NewStat): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(stat);
     return this.http.post<RestStat>(this.resourceUrl, copy, { observe: 'response' }).pipe(map(res => this.convertResponseFromServer(res)));

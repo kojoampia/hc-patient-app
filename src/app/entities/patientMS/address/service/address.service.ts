@@ -47,7 +47,6 @@ export class AddressService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/addresses', 'hcpatientservice');
 
-
   create(address: NewAddress): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(address);
     return this.http

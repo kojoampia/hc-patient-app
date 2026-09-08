@@ -49,7 +49,6 @@ export class TaskService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/tasks', 'hcpatientservice');
 
-
   create(task: NewTask): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(task);
     return this.http.post<RestTask>(this.resourceUrl, copy, { observe: 'response' }).pipe(map(res => this.convertResponseFromServer(res)));

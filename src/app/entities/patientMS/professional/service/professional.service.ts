@@ -47,7 +47,6 @@ export class ProfessionalService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/professionals', 'hcpatientservice');
 
-
   create(professional: NewProfessional): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(professional);
     return this.http

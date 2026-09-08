@@ -48,7 +48,6 @@ export class AllergyService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/allergies', 'hcpatientservice');
 
-
   create(allergy: NewAllergy): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(allergy);
     return this.http

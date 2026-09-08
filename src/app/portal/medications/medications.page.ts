@@ -88,7 +88,11 @@ export class MedicationsPage {
     }
     const all = state.value;
     return [
-      { status: 'ACTIVE' as const, value: all.filter(i => i.status === 'ACTIVE').length, labelKey: 'patientPortal.medications.count.active' },
+      {
+        status: 'ACTIVE' as const,
+        value: all.filter(i => i.status === 'ACTIVE').length,
+        labelKey: 'patientPortal.medications.count.active',
+      },
       {
         status: 'COMPLETED' as const,
         value: all.filter(i => i.status === 'COMPLETED').length,
@@ -137,7 +141,7 @@ export class MedicationsPage {
   caseLabel(caseId: string | null | undefined): string {
     const cases = this.casesById();
     const record = caseId && cases.state === 'loaded' ? cases.value.get(caseId) : undefined;
-    return record ? (record.title ?? record.brief ?? '') : '';
+    return record ? record.title ?? record.brief ?? '' : '';
   }
 
   openCase(caseId: string | null | undefined): void {
