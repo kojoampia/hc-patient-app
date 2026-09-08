@@ -537,6 +537,19 @@ instance fields before public, because `inject()` runs in field-initialiser orde
 on it. **No `pretest: lint` hook**: that is why `npm test` on web has been failing on lint for months and everyone
 uses `npx ng test` instead. Gate them separately in CI.
 
+**Prettier does not format `*.html`, and that is a decision — recorded 2026-09-08, backlog item 16.** Every Prettier
+release from 2.8.8 to 4.0.0-alpha.13 flattens the contents of an `@if`/`@for` block to the parent's indentation; the
+12 templates here are indented by hand because that is the readable form. So the `prettier:check` and
+`prettier:format` globs drop `html`, `.prettierignore` drops it again for a bare `prettier --check .`, and the
+templates keep their own shape. **There is no newer version to bump to** — that was the first thing checked, and the
+count of disagreeing templates is 12 at every version. Correctness in templates is still gated, by
+`@angular-eslint/eslint-plugin-template` under `npm run lint`; only whitespace is out of scope.
+
+Everything else Prettier is pointed at **is** formatted to the pinned 3.1.0 and **checked in CI**, which is the half
+that matters: 61 files disagreed with the pin for months because nothing ran `prettier:check` — no CI step, no
+`lint-staged`, no `.husky/`. A pin nothing enforces is not a pin. The version itself is now arbitrary; 3.1.0 is kept
+only because `web` and `api` pin it too (`gateway` is on 3.2.5, and nobody has written down why).
+
 CI is one workflow on push and PR to `master`: a node job (`npm ci`, lint, `test:ci`, `build:prod`) and an Android
 job needing it (temurin **21**, `cap sync android`, `./gradlew assembleDebug`, upload the APK). Do **not** copy the
 web repo's `docker-publish.yml` (failing since 2026-07-30 against a Dockerfile in another repo) or `release.yml`

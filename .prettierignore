@@ -1,0 +1,60 @@
+# hc-patient-app — what Prettier does not format
+#
+# Two jobs. The first is the ordinary one: keep generated and vendored files out of scope. The
+# second is the deliberate exclusion of `*.html`, which is a decision and not an oversight — read
+# the second block before "fixing" it.
+#
+# This file exists so that a bare `npx prettier --check .` agrees with `npm run prettier:check`.
+# Before it, the two disagreed: the npm scripts glob narrowly enough to miss `android/**/build/**`
+# and the merged i18n bundles, so they passed by luck rather than by design.
+
+# --- deliberate: Angular templates are hand-formatted ------------------------
+#
+# NO PRETTIER VERSION INDENTS INSIDE ANGULAR CONTROL FLOW. Measured 2026-09-08 against every
+# release from 2.8.8 to 4.0.0-alpha.13: all of them flatten the contents of an `@if`/`@for` block
+# to the parent's level, so
+#
+#     @if (item.notes) {                 becomes    @if (item.notes) {
+#       <div class="hc-prose">…</div>               <div class="hc-prose">…</div>
+#     }                                             }
+#
+# and a nested block loses its structure entirely. The 12 templates here are indented by hand and
+# that is the readable form, so Prettier is pointed away from them rather than allowed to degrade
+# them. This is not a stale pin waiting to be bumped: there is no newer version that fixes it, and
+# raising the pin changes nothing about this file.
+#
+# `src/index.html` has no control flow and does conform — it is excluded with the rest so there is
+# one rule about HTML here rather than two. `npm run lint` still checks templates through
+# @angular-eslint/eslint-plugin-template; what is unenforced is whitespace, not correctness.
+*.html
+
+# --- generated: build output -------------------------------------------------
+node_modules/
+/www/
+/dist/
+/.angular/
+/coverage/
+/test-results/
+# Jest's cache and reporter output. Named `target/` to match the sibling repos — see .gitignore.
+/target/
+
+# --- generated: i18n ---------------------------------------------------------
+# Written by tools/merge-i18n.mjs from src/i18n/<locale>/*.json. The per-feature bundles are the
+# source and are formatted; these merged ones are build output and are not.
+/src/assets/i18n/*.json
+/src/environments/i18n-hash.ts
+
+# --- native projects ---------------------------------------------------------
+# android/ and ios/ are committed on purpose (see .gitignore) but neither is ours to format: the
+# Gradle, Xcode and Capacitor tooling writes them, and `android/**/build/**` in particular holds
+# thousands of generated files that a bare `prettier --check .` would otherwise walk.
+/android/
+/ios/
+
+# --- generated: npm ----------------------------------------------------------
+package-lock.json
+
+# --- archaeology -------------------------------------------------------------
+# A JHipster-Ionic 8.2.1 generator installed 2024-06-06 and never run — patient-mobile.md §6.
+/bin/
+/.yo-repository/
