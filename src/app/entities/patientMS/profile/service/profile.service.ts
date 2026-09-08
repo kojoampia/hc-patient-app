@@ -46,7 +46,6 @@ export class ProfileService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/profiles', 'hcpatientservice');
 
-
   create(profile: NewProfile): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(profile);
     return this.http

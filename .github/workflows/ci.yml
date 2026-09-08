@@ -42,6 +42,15 @@ jobs:
       - name: Merge i18n and check key equality
         run: npm run i18n
 
+      # THE gate backlog item 16 was opened for. 61 files disagreed with the pinned prettier for
+      # months because nothing ran this — no CI step, no lint-staged, no .husky/ — and a pin
+      # nothing enforces is not a pin. Cheapest step in the job, so it runs before lint.
+      #
+      # It does NOT cover templates: no prettier version indents inside @if/@for, so html is out
+      # of scope on purpose and .prettierignore says why at length. Do not widen this back.
+      - name: Check formatting
+        run: npm run prettier:check
+
       # Separate steps, not `npm test` with a pretest hook. On the web that hook is why `npm test`
       # has been failing for months on pre-existing lint problems while the tests themselves pass.
       - run: npm run lint

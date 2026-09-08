@@ -62,8 +62,8 @@ export class MembershipPlanService {
    * @param locale the language to price and describe them in.
    */
   plans(locale = 'en'): Observable<readonly MembershipPlan[]> {
-    return this.http.get<readonly MembershipPlan[]>(`${this.url}?locale=${encodeURIComponent(locale)}`).pipe(
-      catchError(() => of([] as readonly MembershipPlan[])),
-    );
+    return this.http
+      .get<readonly MembershipPlan[]>(`${this.url}?locale=${encodeURIComponent(locale)}`)
+      .pipe(catchError(() => of([] as readonly MembershipPlan[])));
   }
 }

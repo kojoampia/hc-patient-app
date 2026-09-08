@@ -49,7 +49,6 @@ export class MembershipService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/memberships', 'hcpatientservice');
 
-
   create(membership: NewMembership): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(membership);
     return this.http

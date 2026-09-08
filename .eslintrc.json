@@ -13,6 +13,13 @@
     "www/**",
     "dist/**",
     "coverage/**",
+    // Jest writes its coverage and reporter output to target/, NOT to coverage/ — see jest.config.js.
+    // Without this, `npm run lint` fails on target/test-results/lcov-report/*.js the moment anybody
+    // has run the tests, because those files are in no tsconfig and the type-aware parser treats
+    // that as an error rather than as "not mine". CI never saw it only because lint runs before
+    // test:ci in the workflow; locally, in the natural order, it broke. Found during review of
+    // backlog item 16, and the same "passes by luck rather than by design" shape that item is about.
+    "target/**",
     // Committed native output. Neither tree is TypeScript this project owns, and neither is in any
     // tsconfig, which the type-aware parser treats as an error rather than as "not mine".
     "android/**",

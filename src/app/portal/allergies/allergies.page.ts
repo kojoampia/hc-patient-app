@@ -39,15 +39,7 @@ const SEVERITY_RANK: Readonly<Record<string, number | undefined>> = { SEVERE: 0,
 @Component({
   selector: 'hpm-allergies',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    TranslateModule,
-    TranslateDirective,
-    PortalPageComponent,
-    StreamComponent,
-    IconComponent,
-    PanelComponent,
-    StatusLabelPipe,
-  ],
+  imports: [TranslateModule, TranslateDirective, PortalPageComponent, StreamComponent, IconComponent, PanelComponent, StatusLabelPipe],
   templateUrl: './allergies.page.html',
   styleUrl: './allergies.page.scss',
 })
@@ -64,9 +56,7 @@ export class AllergiesPage {
   readonly formatDay = formatDay;
 
   readonly allergies = computed(() =>
-    [...rowsOf(this.allergiesState())].sort(
-      (a, b) => (SEVERITY_RANK[a.severity ?? ''] ?? 3) - (SEVERITY_RANK[b.severity ?? ''] ?? 3),
-    ),
+    [...rowsOf(this.allergiesState())].sort((a, b) => (SEVERITY_RANK[a.severity ?? ''] ?? 3) - (SEVERITY_RANK[b.severity ?? ''] ?? 3)),
   );
 
   readonly conditions = computed(() => rowsOf(this.conditionsState()));

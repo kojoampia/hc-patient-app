@@ -8,11 +8,19 @@
   -webkit-overflow-scrolling: touch;
 }
 
-.hpm-meds__statuses .hc-toggle { flex: none; }
+.hpm-meds__statuses .hc-toggle {
+  flex: none;
+}
 
-.hpm-meds__row { cursor: pointer; }
-.hpm-meds__dose { margin-top: 6px; }
-.hpm-meds__meta { margin-top: 8px; }
+.hpm-meds__row {
+  cursor: pointer;
+}
+.hpm-meds__dose {
+  margin-top: 6px;
+}
+.hpm-meds__meta {
+  margin-top: 8px;
+}
 
 .hpm-meds__detail {
   overflow-y: auto;

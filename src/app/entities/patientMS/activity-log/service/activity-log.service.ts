@@ -47,7 +47,6 @@ export class ActivityLogService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/activity-logs', 'hcpatientservice');
 
-
   create(activityLog: NewActivityLog): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(activityLog);
     return this.http

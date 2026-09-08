@@ -27,7 +27,10 @@ import { Resource, isLoaded } from './resource';
  * first. Lets the lifted assertions stand unchanged.
  */
 const loadedValue = <T>(source: Observable<Resource<T>>): Observable<T> =>
-  source.pipe(filter(isLoaded), map(resource => resource.value));
+  source.pipe(
+    filter(isLoaded),
+    map(resource => resource.value),
+  );
 
 const ACCOUNT = { email: 'kojo@jac.net' } as Account;
 

@@ -196,9 +196,7 @@ export class OverviewPage {
   });
 
   readonly recentActivity = computed(() =>
-    [...rowsOf(this.activityState())]
-      .sort(byDateDesc<IActivityLog>(item => item.loggedAt ?? item.createdDate))
-      .slice(0, PREVIEW),
+    [...rowsOf(this.activityState())].sort(byDateDesc<IActivityLog>(item => item.loggedAt ?? item.createdDate)).slice(0, PREVIEW),
   );
 
   readonly recentCases = computed(() =>

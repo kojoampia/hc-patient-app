@@ -48,7 +48,6 @@ export class ReportService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/reports', 'hcpatientservice');
 
-
   create(report: NewReport): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(report);
     return this.http

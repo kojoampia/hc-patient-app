@@ -48,7 +48,6 @@ export class VisitationService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/visitations', 'hcpatientservice');
 
-
   create(visitation: NewVisitation): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(visitation);
     return this.http

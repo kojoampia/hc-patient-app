@@ -1,0 +1,76 @@
+# hc-patient-app — what Prettier does not format
+#
+# Two jobs. The first is the ordinary one: keep generated and vendored files out of scope. The
+# second is the deliberate exclusion of `*.html`, which is a decision and not an oversight — read
+# the second block before "fixing" it.
+#
+# This file exists so that a bare `npx prettier --check .` agrees with `npm run prettier:check`.
+# Before it, the two disagreed: the npm scripts glob narrowly enough to miss `android/**/build/**`,
+# thousands of generated Gradle files that the bare form walks, so they passed by luck rather than
+# by design.
+#
+# An earlier draft of this paragraph also blamed the merged i18n bundles. That was wrong and is
+# worth correcting rather than deleting: `src/assets/i18n/*.json` and `src/environments/i18n-hash.ts`
+# were always inside the npm glob. They pass because `JSON.stringify(sorted, null, 2)` is already
+# Prettier's output shape, not because anything missed them. They are listed below as generated
+# output, which is a different and better reason.
+
+# --- deliberate: Angular templates are hand-formatted ------------------------
+#
+# NO PRETTIER VERSION INDENTS INSIDE ANGULAR CONTROL FLOW. Measured 2026-09-08 against every
+# release from 2.8.8 to 4.0.0-alpha.13: all of them flatten the contents of an `@if`/`@for` block
+# to the parent's level, so
+#
+#     @if (item.notes) {                 becomes    @if (item.notes) {
+#       <div class="hc-prose">…</div>               <div class="hc-prose">…</div>
+#     }                                             }
+#
+# and a nested block loses its structure entirely. The 12 templates here are indented by hand and
+# that is the readable form, so Prettier is pointed away from them rather than allowed to degrade
+# them. This is not a stale pin waiting to be bumped: there is no newer version that fixes it, and
+# raising the pin changes nothing about this file.
+#
+# `src/index.html` has no control flow and does conform — it is excluded with the rest so there is
+# one rule about HTML here rather than two.
+#
+# BE CLEAR ABOUT WHAT THIS COSTS: templates are now checked by nothing but the AOT compiler in
+# `build:prod`. An earlier draft of this comment claimed `npm run lint` still gated their
+# correctness through @angular-eslint/eslint-plugin-template — IT DOES NOT. That plugin and
+# @angular-eslint/template-parser are both in devDependencies and both wired to nothing: the plugin
+# is not in `plugins`, the template parser is configured nowhere, and `lint` runs
+# `eslint . --ext .js,.mjs,.ts`, which never opens a `.html` file at all. So a11y rules,
+# banana-in-box, and template `eqeqeq` run nowhere. That gap predates this file and is backlog
+# item 21; it is written down here because this is where somebody will come looking for the
+# reassurance the earlier draft wrongly gave them.
+*.html
+
+# --- generated: build output -------------------------------------------------
+node_modules/
+/www/
+/dist/
+/.angular/
+/coverage/
+/test-results/
+# Jest's cache and reporter output. Named `target/` to match the sibling repos — see .gitignore.
+/target/
+
+# --- generated: i18n ---------------------------------------------------------
+# Written by tools/merge-i18n.mjs from src/i18n/<locale>/*.json. The per-feature bundles are the
+# source and are formatted; these merged ones are build output and are not.
+/src/assets/i18n/*.json
+/src/environments/i18n-hash.ts
+
+# --- native projects ---------------------------------------------------------
+# android/ and ios/ are committed on purpose (see .gitignore) but neither is ours to format: the
+# Gradle, Xcode and Capacitor tooling writes them, and `android/**/build/**` in particular holds
+# thousands of generated files that a bare `prettier --check .` would otherwise walk.
+/android/
+/ios/
+
+# --- generated: npm ----------------------------------------------------------
+package-lock.json
+
+# --- archaeology -------------------------------------------------------------
+# A JHipster-Ionic 8.2.1 generator installed 2024-06-06 and never run — patient-mobile.md §6.
+/bin/
+/.yo-repository/

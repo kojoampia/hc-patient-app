@@ -70,6 +70,9 @@ export class AuthInterceptor implements HttpInterceptor {
  * @return true when this is one of the endpoints that must never carry a token.
  */
 function isAnonymous(url: string): boolean {
-  const path = url.split('?')[0].replace(/^https?:\/\/[^/]+/, '').replace(/^\//, '');
+  const path = url
+    .split('?')[0]
+    .replace(/^https?:\/\/[^/]+/, '')
+    .replace(/^\//, '');
   return ANONYMOUS_PATHS.some(anonymous => path === anonymous || path.endsWith(`/${anonymous}`));
 }

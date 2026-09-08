@@ -31,9 +31,7 @@ module.exports = {
    * robust-predicates) join this list AND need the moduleNameMapper redirection to their UMD
    * builds that web/jest.conf.js documents — transformIgnorePatterns alone was not enough there.
    */
-  transformIgnorePatterns: [
-    'node_modules/(?!.*\\.mjs$|@ionic/|@stencil/|ionicons/|@capacitor/|dayjs/esm)',
-  ],
+  transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$|@ionic/|@stencil/|ionicons/|@capacitor/|dayjs/esm)'],
 
   /**
    * Mirrors the `paths` block in tsconfig.json, so specs resolve lifted `from 'app/...'` imports
@@ -78,10 +76,7 @@ module.exports = {
 
   cacheDirectory: '<rootDir>/target/jest-cache',
   coverageDirectory: '<rootDir>/target/test-results/',
-  reporters: [
-    'default',
-    ['jest-junit', { outputDirectory: '<rootDir>/target/test-results/', outputName: 'TESTS-results-jest.xml' }],
-  ],
+  reporters: ['default', ['jest-junit', { outputDirectory: '<rootDir>/target/test-results/', outputName: 'TESTS-results-jest.xml' }]],
 
   /**
    * A Capacitor webview is served from https://localhost. Setting the same origin here keeps

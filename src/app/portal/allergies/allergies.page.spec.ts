@@ -96,5 +96,4 @@ describe('AllergiesPage', () => {
     const buttons = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('ion-button'));
     expect(buttons.some(b => b.querySelector('ion-icon[name="ellipsis-horizontal"]'))).toBe(true);
   });
-
 });

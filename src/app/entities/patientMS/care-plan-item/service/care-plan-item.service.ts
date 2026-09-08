@@ -47,7 +47,6 @@ export class CarePlanItemService {
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/care-plan-items', 'hcpatientservice');
 
-
   create(carePlanItem: NewCarePlanItem): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(carePlanItem);
     return this.http

@@ -153,9 +153,7 @@ describe('PortalDataService', () => {
     });
 
     it('discards rows the server should not have sent', () => {
-      query.mockReturnValue(
-        new BehaviorSubject(new HttpResponse({ body: [CASE('mine', 'patient-kojo'), CASE('theirs', 'patient-ama')] })),
-      );
+      query.mockReturnValue(new BehaviorSubject(new HttpResponse({ body: [CASE('mine', 'patient-kojo'), CASE('theirs', 'patient-ama')] })));
 
       const seen = collect(build().cases$);
 
