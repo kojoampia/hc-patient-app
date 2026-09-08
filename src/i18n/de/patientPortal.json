@@ -108,7 +108,11 @@
       "count": "Fälle",
       "share": "Anteil",
       "who": "Fachkraft",
-      "case": "Fall"
+      "case": "Fall",
+      "trendSummary": "{{ firstValue }} {{ unit }} am {{ firstLabel }} bis {{ lastValue }} {{ unit }} am {{ lastLabel }}, Tendenz {{ direction }}.",
+      "trendUp": "steigend",
+      "trendDown": "fallend",
+      "trendLevel": "gleichbleibend"
     },
     "overview": {
       "greeting": "Ihre Gesundheit auf einen Blick",
@@ -503,7 +507,7 @@
       "chooseOwn": "Meine eigene Akte",
       "chooseFor": "Im Namen von {{name}}",
       "find": "Patient finden",
-      "chooseLede": "Sie können für mehrere Personen handeln. Alles, was Sie danach sehen, gehört zu der Person, die Sie auswählen."
+      "chooseLede": "Sie können für mehrere Personen handeln. Alles, was Sie danach sehen, gehört der Person, die Sie auswählen."
     },
     "invitations": {
       "title": "Pflege-Nominierungen",
@@ -590,7 +594,7 @@
     },
     "lock": {
       "title": "Abofonsa BridgeCare ist gesperrt",
-      "lede": "Sie waren eine Weile abwesend. Entsperren Sie die App, um Ihre Gesundheitsakte wieder zu sehen.",
+      "lede": "Sie waren eine Weile inaktiv. Entsperren Sie die App, um Ihre Gesundheitsakte wieder zu sehen.",
       "unlock": "Entsperren",
       "usePassword": "Passwort verwenden",
       "reason": "Entsperren, um Ihre Gesundheitsakte zu sehen",
@@ -612,19 +616,19 @@
       "signInAsSomeoneElse": "Mit einem anderen Konto anmelden",
       "browserNote": "Der Link öffnet sich in Ihrem Browser, dort steht Ihr gespeichertes Passwort zur Verfügung.",
       "onboarding": {
-        "title": "Schließen Sie die Einrichtung Ihrer Akte ab",
+        "title": "Einrichtung Ihrer Akte abschließen",
         "body": "Ihr Konto ist bereit. Die Einrichtung Ihrer Gesundheitsakte erfolgt im Web — sie dauert nur wenige Minuten, und diese App zeigt eine bereits vorhandene Akte an, statt eine anzulegen. Kommen Sie danach hierher zurück und melden Sie sich erneut an.",
         "action": "Im Web einrichten"
       },
       "invitations": {
         "title": "Eine Einladung wartet auf Sie",
-        "body": "Jemand hat Sie gebeten, sein Pflegeengel zu sein. Sie haben keine eigene Akte, daher gibt es hier noch nichts zu zeigen. Nehmen Sie die Einladung im Web an oder lehnen Sie sie ab und kommen Sie dann zurück.",
+        "body": "Jemand hat Sie als Pflegeengel nominiert. Sie haben keine eigene Akte, daher gibt es hier noch nichts zu zeigen. Nehmen Sie die Einladung im Web an oder lehnen Sie sie ab und kommen Sie dann zurück.",
         "action": "Meine Einladungen öffnen"
       }
     },
     "exit": {
       "title": "BridgeCare schließen?",
-      "body": "Beim nächsten Mal müssen Sie erneut entsperren.",
+      "body": "Beim nächsten Mal müssen Sie die App erneut entsperren.",
       "stay": "Bleiben"
     }
   }

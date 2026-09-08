@@ -108,7 +108,11 @@
       "count": "Cases",
       "share": "Share",
       "who": "Professional",
-      "case": "Case"
+      "case": "Case",
+      "trendSummary": "{{ firstValue }} {{ unit }} on {{ firstLabel }} to {{ lastValue }} {{ unit }} on {{ lastLabel }}, trending {{ direction }}.",
+      "trendUp": "up",
+      "trendDown": "down",
+      "trendLevel": "level"
     },
     "overview": {
       "greeting": "Your health, at a glance",

@@ -108,7 +108,11 @@
       "count": "Dossiers",
       "share": "Part",
       "who": "Professionnel",
-      "case": "Dossier"
+      "case": "Dossier",
+      "trendSummary": "{{ firstValue }} {{ unit }} le {{ firstLabel }} à {{ lastValue }} {{ unit }} le {{ lastLabel }}, tendance {{ direction }}.",
+      "trendUp": "à la hausse",
+      "trendDown": "à la baisse",
+      "trendLevel": "stable"
     },
     "overview": {
       "greeting": "Votre santé, en un coup d'œil",
@@ -503,7 +507,7 @@
       "chooseOwn": "Mon propre dossier",
       "chooseFor": "Au nom de {{name}}",
       "find": "Trouver un patient",
-      "chooseLede": "Vous pouvez agir pour plusieurs personnes. Tout ce que vous verrez ensuite appartient à la personne que vous choisissez."
+      "chooseLede": "Vous pouvez agir au nom de plusieurs personnes. Tout ce que vous verrez ensuite appartient à la personne que vous choisissez."
     },
     "invitations": {
       "title": "Nominations d'accompagnement",
@@ -590,7 +594,7 @@
     },
     "lock": {
       "title": "Abofonsa BridgeCare est verrouillé",
-      "lede": "Votre session est restée inactive un moment. Déverrouillez pour revoir votre dossier médical.",
+      "lede": "Votre session est inactive depuis un moment. Déverrouillez l'application pour revoir votre dossier médical.",
       "unlock": "Déverrouiller",
       "usePassword": "Utiliser le mot de passe",
       "reason": "Déverrouiller pour voir votre dossier médical",
@@ -624,7 +628,7 @@
     },
     "exit": {
       "title": "Fermer BridgeCare ?",
-      "body": "Vous devrez déverrouiller à nouveau la prochaine fois.",
+      "body": "Vous devrez déverrouiller l'application la prochaine fois.",
       "stay": "Rester"
     }
   }

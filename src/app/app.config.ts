@@ -7,6 +7,7 @@ import { ApplicationConfig, LOCALE_ID, inject, provideAppInitializer, provideZon
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { RouteReuseStrategy, provideRouter, withComponentInputBinding, withPreloading, PreloadAllModules } from '@angular/router';
 import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular';
+import { firstValueFrom } from 'rxjs';
 import { MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { importProvidersFrom } from '@angular/core';
 
@@ -103,7 +104,17 @@ const initializeApp = async (): Promise<void> => {
    * before the first await.
    */
   translate.setDefaultLang('en');
-  translate.use(stateStorage.getLocale() ?? 'en');
+  // AWAITED, and that is load-bearing. `use()` returns an Observable and the bundle is an HTTP fetch
+  // of assets/i18n/<lang>.json — so leaving it unawaited let the initializer resolve before any
+  // translation existed. Templates survive that (the pipe and hpmTranslate both subscribe to
+  // onTranslationChange and repaint), but `TranslateService.instant` is a one-shot synchronous read
+  // and does not. The victim was the worst dialog in the app: a cold start with a stored token goes
+  // straight to /lock, lock.page's ngOnInit calls attempt() immediately by design, and BiometricsService
+  // reads three strings with `instant` for a prompt DRAWN BY THE OS — where a miss renders
+  // `translation-not-found[patientPortal.lock.promptTitle]`, because MissingTranslationHandlerImpl
+  // returns that rather than the key. Nothing could have caught it: BiometricsService has no spec, and
+  // the Jest harness has no MissingTranslationHandler, so a miss there looks like the bare key.
+  await firstValueFrom(translate.use(stateStorage.getLocale() ?? 'en'));
 };
 
 export const appConfig: ApplicationConfig = {

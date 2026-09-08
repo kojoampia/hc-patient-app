@@ -1,9 +1,23 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { parseTemplate, type TmplAstNode } from '@angular/compiler';
+import { TmplAstBoundText, TmplAstElement, TmplAstText, parseTemplate, type TmplAstNode } from '@angular/compiler';
 
 /**
- * No template renders user-facing text that is not a translation.
+ * No template renders a static text node that is not a translation.
+ *
+ * <p><b>Read that sentence exactly.</b> It said "no user-facing text" until review, which is an
+ * overclaim this check cannot honour: it walks `Text` nodes and the static chunks around each
+ * `{{ … }}`, so <em>interpolated</em> copy is invisible to it. `{{ copy().title }}` has no static
+ * chunks at all, which means three of the six screens item 22 was opened for — `dead-end`,
+ * `fork-failed` and `lock` — could be reverted to English sentences built in TypeScript and this
+ * suite would stay green. Attributes (`aria-label`, `placeholder`, `alt`) are unwalked for the same
+ * reason; that gap is empty today because every bound label in the app goes through `| translate`,
+ * and it is empty by habit rather than by enforcement.</p>
+ *
+ * <p>What guards the TypeScript half instead is {@link i18n-keys.spec.ts}, which does scan `.ts` for
+ * dotted key literals — and the fact that those three pages now return keys rather than sentences.
+ * Neither is this check. The honest division is written here so the next reader does not assume a
+ * green suite means more than it does.</p>
  *
  * <p>This is the check `docs/backlog.md` item 22 asks for, and the entry is explicit about why the
  * checks already here cannot be it. `i18n-keys.spec.ts` and `tools/merge-i18n.mjs` compare the
@@ -76,6 +90,8 @@ describe('templates carry no untranslated text', () => {
     readonly file: string;
     readonly source: string;
     readonly inline: boolean;
+    /** Lines to add to a parsed line number so it points into the FILE. Zero for an .html template. */
+    readonly lineOffset: number;
   }
 
   function sources(dir: string): string[] {
@@ -95,10 +111,19 @@ describe('templates carry no untranslated text', () => {
   const templates: Template[] = files.flatMap<Template>(file => {
     const text = readFileSync(file, 'utf8');
     if (file.endsWith('.html')) {
-      return [{ file, source: text, inline: false }];
+      return [{ file, source: text, inline: false, lineOffset: 0 }];
     }
     const found = INLINE.exec(text);
-    return found ? [{ file, source: found[1], inline: true }] : [];
+    if (!found) {
+      return [];
+    }
+    // Where the literal's first line sits in the file. `found.index` is the start of the whole
+    // `template:` match, so count the newlines before it and one more for the `template: \`` line.
+    // `- 1` because lineOf already adds 1 to the parser's 0-indexed line: the literal's own first
+    // line IS the `template:` line, so counting it in both places reports every inline hit one line
+    // low. Verified by injecting a string at a known file line and reading the number back.
+    const lineOffset = text.slice(0, found.index).split('\n').length - 1;
+    return [{ file, source: found[1], inline: true, lineOffset }];
   });
 
   /**
@@ -135,30 +160,52 @@ describe('templates carry no untranslated text', () => {
     judged.push({ file: file.slice(APP.length + 1), text, line });
   }
 
-  function walk(nodes: readonly TmplAstNode[] | undefined, file: string, insideDirective: boolean): void {
-    for (const node of nodes ?? []) {
-      const kind = node.constructor.name;
-      const line = node.sourceSpan.start.line + 1;
+  /**
+   * The reported line, corrected for inline templates.
+   *
+   * <p>`parseTemplate` is handed the EXTRACTED string, so its line numbers are relative to the
+   * template literal rather than to the file. Reporting them raw pointed at a doc comment for every
+   * one of the twelve `shared/ui` components — the components whose coverage is this spec's headline
+   * claim. Item 21's finding, reproduced one layer down: covering the code is not the same as
+   * reporting it usefully.</p>
+   */
+  function lineOf(node: TmplAstNode, template: Template): number {
+    return node.sourceSpan.start.line + 1 + template.lineOffset;
+  }
 
-      if (kind === 'Text') {
-        collect(file, (node as unknown as { value: string }).value, line, insideDirective);
-      } else if (kind === 'BoundText') {
+  function walk(nodes: readonly TmplAstNode[] | undefined, file: string, insideDirective: boolean, template: Template): void {
+    for (const node of nodes ?? []) {
+      // `instanceof`, not `constructor.name`. Under a minified @angular/compiler those names become
+      // single letters, the walker would match nothing, and the main assertion — expect([]).toEqual([])
+      // — would pass while seeing zero nodes. The counters below would catch it, but a check should
+      // not depend on its own guard for correctness. (Jest resolves the unminified fesm2022 build
+      // today, so this is hardening, not a live bug.)
+      const line = lineOf(node, template);
+
+      if (node instanceof TmplAstText) {
+        collect(file, node.value, line, insideDirective);
+      } else if (node instanceof TmplAstBoundText) {
         // The static chunks around each `{{ … }}`. `{{ 'a.key' | translate }}` has none.
-        const strings = (node as unknown as { value?: { ast?: { strings?: string[] } } }).value?.ast?.strings ?? [];
+        const strings = (node.value as unknown as { ast?: { strings?: string[] } }).ast?.strings ?? [];
         for (const chunk of strings) {
           collect(file, chunk, line, insideDirective);
         }
       }
 
-      const replaced = kind === 'Element' && replacesItsContent(node as never);
+      // The exemption covers the element's OWN text, not its whole subtree. Both are equivalent today
+      // — measured: 85 hpmTranslate elements, none with an element or block child — but the narrow
+      // form has the better failure mode. Markup nested under hpmTranslate never renders at all, since
+      // the directive overwrites innerHTML and takes the embedded-view anchors with it; the wide form
+      // hides that silently, the narrow form reports the string and leads you to the dead markup.
+      const replaced = node instanceof TmplAstElement && replacesItsContent(node as never);
       // Every container the parser can produce, blocks included — `@if` branches, `@for` bodies and
       // their `@empty`, `@switch` cases, `@defer` and its placeholder/loading/error blocks.
       for (const key of ['children', 'branches', 'cases', 'body', 'empty', 'loading', 'placeholder', 'error'] as const) {
         const child: unknown = (node as unknown as Record<string, unknown>)[key];
         if (Array.isArray(child)) {
-          walk(child as TmplAstNode[], file, insideDirective || replaced);
+          walk(child as TmplAstNode[], file, insideDirective || replaced, template);
         } else if (child !== null && typeof child === 'object' && 'children' in child) {
-          walk([child as unknown as TmplAstNode], file, insideDirective || replaced);
+          walk([child as unknown as TmplAstNode], file, insideDirective || replaced, template);
         }
       }
     }
@@ -172,7 +219,7 @@ describe('templates carry no untranslated text', () => {
         parseFailures.push(`${template.file}: ${parsed.errors.map(error => error.msg).join('; ')}`);
         continue;
       }
-      walk(parsed.nodes, template.file, false);
+      walk(parsed.nodes, template.file, false, template);
     }
     for (const { text } of judged) {
       if (NOT_TRANSLATED.has(text)) {

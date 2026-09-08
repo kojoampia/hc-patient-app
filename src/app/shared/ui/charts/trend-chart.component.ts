@@ -5,9 +5,9 @@
  * Re-sync: see PROVENANCE.md.
  */
 
-import { ChangeDetectionStrategy, Component, Input, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, computed, inject, signal } from '@angular/core';
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 /** One plotted reading. */
 export interface TrendPoint {
@@ -97,6 +97,8 @@ const PAD = { left: 34, right: 16, top: 16, bottom: 28 };
   ],
 })
 export class TrendChartComponent {
+  private readonly translate = inject(TranslateService);
+
   /**
    * Scale bounds, padded above and below so the line never touches the frame.
    *
@@ -185,7 +187,16 @@ export class TrendChartComponent {
     return `${this.line()} L${coords.at(-1)!.x.toFixed(1)} ${baseline} L${coords[0].x.toFixed(1)} ${baseline} Z`;
   });
 
-  /** The chart's accessible name: the trajectory in words, not "line chart". */
+  /**
+   * The chart's accessible name: the trajectory in words, not "line chart".
+   *
+   * <p>TRANSLATED, and it was not until 2026-09-09. This string is what a screen-reader user hears on
+   * Overview — the first screen after sign-in — and on My record, and it was built from English
+   * connectives ("on", "to", "trending") in an app shipping en/de/fr. Item 22 listed six screens and
+   * missed this one, because it is assembled in TypeScript and rendered through
+   * `[attr.aria-label]`, where no template walker can see it. `i18n-templates.spec.ts` says so in
+   * its own comment now.</p>
+   */
   readonly summary = computed(() => {
     const points = this.points();
     if (points.length < 2) {
@@ -193,8 +204,19 @@ export class TrendChartComponent {
     }
     const first = points[0];
     const last = points.at(-1)!;
-    const direction = last.value > first.value ? 'up' : last.value < first.value ? 'down' : 'level';
-    return `${first.value} ${this.unit} on ${first.label} to ${last.value} ${this.unit} on ${last.label}, trending ${direction}.`;
+    const direction = last.value > first.value ? 'trendUp' : last.value < first.value ? 'trendDown' : 'trendLevel';
+    // String(...) rather than a cast: `instant` is typed `any`, and this value goes straight into an
+    // aria-label, so coercing at the boundary is honest where `as string` would only silence the rule.
+    return String(
+      this.translate.instant('patientPortal.chart.trendSummary', {
+        firstValue: first.value,
+        lastValue: last.value,
+        unit: this.unit,
+        firstLabel: first.label,
+        lastLabel: last.label,
+        direction: String(this.translate.instant(`patientPortal.chart.${direction}`)),
+      }),
+    );
   });
 }
 
