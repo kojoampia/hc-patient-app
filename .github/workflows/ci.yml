@@ -53,6 +53,11 @@ jobs:
 
       # Separate steps, not `npm test` with a pretest hook. On the web that hook is why `npm test`
       # has been failing for months on pre-existing lint problems while the tests themselves pass.
+      # COVERS ANGULAR TEMPLATES since backlog item 21, and that is the half of the item that
+      # actually closes it. `lint` is `eslint . --ext .js,.mjs,.ts,.html` and .eslintrc.json has the
+      # `*.html` override behind it, so extending the script was enough — a second step naming the
+      # templates would only give the two something to drift apart about. Note the formatting step
+      # above still does not see them, and deliberately: that is what .prettierignore explains.
       - run: npm run lint
 
       - run: npm run test:ci
