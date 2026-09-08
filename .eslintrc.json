@@ -240,10 +240,16 @@
         // hpmTranslate directive, so the rule cannot be satisfied and cannot be enabled. But the count
         // splits: ~280 are attribute hits, which genuinely are noise here, and ~84 are TEXT NODES —
         // and among those sit real user-facing English strings with no translation at all, in an app
-        // shipping en/de/fr. lock.page.html imports TranslateModule and uses it zero times; tabs.page
-        // translates an aria-label two lines above an untranslated <ion-label>. A German patient sees
-        // English on the lock screen. Filed as backlog item 22; this comment used to claim all 364
-        // were false positives, which is how a real defect hid behind a disabled rule.
+        // shipping en/de/fr. lock.page.html imported TranslateModule and used it zero times; tabs.page
+        // translated an aria-label two lines above an untranslated <ion-label>. A German patient saw
+        // English on the lock screen. This comment used to claim all 364 were false positives, which
+        // is how a real defect hid behind a disabled rule.
+        //
+        // Those strings were moved into the bundles by backlog item 22 (2026-09-09), and the rule
+        // stays off — it still cannot be satisfied here. What replaces it is
+        // src/app/core/i18n-templates.spec.ts, which parses every template with Angular's own
+        // parseTemplate, understands hpmTranslate, covers the inline templates too, and fails on a
+        // text node that is not a translation. Do NOT turn this rule on expecting it to do that job.
         "@angular-eslint/template/i18n": "off",
         // 161. Bans every method call in a binding — which in a signal-based app means every SIGNAL
         // READ: busy(), cases(), tab(), activeTab(). That, not the helper calls, is the bulk of the
