@@ -32,7 +32,8 @@
       "collapseMenu": "Menü einklappen",
       "expandMenu": "Menü ausklappen",
       "visitations": "Besuche",
-      "activity": "Aktivitätsverlauf"
+      "activity": "Aktivitätsverlauf",
+      "more": "Mehr"
     },
     "title": {
       "overview": "Patientenkontext",
@@ -501,7 +502,8 @@
       "chooseTitle": "Welche Akte möchten Sie öffnen?",
       "chooseOwn": "Meine eigene Akte",
       "chooseFor": "Im Namen von {{name}}",
-      "find": "Patient finden"
+      "find": "Patient finden",
+      "chooseLede": "Sie können für mehrere Personen handeln. Alles, was Sie danach sehen, gehört zu der Person, die Sie auswählen."
     },
     "invitations": {
       "title": "Pflege-Nominierungen",
@@ -585,6 +587,45 @@
         "raise": "Wir konnten Ihren Antrag nicht erfassen. Bitte versuchen Sie es erneut.",
         "cancel": "Wir konnten Ihren Antrag nicht zurückziehen. Bitte versuchen Sie es erneut."
       }
+    },
+    "lock": {
+      "title": "Abofonsa BridgeCare ist gesperrt",
+      "lede": "Sie waren eine Weile abwesend. Entsperren Sie die App, um Ihre Gesundheitsakte wieder zu sehen.",
+      "unlock": "Entsperren",
+      "usePassword": "Passwort verwenden",
+      "reason": "Entsperren, um Ihre Gesundheitsakte zu sehen",
+      "promptTitle": "BridgeCare entsperren",
+      "error": {
+        "unavailable": "Dieses Gerät hat keine Bildschirmsperre, daher kann Ihre Sitzung nicht gespeichert werden. Bitte melden Sie sich erneut an.",
+        "failed": "Wir konnten nicht bestätigen, dass Sie es sind. Versuchen Sie es erneut oder melden Sie sich mit Ihrem Passwort an."
+      }
+    },
+    "forkFailed": {
+      "title": "Wir konnten Ihre Akte nicht öffnen",
+      "signInAgain": "Erneut anmelden",
+      "error": {
+        "session": "Health Connect hat Ihre Sitzung nicht bestätigt. Versuchen Sie es erneut oder melden Sie sich erneut an.",
+        "generic": "Beim Öffnen Ihrer Akte ist etwas schiefgegangen. Bitte versuchen Sie es erneut."
+      }
+    },
+    "deadEnd": {
+      "signInAsSomeoneElse": "Mit einem anderen Konto anmelden",
+      "browserNote": "Der Link öffnet sich in Ihrem Browser, dort steht Ihr gespeichertes Passwort zur Verfügung.",
+      "onboarding": {
+        "title": "Schließen Sie die Einrichtung Ihrer Akte ab",
+        "body": "Ihr Konto ist bereit. Die Einrichtung Ihrer Gesundheitsakte erfolgt im Web — sie dauert nur wenige Minuten, und diese App zeigt eine bereits vorhandene Akte an, statt eine anzulegen. Kommen Sie danach hierher zurück und melden Sie sich erneut an.",
+        "action": "Im Web einrichten"
+      },
+      "invitations": {
+        "title": "Eine Einladung wartet auf Sie",
+        "body": "Jemand hat Sie gebeten, sein Pflegeengel zu sein. Sie haben keine eigene Akte, daher gibt es hier noch nichts zu zeigen. Nehmen Sie die Einladung im Web an oder lehnen Sie sie ab und kommen Sie dann zurück.",
+        "action": "Meine Einladungen öffnen"
+      }
+    },
+    "exit": {
+      "title": "BridgeCare schließen?",
+      "body": "Beim nächsten Mal müssen Sie erneut entsperren.",
+      "stay": "Bleiben"
     }
   }
 }

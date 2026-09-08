@@ -32,7 +32,8 @@
       "collapseMenu": "Réduire le menu",
       "expandMenu": "Développer le menu",
       "visitations": "Visites",
-      "activity": "Journal d'activité"
+      "activity": "Journal d'activité",
+      "more": "Plus"
     },
     "title": {
       "overview": "Contexte patient",
@@ -501,7 +502,8 @@
       "chooseTitle": "Quel dossier souhaitez-vous ouvrir ?",
       "chooseOwn": "Mon propre dossier",
       "chooseFor": "Au nom de {{name}}",
-      "find": "Trouver un patient"
+      "find": "Trouver un patient",
+      "chooseLede": "Vous pouvez agir pour plusieurs personnes. Tout ce que vous verrez ensuite appartient à la personne que vous choisissez."
     },
     "invitations": {
       "title": "Nominations d'accompagnement",
@@ -585,6 +587,45 @@
         "raise": "Nous n'avons pas pu enregistrer votre demande. Veuillez réessayer.",
         "cancel": "Nous n'avons pas pu retirer votre demande. Veuillez réessayer."
       }
+    },
+    "lock": {
+      "title": "Abofonsa BridgeCare est verrouillé",
+      "lede": "Votre session est restée inactive un moment. Déverrouillez pour revoir votre dossier médical.",
+      "unlock": "Déverrouiller",
+      "usePassword": "Utiliser le mot de passe",
+      "reason": "Déverrouiller pour voir votre dossier médical",
+      "promptTitle": "Déverrouiller BridgeCare",
+      "error": {
+        "unavailable": "Cet appareil n'a pas de verrouillage d'écran, votre session ne peut donc pas être conservée. Veuillez vous reconnecter.",
+        "failed": "Nous n'avons pas pu vérifier votre identité. Réessayez, ou connectez-vous avec votre mot de passe."
+      }
+    },
+    "forkFailed": {
+      "title": "Nous n'avons pas pu ouvrir votre dossier",
+      "signInAgain": "Se reconnecter",
+      "error": {
+        "session": "Health Connect n'a pas confirmé votre session. Réessayez, ou reconnectez-vous.",
+        "generic": "Une erreur est survenue lors de l'ouverture de votre dossier. Veuillez réessayer."
+      }
+    },
+    "deadEnd": {
+      "signInAsSomeoneElse": "Se connecter avec un autre compte",
+      "browserNote": "Le lien s'ouvre dans votre navigateur, où votre mot de passe enregistré est disponible.",
+      "onboarding": {
+        "title": "Terminez la configuration de votre dossier",
+        "body": "Votre compte est prêt. La configuration de votre dossier médical se fait sur le web — cela prend quelques minutes, et cette application affiche un dossier qui existe déjà plutôt que d'en créer un. Revenez ensuite ici et reconnectez-vous.",
+        "action": "Configurer sur le web"
+      },
+      "invitations": {
+        "title": "Une invitation vous attend",
+        "body": "Quelqu'un vous a demandé d'être son ange gardien. Vous n'avez pas de dossier personnel, il n'y a donc encore rien à afficher ici. Acceptez ou refusez l'invitation sur le web, puis revenez.",
+        "action": "Ouvrir mes invitations"
+      }
+    },
+    "exit": {
+      "title": "Fermer BridgeCare ?",
+      "body": "Vous devrez déverrouiller à nouveau la prochaine fois.",
+      "stay": "Rester"
     }
   }
 }

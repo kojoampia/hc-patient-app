@@ -6,6 +6,7 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { Browser } from '@capacitor/browser';
 import { IonButton, IonContent, IonIcon } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { LoginService } from 'app/login/login.service';
 import { NativePromptGuard, withPrompt } from 'app/core/native/with-prompt';
@@ -25,7 +26,7 @@ const PORTAL_URL = 'https://patient.abofonsa.com';
   selector: 'hpm-dead-end',
   templateUrl: './dead-end.page.html',
   styleUrl: './dead-end.page.scss',
-  imports: [IonContent, IonButton, IonIcon, BrandmarkComponent],
+  imports: [IonContent, IonButton, IonIcon, BrandmarkComponent, TranslateModule],
 })
 export class DeadEndPage {
   private readonly loginService = inject(LoginService);
@@ -39,32 +40,33 @@ export class DeadEndPage {
   /**
    * A screen that merely refuses is indistinguishable from a bug (§6 decision 2). Each of these
    * says what happened, what to do, and where — and then offers the button that does it.
+   *
+   * TRANSLATION KEYS, not sentences; the template pipes each through `translate`. The English lived
+   * here until backlog item 22, which meant a German or French patient met an English wall on one
+   * of the two screens §6 decision 2 exists to make humane.
+   *
+   * Written out per branch rather than assembled from `kind()` — a key built by concatenation is
+   * invisible to `i18n-keys.spec.ts`, which scans for quoted dotted literals. The sub-keys match
+   * {@link DeadEndKind} all the same, so the pairing stays obvious.
+   *
+   * The onboarding copy was reworded on 2026-08-23, when registration landed in this app. Before
+   * that, everybody reaching this screen had registered elsewhere and was being told something they
+   * half expected. Now somebody can register on the phone, activate by mail, sign in — and arrive
+   * here on their very first run, having done nothing wrong. It reads as the next step of a journey
+   * rather than as a refusal, which is why it says what this app is for rather than only what is
+   * missing. That wording now lives in `patientPortal.deadEnd.onboarding.body` in all three locales.
    */
   readonly copy = computed(() =>
     this.isOnboarding()
       ? {
-          title: 'Finish setting up your record',
-          /**
-           * Reworded on 2026-08-23, when registration landed in this app.
-           *
-           * Before that, everybody reaching this screen had registered elsewhere and was being told
-           * something they half expected. Now somebody can register on the phone, activate by mail,
-           * sign in — and arrive here on their very first run, having done nothing wrong. The copy
-           * has to read as the next step of a journey rather than as a refusal, which is why it now
-           * says what this app is for rather than only what is missing.
-           */
-          body:
-            'Your account is ready. Setting up your health record is done on the web — it takes a few minutes, ' +
-            'and this app shows a record that already exists rather than creating one. ' +
-            'Come back here afterwards and sign in again.',
-          action: 'Set up on the web',
+          title: 'patientPortal.deadEnd.onboarding.title',
+          body: 'patientPortal.deadEnd.onboarding.body',
+          action: 'patientPortal.deadEnd.onboarding.action',
         }
       : {
-          title: 'You have an invitation waiting',
-          body:
-            'Someone has asked you to be their care angel. You do not have a record of your own, ' +
-            'so there is nothing to show here yet. Accept or decline the invitation on the web, then come back.',
-          action: 'Open my invitations',
+          title: 'patientPortal.deadEnd.invitations.title',
+          body: 'patientPortal.deadEnd.invitations.body',
+          action: 'patientPortal.deadEnd.invitations.action',
         },
   );
 

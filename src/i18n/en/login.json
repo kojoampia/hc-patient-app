@@ -10,7 +10,8 @@
     "messages": {
       "error": {
         "authentication": "<strong>Failed to sign in!</strong> Please check your credentials and try again."
-      }
+      },
+      "willNotPersist": "This device has no screen lock, so your sign-in will not be kept. You will need to sign in again each time you open the app."
     },
     "password": {
       "forgot": "Did you forget your password?"

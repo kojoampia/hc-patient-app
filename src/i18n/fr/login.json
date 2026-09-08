@@ -10,7 +10,8 @@
     "messages": {
       "error": {
         "authentication": "<strong>Erreur d'authentification !</strong> Veuillez vérifier vos identifiants de connexion."
-      }
+      },
+      "willNotPersist": "Cet appareil n'a pas de verrouillage d'écran, votre connexion ne sera donc pas conservée. Vous devrez vous reconnecter à chaque ouverture de l'application."
     },
     "password": {
       "forgot": "Avez-vous oublié votre mot de passe ?"

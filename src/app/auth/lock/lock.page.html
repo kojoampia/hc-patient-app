@@ -12,16 +12,17 @@
       <ion-icon class="hpm-lock__icon" name="lock-closed" aria-hidden="true"></ion-icon>
     </div>
 
-    <h1 class="hc-auth-title">Abofonsa BridgeCare is locked</h1>
-    <p class="hc-auth-lede hc-muted">You have been away for a while. Unlock to see your health record again.</p>
+    <h1 class="hc-auth-title">{{ 'patientPortal.lock.title' | translate }}</h1>
+    <p class="hc-auth-lede hc-muted">{{ 'patientPortal.lock.lede' | translate }}</p>
 
+    <!-- `message()` is a KEY, not a sentence — see lock.page.ts. -->
     @if (message(); as msg) {
-    <div class="hc-auth-error" role="alert">{{ msg }}</div>
+    <div class="hc-auth-error" role="alert">{{ msg | translate }}</div>
     } @if (canRetry()) {
     <ion-button expand="block" color="primary" [disabled]="busy()" (click)="attempt()">
       @if (busy()) {
       <ion-spinner name="crescent" slot="start"></ion-spinner>
-      } Unlock
+      } {{ 'patientPortal.lock.unlock' | translate }}
     </ion-button>
     }
 
@@ -29,6 +30,8 @@
       Always offered, not only on failure. If the fingerprint reader has stopped working there must
       be a way to a patient's own record that does not depend on it.
     -->
-    <ion-button expand="block" fill="clear" color="dark" (click)="usePassword()">Use password</ion-button>
+    <ion-button expand="block" fill="clear" color="dark" (click)="usePassword()">
+      {{ 'patientPortal.lock.usePassword' | translate }}
+    </ion-button>
   </div>
 </ion-content>

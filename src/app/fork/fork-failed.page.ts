@@ -14,6 +14,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonButton, IonContent, IonIcon } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { LoginService } from 'app/login/login.service';
 import { SessionBootstrapService } from './session-bootstrap.service';
@@ -22,7 +23,7 @@ import { SessionBootstrapService } from './session-bootstrap.service';
   selector: 'hpm-fork-failed',
   templateUrl: './fork-failed.page.html',
   styleUrl: './fork-failed.page.scss',
-  imports: [IonContent, IonButton, IonIcon],
+  imports: [IonContent, IonButton, IonIcon, TranslateModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForkFailedPage {
@@ -35,13 +36,18 @@ export class ForkFailedPage {
   /**
    * Keyed off status, never a raw error string (§7.5 sets the same rule for the data layer). A
    * patient has no use for "HttpErrorResponse 0 Unknown Error".
+   *
+   * Returns a TRANSLATION KEY, which the template pipes through `translate`. It returned English
+   * until backlog item 22 — on a screen whose whole purpose is to not guess, in an app shipping
+   * three locales. The offline wording is `stream.offline` rather than a fourth copy of the same
+   * sentence: the data layer already says exactly this, in all three.
    */
   readonly message = computed(() => {
     const state = this.outcome();
     const status = state.kind === 'failed' ? state.status : null;
 
     if (status === null || status === 0) {
-      return 'We could not reach Health Connect. Check your connection and try again.';
+      return 'patientPortal.stream.offline';
     }
     if (status === 401 || status === 403) {
       /**
@@ -50,9 +56,9 @@ export class ForkFailedPage {
        * screen — so the sentence was told to people whose session was perfectly valid, and it sent them to sign
        * in again to fix something signing in does not fix. Say what happened, and offer both ways on.
        */
-      return 'Health Connect would not confirm your session. Try again, or sign in again.';
+      return 'patientPortal.forkFailed.error.session';
     }
-    return 'Something went wrong while opening your records. Please try again.';
+    return 'patientPortal.forkFailed.error.generic';
   });
 
   readonly isAuthProblem = computed(() => {

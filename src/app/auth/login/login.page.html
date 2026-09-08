@@ -2,9 +2,12 @@
   A single full-bleed ion-content. No ion-header: a sign-in screen has nothing to navigate back to,
   and a toolbar on it would imply otherwise.
 
-  Every string comes from the existing i18n bundles — login.* and global.form.* — so this screen
-  needs no new keys in three locales. The merge gate would fail the build if it did and they were
-  not all added.
+  Every string comes from the i18n bundles — login.* and global.form.* — and the merge gate fails
+  the build if a key is not in all three locales. The one exception is the wordmark below the seal,
+  which is two product names and is allow-listed in i18n-templates.spec.ts rather than translated.
+
+  `login.messages.willNotPersist` was added by backlog item 22; it was hard-coded English here,
+  which is the state that item exists to end.
 -->
 <ion-content class="ion-padding hpm-login" [fullscreen]="true">
   <div class="hpm-login__inner">
@@ -84,9 +87,7 @@
         the user signed out on next launch with no explanation, which reads as the app losing their
         session at random.
       -->
-    <div class="hc-auth-note">
-      This device has no screen lock, so your sign-in will not be kept. You will need to sign in again each time you open the app.
-    </div>
+    <div class="hc-auth-note">{{ 'login.messages.willNotPersist' | translate }}</div>
     }
 
     <!--

@@ -10,7 +10,8 @@
     "messages": {
       "error": {
         "authentication": "<strong>Anmeldung fehlgeschlagen!</strong> Überprüfen Sie bitte Ihre Angaben und versuchen Sie es erneut."
-      }
+      },
+      "willNotPersist": "Dieses Gerät hat keine Bildschirmsperre, daher wird Ihre Anmeldung nicht gespeichert. Sie müssen sich bei jedem Öffnen der App erneut anmelden."
     },
     "password": {
       "forgot": "Sie haben Ihr Passwort vergessen?"
