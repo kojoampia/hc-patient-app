@@ -111,7 +111,7 @@ Baseline for the whole first pass: **`12e418c`** (`kojoampia/hc-patient-dashboar
 | `app/entities/patientMS/emergency/service/emergency.service.ts` | `app/entities/patientMS/emergency/service/emergency.service.ts` | 12e418c | constructor params -> inject() — see Known divergences |
 | `app/entities/patientMS/medication/medication.model.ts` | `app/entities/patientMS/medication/medication.model.ts` | 12e418c | none |
 | `app/entities/patientMS/medication/service/medication.service.ts` | `app/entities/patientMS/medication/service/medication.service.ts` | 12e418c | constructor params -> inject() — see Known divergences |
-| `app/entities/patientMS/membership/membership.model.ts` | `app/entities/patientMS/membership/membership.model.ts` | 12e418c | none |
+| `app/entities/patientMS/membership/membership.model.ts` | `app/entities/patientMS/membership/membership.model.ts` | ce4bfe7 | none |
 | `app/entities/patientMS/membership/service/membership.service.ts` | `app/entities/patientMS/membership/service/membership.service.ts` | 12e418c | constructor params -> inject() — see Known divergences |
 | `app/entities/patientMS/professional/professional.model.ts` | `app/entities/patientMS/professional/professional.model.ts` | 12e418c | none |
 | `app/entities/patientMS/professional/service/professional.service.ts` | `app/entities/patientMS/professional/service/professional.service.ts` | 12e418c | constructor params -> inject() — see Known divergences |
@@ -126,7 +126,7 @@ Baseline for the whole first pass: **`12e418c`** (`kojoampia/hc-patient-dashboar
 | `app/entities/patientMS/visitation/visitation.model.ts` | `app/entities/patientMS/visitation/visitation.model.ts` | 12e418c | none |
 | `app/entities/patientMS/visitation/service/visitation.service.ts` | `app/entities/patientMS/visitation/service/visitation.service.ts` | 12e418c | constructor params -> inject() — see Known divergences |
 | `app/entities/patientMS/recommendation/recommendation.model.ts` | `app/entities/patientMS/recommendation/recommendation.model.ts` | 12e418c | none — required by ClinicalCase's many-to-many |
-| `app/entities/enumerations/*` | `app/entities/enumerations/*` | 12e418c | none |
+| `app/entities/enumerations/*` | `app/entities/enumerations/*` | 12e418c | none — except `membership-status.model.ts`, taken at ce4bfe7 when `Membership.status` became an enum |
 | `app/portal/data/patient-context.service.ts` | `app/portal/data/patient-context.service.ts` | 12e418c | profileState$ / careTeamState$ — see Known divergences |
 | `app/portal/data/patient-context.service.spec.ts` | `app/portal/data/patient-context.service.spec.ts` | 12e418c | unwraps Resource; assertions unchanged |
 | `app/portal/data/portal-format.ts` | `app/portal/data/portal-format.ts` | 12e418c | one eslint-disable — see Known divergences |
