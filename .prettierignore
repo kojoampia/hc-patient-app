@@ -5,8 +5,15 @@
 # the second block before "fixing" it.
 #
 # This file exists so that a bare `npx prettier --check .` agrees with `npm run prettier:check`.
-# Before it, the two disagreed: the npm scripts glob narrowly enough to miss `android/**/build/**`
-# and the merged i18n bundles, so they passed by luck rather than by design.
+# Before it, the two disagreed: the npm scripts glob narrowly enough to miss `android/**/build/**`,
+# thousands of generated Gradle files that the bare form walks, so they passed by luck rather than
+# by design.
+#
+# An earlier draft of this paragraph also blamed the merged i18n bundles. That was wrong and is
+# worth correcting rather than deleting: `src/assets/i18n/*.json` and `src/environments/i18n-hash.ts`
+# were always inside the npm glob. They pass because `JSON.stringify(sorted, null, 2)` is already
+# Prettier's output shape, not because anything missed them. They are listed below as generated
+# output, which is a different and better reason.
 
 # --- deliberate: Angular templates are hand-formatted ------------------------
 #
@@ -24,8 +31,17 @@
 # raising the pin changes nothing about this file.
 #
 # `src/index.html` has no control flow and does conform — it is excluded with the rest so there is
-# one rule about HTML here rather than two. `npm run lint` still checks templates through
-# @angular-eslint/eslint-plugin-template; what is unenforced is whitespace, not correctness.
+# one rule about HTML here rather than two.
+#
+# BE CLEAR ABOUT WHAT THIS COSTS: templates are now checked by nothing but the AOT compiler in
+# `build:prod`. An earlier draft of this comment claimed `npm run lint` still gated their
+# correctness through @angular-eslint/eslint-plugin-template — IT DOES NOT. That plugin and
+# @angular-eslint/template-parser are both in devDependencies and both wired to nothing: the plugin
+# is not in `plugins`, the template parser is configured nowhere, and `lint` runs
+# `eslint . --ext .js,.mjs,.ts`, which never opens a `.html` file at all. So a11y rules,
+# banana-in-box, and template `eqeqeq` run nowhere. That gap predates this file and is backlog
+# item 21; it is written down here because this is where somebody will come looking for the
+# reassurance the earlier draft wrongly gave them.
 *.html
 
 # --- generated: build output -------------------------------------------------
