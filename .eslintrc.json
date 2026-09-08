@@ -48,6 +48,12 @@
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
         "plugin:@angular-eslint/recommended",
+        // Extracts `template:` strings out of @Component and lints them as templates. WITHOUT THIS the
+        // *.html override below covers 30 files and misses 12 — every component in shared/ui, which is
+        // the reusable widget layer that appears on every screen. A (click) added to a <div> in
+        // search-box or pager would have shipped with no keyboard path and a green lint, which is the
+        // exact defect item 21 was opened to catch, in the one place it would be repeated most.
+        "plugin:@angular-eslint/template/process-inline-templates",
         "prettier",
         "eslint-config-prettier"
       ],
@@ -215,7 +221,7 @@
         // A <button> with no type submits the form it is in. 0 violations.
         "@angular-eslint/template/button-has-type": "error",
         // attr="{{ x }}" stringifies its value; [attr]="x" does not. 0 violations.
-        "@angular-eslint/template/no-interpolation-in-attributes": "error",
+
         // A positive tabindex reorders the whole document's tab sequence, not just its own
         // element — an a11y rule in everything but name. 0 violations.
         "@angular-eslint/template/no-positive-tabindex": "error",
@@ -229,13 +235,21 @@
         // --- OFF, each with the reason and the count still behind it ------------------------
         // Counts measured 2026-09-08 with `template/all`, after the five a11y fixes in this branch.
 
-        // 364. Wants Angular's own i18n attributes so its extractor can find the strings. This app
-        // translates through @ngx-translate and the hpmTranslate directive; there is no extraction
-        // pipeline for the rule to serve, so every one of the 364 is a false positive.
+        // 364, and DO NOT READ THAT NUMBER AS NOISE. The rule wants Angular's own i18n attributes so
+        // its extractor can find the strings; this app translates through @ngx-translate and the
+        // hpmTranslate directive, so the rule cannot be satisfied and cannot be enabled. But the count
+        // splits: ~280 are attribute hits, which genuinely are noise here, and ~84 are TEXT NODES —
+        // and among those sit real user-facing English strings with no translation at all, in an app
+        // shipping en/de/fr. lock.page.html imports TranslateModule and uses it zero times; tabs.page
+        // translates an aria-label two lines above an untranslated <ion-label>. A German patient sees
+        // English on the lock screen. Filed as backlog item 22; this comment used to claim all 364
+        // were false positives, which is how a real defect hid behind a disabled rule.
         "@angular-eslint/template/i18n": "off",
-        // 161. Bans every method call in a binding. These pages are signal-based and call helpers
-        // (caseLabel, formatDay, memberOf, pill) throughout; turning it on is a rewrite of all 30
-        // templates and of the components behind them, not a fix.
+        // 161. Bans every method call in a binding — which in a signal-based app means every SIGNAL
+        // READ: busy(), cases(), tab(), activeTab(). That, not the helper calls, is the bulk of the
+        // 161, and it is why the rule is unusable here rather than merely inconvenient. (An earlier
+        // version of this comment named caseLabel as an offender; it is not among the 161 at all,
+        // because it appears only inside @if headers, which this plugin version never visits.)
         "@angular-eslint/template/no-call-expression": "off",
         // 60. A sort order for attributes: structural, then inputs, then outputs. No defect sits
         // behind any of them, and these templates are hand-formatted on purpose.
@@ -247,14 +261,25 @@
         // which Angular merges, and which is the idiom these pages use for status colouring. The
         // rule reads the pair as one attribute written twice.
         "@angular-eslint/template/no-duplicate-attributes": "off",
-        // 8. All eight are $any($event…) on an Ionic event whose detail the framework types
-        // loosely. Moving the cast into the component would relocate the gap, not close it.
+        // 8. Five are $any($event.detail…) on Ionic events the framework types loosely, where moving
+        // the cast into the component would relocate the gap rather than close it. THE OTHER THREE
+        // ARE NOT: case-detail:176,189 and reports:100 cast $event.target, and reports:100 is a plain
+        // native <input> with no Ionic anywhere near it. A component method taking HTMLInputElement
+        // would close those outright. Worth doing; not done here, and recorded so it is not lost.
         "@angular-eslint/template/no-any": "off",
         // 8. Five are computed — [style.background], [style.width.%], [style.height.px] — and
         // cannot be classes because the value is data; the other three size a skeleton placeholder.
         "@angular-eslint/template/no-inline-styles": "off",
-        // 0. Would require NgOptimizedImage on every <img>. Capacitor serves this app's assets from
-        // the bundle, so the srcset and preconnect machinery that rule exists for buys nothing.
+        // 0 — and the zero is because THIS APP HAS NO <img> ELEMENTS AT ALL, not because the rule
+        // was assessed and found satisfied. Same caveat applies to alt-text, which is on: both are
+        // prospective guards. If images ever arrive, revisit this rather than reading the 0 as a
+        // verdict. Capacitor serves assets from the bundle, so NgOptimizedImage's srcset and
+        // preconnect machinery would buy little.
+        // 0 today, and taken back OUT of the enabled set after review. It flags PARTIAL
+        // interpolation as well as pure — id="q_{{ i }}" inside an @for is an ordinary pattern here,
+        // and [id]="'q_' + i" reads worse than what it replaces. A rule whose first real encounter
+        // makes the code worse is a rule somebody switches off along with its neighbours.
+        "@angular-eslint/template/no-interpolation-in-attributes": "off",
         "@angular-eslint/template/prefer-ngsrc": "off",
         // 0 each. Thresholds (default 5) on how involved one condition, or a whole template, may
         // get. A template that has genuinely earned a complex condition should be argued about in

@@ -30,6 +30,9 @@ import { IconName } from 'app/shared/ui/icon/icon.constants';
         @if (icon) {
           <hpm-icon [name]="icon" [size]="15" />
         }
+        <!-- eslint-disable-next-line @angular-eslint/template/elements-content --
+             hpmTranslate writes the heading's text content from titleKey at runtime, so the element is
+             empty in source and never empty on screen. The rule reads the template, not the directive. -->
         <h4 [hpmTranslate]="titleKey"></h4>
         <ng-content select="[hpmPanelActions]" />
       </header>

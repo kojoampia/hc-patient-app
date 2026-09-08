@@ -567,7 +567,9 @@ gate in an app read by patients. The shape:
 - `npm run lint` is now `eslint . --ext .js,.mjs,.ts,.html`, and CI's existing `npm run lint` step
   therefore covers templates with no new step.
 - **Measured before any rule was set:** the two extended configs found **10 problems in 5 files**
-  (`click-events-have-key-events` ×5, `interactive-supports-focus` ×5) across 30 templates; the whole
+  (`click-events-have-key-events` ×5, `interactive-supports-focus` ×5) across the 30 `.html` templates — plus, since review, the twelve
+  `shared/ui` components whose markup is inline and which the `*.html` override alone did not reach;
+  the whole
   plugin (`template/all`, 29 rules) found **673**, from 9 of them. All 10 were fixed in the markup.
   There is no `eslint-disable` in any template.
 - The fixes were one shape: four inline `<a (click)="openCase(…)">` case links with no `href`, so

@@ -37,10 +37,19 @@
 # as of backlog item 21 (2026-09-08). `.eslintrc.json` has an `*.html` override that parses
 # templates with @angular-eslint/template-parser and runs @angular-eslint/eslint-plugin-template
 # over them; `npm run lint` is `eslint . --ext .js,.mjs,.ts,.html`; and CI runs `npm run lint`.
-# All eleven a11y rules, `banana-in-box`, `no-negated-async` and template `eqeqeq` are at error.
-# Ten of the plugin's 29 rules are deliberately off — each is named in `.eslintrc.json` with its
-# reason and with the count of violations still behind it, which is the right place for that list
-# rather than here.
+# All eleven a11y rules, `banana-in-box`, `no-negated-async` and template `eqeqeq` are at error, and
+# `process-inline-templates` extends them to the twelve components in shared/ui that declare their
+# markup inline rather than in an .html file. Eleven of the plugin's 29 rules are deliberately off —
+# each named in `.eslintrc.json` with its reason and the count still behind it, which is the right
+# place for that list rather than here.
+#
+# TWO LIMITS OF THE PLUGIN, so nobody reads more assurance into the line above than it carries. It is
+# @angular-eslint 17 against Angular 20, and it does not visit expressions in `@if`/`@for`/`@switch`
+# BLOCK HEADERS, nor the bodies of `@empty` and `@defer`'s `@placeholder`/`@loading`/`@error`. So
+# `eqeqeq` is at error and cannot see `@if (a() == 1)`, and a keyboardless `(click)` inside an
+# `@empty` block lints clean — measured, not assumed. This repo has 97 `@if` and five `@empty`
+# blocks, and `prefer-control-flow` is on, so it actively encourages putting conditions where the
+# checks cannot reach. Upgrading the plugin is the fix; it is not this item's.
 #
 # The paragraph above replaces one that was wrong in both directions on the same subject. Item 16's
 # first draft claimed this gate already existed when the plugin was in `devDependencies` and wired
