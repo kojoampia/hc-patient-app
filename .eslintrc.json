@@ -238,7 +238,6 @@
 
         // A <button> with no type submits the form it is in. 0 violations.
         "@angular-eslint/template/button-has-type": "error",
-        // attr="{{ x }}" stringifies its value; [attr]="x" does not. 0 violations.
 
         // A positive tabindex reorders the whole document's tab sequence, not just its own
         // element — an a11y rule in everything but name. 0 violations.

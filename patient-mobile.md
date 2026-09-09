@@ -641,12 +641,15 @@ gate in an app read by patients. The shape:
   nothing made them focusable and nothing activated them from a keyboard, and the **archived** case
   card in `cases.page.html`, which had none of the `role`/`tabindex`/`(keydown.enter)` contract the
   working card six lines above it already carried. That last one is the item's argument in one file.
-- **Nineteen of the 29 rules are at error**; the other ten are off, each named in `.eslintrc.json`
+- **Eighteen of the 29 rules are at error**; the other eleven are off, each named in `.eslintrc.json`
   with a one-line reason and the count still behind it — 364 `i18n` (an extraction pipeline this app
   does not use), 161 `no-call-expression`, 60 `attributes-order`, 41 `prefer-self-closing-tags`,
   22 `no-duplicate-attributes` (all of them `class="…" [class]="…"`, which Angular merges), 8 `no-any`,
-  8 `no-inline-styles`, and three at zero. The list lives in the config so it cannot drift from what
-  the config does.
+  8 `no-inline-styles`, and four at zero. **This said nineteen and ten until 2026-09-09**, because the
+  same review that removed `no-interpolation-in-attributes` from the enabled set updated the config and
+  not this sentence — and it left the rule's comment stranded in the ON block too, describing a rule
+  that had moved. Both were item 25. Read the count off `eslint --print-config` rather than this line;
+  it is the only source that cannot drift.
 - **Do not read that 364 as noise.** The rule is correctly off and its reason no longer asserts there
   is nothing behind the number: about 280 of the hits are attributes and genuinely are noise here, but
   ~84 are text nodes, and among them were real untranslated English strings in an app shipping three
