@@ -17,13 +17,15 @@
 
     <!-- `message()` is a KEY, not a sentence — see lock.page.ts. -->
     @if (message(); as msg) {
-    <div class="hc-auth-error" role="alert">{{ msg | translate }}</div>
-    } @if (canRetry()) {
-    <ion-button expand="block" color="primary" [disabled]="busy()" (click)="attempt()">
-      @if (busy()) {
-      <ion-spinner name="crescent" slot="start"></ion-spinner>
-      } {{ 'patientPortal.lock.unlock' | translate }}
-    </ion-button>
+      <div class="hc-auth-error" role="alert">{{ msg | translate }}</div>
+    }
+    @if (canRetry()) {
+      <ion-button expand="block" color="primary" [disabled]="busy()" (click)="attempt()">
+        @if (busy()) {
+          <ion-spinner name="crescent" slot="start"></ion-spinner>
+        }
+        {{ 'patientPortal.lock.unlock' | translate }}
+      </ion-button>
     }
 
     <!--

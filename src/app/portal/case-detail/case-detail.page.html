@@ -27,7 +27,9 @@
         <div class="hc-row hc-gap-12 hpm-case__clinician">
           <hpm-avatar [name]="clinician().name" [initials]="clinician().initials" [imageUrl]="clinician().imageUrl" [size]="40" />
           <div class="hc-grow">
-            <div class="hc-sm"><b>{{ clinician().name }}</b></div>
+            <div class="hc-sm">
+              <b>{{ clinician().name }}</b>
+            </div>
             <div class="hc-muted hc-tiny">{{ clinician().role }}</div>
           </div>
         </div>
@@ -49,21 +51,27 @@
       -->
       <ion-accordion-group class="hc-mt-16" [multiple]="true" [value]="['symptoms', 'diagnosis']">
         <ion-accordion value="symptoms">
-          <ion-item slot="header"><ion-label>{{ 'patientPortal.case.symptoms' | translate }}</ion-label></ion-item>
+          <ion-item slot="header"
+            ><ion-label>{{ 'patientPortal.case.symptoms' | translate }}</ion-label></ion-item
+          >
           <div slot="content" class="hc-card-pad hc-prose">
             <p>{{ record.symptoms || ('patientPortal.case.noSymptoms' | translate) }}</p>
           </div>
         </ion-accordion>
 
         <ion-accordion value="diagnosis">
-          <ion-item slot="header"><ion-label>{{ 'patientPortal.case.diagnosis' | translate }}</ion-label></ion-item>
+          <ion-item slot="header"
+            ><ion-label>{{ 'patientPortal.case.diagnosis' | translate }}</ion-label></ion-item
+          >
           <div slot="content" class="hc-card-pad hc-prose">
             <p>{{ record.diagnosis || ('patientPortal.case.noDiagnosis' | translate) }}</p>
           </div>
         </ion-accordion>
 
         <ion-accordion value="recommendations">
-          <ion-item slot="header"><ion-label>{{ 'patientPortal.case.recommendations' | translate }}</ion-label></ion-item>
+          <ion-item slot="header"
+            ><ion-label>{{ 'patientPortal.case.recommendations' | translate }}</ion-label></ion-item
+          >
           <div slot="content" class="hc-card-pad">
             @if (recommendations().length) {
               <ul class="hc-prose">
@@ -78,7 +86,9 @@
         </ion-accordion>
 
         <ion-accordion value="visits">
-          <ion-item slot="header"><ion-label>{{ 'patientPortal.case.visits' | translate }}</ion-label></ion-item>
+          <ion-item slot="header"
+            ><ion-label>{{ 'patientPortal.case.visits' | translate }}</ion-label></ion-item
+          >
           <div slot="content" class="hc-card-pad">
             @for (visit of caseVisits(); track visit.id) {
               <div class="hc-lrow">
@@ -95,7 +105,9 @@
         </ion-accordion>
 
         <ion-accordion value="medications">
-          <ion-item slot="header"><ion-label>{{ 'patientPortal.case.medications' | translate }}</ion-label></ion-item>
+          <ion-item slot="header"
+            ><ion-label>{{ 'patientPortal.case.medications' | translate }}</ion-label></ion-item
+          >
           <div slot="content" class="hc-card-pad">
             @for (med of caseMedications(); track med.id) {
               <div class="hc-lrow">
@@ -112,7 +124,9 @@
         </ion-accordion>
 
         <ion-accordion value="reports">
-          <ion-item slot="header"><ion-label>{{ 'patientPortal.case.reports' | translate }}</ion-label></ion-item>
+          <ion-item slot="header"
+            ><ion-label>{{ 'patientPortal.case.reports' | translate }}</ion-label></ion-item
+          >
           <div slot="content" class="hc-card-pad">
             @for (report of caseReports(); track report.id) {
               <div class="hc-lrow">
@@ -128,7 +142,9 @@
         </ion-accordion>
 
         <ion-accordion value="timeline">
-          <ion-item slot="header"><ion-label>{{ 'patientPortal.case.timeline' | translate }}</ion-label></ion-item>
+          <ion-item slot="header"
+            ><ion-label>{{ 'patientPortal.case.timeline' | translate }}</ion-label></ion-item
+          >
           <div slot="content" class="hc-card-pad">
             @for (entry of caseActivity(); track entry.id) {
               <div class="hc-tl-item">

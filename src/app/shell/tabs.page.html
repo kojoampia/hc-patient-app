@@ -25,11 +25,11 @@
   <ion-tabs (ionTabsDidChange)="activeTab.set($event.tab)">
     <ion-tab-bar slot="bottom" [attr.aria-label]="'patientPortal.nav.ariaPrimary' | translate">
       @for (item of tabItems(); track item.path) {
-      <ion-tab-button [tab]="item.path">
-        <!-- Filled when this is the tab you are on, outline otherwise — colour alone was carrying that. -->
-        <ion-icon [name]="item.path === activeTab() ? activeIcon(item.icon) : item.icon" aria-hidden="true"></ion-icon>
-        <ion-label>{{ (item.shortLabelKey ?? item.labelKey) | translate }}</ion-label>
-      </ion-tab-button>
+        <ion-tab-button [tab]="item.path">
+          <!-- Filled when this is the tab you are on, outline otherwise — colour alone was carrying that. -->
+          <ion-icon [name]="item.path === activeTab() ? activeIcon(item.icon) : item.icon" aria-hidden="true"></ion-icon>
+          <ion-label>{{ item.shortLabelKey ?? item.labelKey | translate }}</ion-label>
+        </ion-tab-button>
       }
 
       <!--

@@ -43,7 +43,9 @@
           <div class="hc-row hc-gap-8 hc-muted hc-tiny hc-wrap hpm-sched__when">
             <span class="hc-num">{{ formatInstantDay(item.scheduledAt, item.schedule) }}</span>
             @if (item.scheduledAt) {
-              <span>· <span class="hc-num">{{ formatTime(item.scheduledAt) }}</span></span>
+              <span
+                >· <span class="hc-num">{{ formatTime(item.scheduledAt) }}</span></span
+              >
             }
             @if (item.location) {
               <span>· {{ item.location }}</span>
@@ -93,7 +95,9 @@
         </dl>
 
         @if (item.description) {
-          <div class="hc-prose hc-mt-16"><p>{{ item.description }}</p></div>
+          <div class="hc-prose hc-mt-16">
+            <p>{{ item.description }}</p>
+          </div>
         }
 
         <ion-button expand="block" fill="clear" color="dark" (click)="selected.set(null)">

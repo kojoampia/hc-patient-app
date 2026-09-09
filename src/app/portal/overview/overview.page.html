@@ -77,7 +77,9 @@
       @for (item of nextAppointments(); track item.id) {
         <div class="hc-drow">
           <span class="hc-drow__date">{{ formatInstantDay(item.scheduledAt, item.schedule) }}</span>
-          <span class="hc-drow__text">{{ item.name }}<span class="hc-drow__sub">{{ memberOf(item.attendantId).name }}</span></span>
+          <span class="hc-drow__text"
+            >{{ item.name }}<span class="hc-drow__sub">{{ memberOf(item.attendantId).name }}</span></span
+          >
         </div>
       }
       <button type="button" class="hc-toggle hc-mt-16" (click)="go('schedules')">{{ 'patientPortal.action.viewAll' | translate }}</button>
@@ -97,11 +99,18 @@
   </hpm-panel>
 
   <hpm-panel class="hc-mt-16" titleKey="patientPortal.nav.activity" icon="note">
-    <hpm-stream [resource]="activityState()" emptyTitleKey="patientPortal.activity.empty" emptyIcon="document-text-outline" [skeletonRows]="2">
+    <hpm-stream
+      [resource]="activityState()"
+      emptyTitleKey="patientPortal.activity.empty"
+      emptyIcon="document-text-outline"
+      [skeletonRows]="2"
+    >
       @for (item of recentActivity(); track item.id) {
         <div class="hc-drow">
           <span class="hc-drow__date">{{ formatInstantDay(item.loggedAt, item.createdDate) }}</span>
-          <span class="hc-drow__text">{{ item.summary }}<span class="hc-drow__sub">{{ authorName(item) }}</span></span>
+          <span class="hc-drow__text"
+            >{{ item.summary }}<span class="hc-drow__sub">{{ authorName(item) }}</span></span
+          >
         </div>
       }
       <button type="button" class="hc-toggle hc-mt-16" (click)="go('activity')">{{ 'patientPortal.action.viewAll' | translate }}</button>

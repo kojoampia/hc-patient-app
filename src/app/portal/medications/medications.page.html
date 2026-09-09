@@ -109,7 +109,9 @@
             The reason. On a WITHHELD row this is the sentence the whole screen exists to surface —
             "not given, penicillin allergy on record".
           -->
-          <div class="hc-prose hc-mt-16"><p>{{ item.description }}</p></div>
+          <div class="hc-prose hc-mt-16">
+            <p>{{ item.description }}</p>
+          </div>
         }
 
         <ion-button expand="block" fill="clear" color="dark" (click)="selected.set(null)">

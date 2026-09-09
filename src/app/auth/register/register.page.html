@@ -10,7 +10,7 @@
     <h1 class="hc-auth-title">{{ 'register.title' | translate }}</h1>
 
     @if (success()) {
-    <!--
+      <!--
         Rendered through hpmTranslate because these keys contain markup by design.
 
         The second paragraph is this app's own, and it exists because of what happens next: the
@@ -18,73 +18,75 @@
         signs in, and is sent straight to a dead end. Saying so now is the difference between a
         handover and a wall.
       -->
-    <div class="hc-auth-note" role="status" hpmTranslate="register.messages.success">Registration saved! Please check your email.</div>
-    <p class="hc-auth-lede hc-muted" hpmTranslate="register.messages.thenWeb">
-      Once your account is active, sign in on the web to set up your record. This app shows a record that already exists — it cannot create
-      one.
-    </p>
+      <div class="hc-auth-note" role="status" hpmTranslate="register.messages.success">Registration saved! Please check your email.</div>
+      <p class="hc-auth-lede hc-muted" hpmTranslate="register.messages.thenWeb">
+        Once your account is active, sign in on the web to set up your record. This app shows a record that already exists — it cannot
+        create one.
+      </p>
 
-    <ion-button expand="block" color="primary" (click)="goToLogin()">{{ 'login.form.button' | translate }}</ion-button>
-    } @else { @if (errorKey(); as key) {
-    <div class="hc-auth-error" role="alert" [hpmTranslate]="'register.messages.error.' + key">Registration failed.</div>
-    }
-
-    <form [formGroup]="form" (ngSubmit)="register()">
-      <ion-input
-        formControlName="login"
-        type="text"
-        autocomplete="username"
-        [label]="'global.form.username.label' | translate"
-        labelPlacement="stacked"
-        [placeholder]="'global.form.username.placeholder' | translate"
-      ></ion-input>
-
-      <ion-input
-        formControlName="email"
-        type="email"
-        inputmode="email"
-        autocomplete="email"
-        [label]="'global.form.email.label' | translate"
-        labelPlacement="stacked"
-        [placeholder]="'global.form.email.placeholder' | translate"
-      ></ion-input>
-
-      <ion-input
-        formControlName="password"
-        type="password"
-        autocomplete="new-password"
-        [label]="'global.form.newpassword.label' | translate"
-        labelPlacement="stacked"
-      >
-        <ion-input-password-toggle slot="end"></ion-input-password-toggle>
-      </ion-input>
-
-      <ion-input
-        formControlName="confirm"
-        type="password"
-        autocomplete="new-password"
-        [label]="'global.form.confirmpassword.label' | translate"
-        labelPlacement="stacked"
-      >
-        <ion-input-password-toggle slot="end"></ion-input-password-toggle>
-      </ion-input>
-
-      @if (form.controls.confirm.dirty && !passwordsMatch) {
-      <div class="hc-auth-error" role="alert" hpmTranslate="global.messages.error.dontmatch">
-        The password and its confirmation do not match.
-      </div>
+      <ion-button expand="block" color="primary" (click)="goToLogin()">{{ 'login.form.button' | translate }}</ion-button>
+    } @else {
+      @if (errorKey(); as key) {
+        <div class="hc-auth-error" role="alert" [hpmTranslate]="'register.messages.error.' + key">Registration failed.</div>
       }
 
-      <ion-button expand="block" type="submit" color="primary" [disabled]="form.invalid || !passwordsMatch || submitting()">
-        @if (submitting()) {
-        <ion-spinner name="crescent" slot="start"></ion-spinner>
-        } {{ 'register.form.button' | translate }}
-      </ion-button>
-    </form>
+      <form [formGroup]="form" (ngSubmit)="register()">
+        <ion-input
+          formControlName="login"
+          type="text"
+          autocomplete="username"
+          [label]="'global.form.username.label' | translate"
+          labelPlacement="stacked"
+          [placeholder]="'global.form.username.placeholder' | translate"
+        ></ion-input>
 
-    <p class="hc-auth-foot hc-muted hc-sm">
-      <a routerLink="/login">{{ 'login.form.button' | translate }}</a>
-    </p>
+        <ion-input
+          formControlName="email"
+          type="email"
+          inputmode="email"
+          autocomplete="email"
+          [label]="'global.form.email.label' | translate"
+          labelPlacement="stacked"
+          [placeholder]="'global.form.email.placeholder' | translate"
+        ></ion-input>
+
+        <ion-input
+          formControlName="password"
+          type="password"
+          autocomplete="new-password"
+          [label]="'global.form.newpassword.label' | translate"
+          labelPlacement="stacked"
+        >
+          <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+        </ion-input>
+
+        <ion-input
+          formControlName="confirm"
+          type="password"
+          autocomplete="new-password"
+          [label]="'global.form.confirmpassword.label' | translate"
+          labelPlacement="stacked"
+        >
+          <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+        </ion-input>
+
+        @if (form.controls.confirm.dirty && !passwordsMatch) {
+          <div class="hc-auth-error" role="alert" hpmTranslate="global.messages.error.dontmatch">
+            The password and its confirmation do not match.
+          </div>
+        }
+
+        <ion-button expand="block" type="submit" color="primary" [disabled]="form.invalid || !passwordsMatch || submitting()">
+          @if (submitting()) {
+            <ion-spinner name="crescent" slot="start"></ion-spinner>
+          }
+          {{ 'register.form.button' | translate }}
+        </ion-button>
+      </form>
+
+      <p class="hc-auth-foot hc-muted hc-sm">
+        <a routerLink="/login">{{ 'login.form.button' | translate }}</a>
+      </p>
     }
   </div>
 </ion-content>
