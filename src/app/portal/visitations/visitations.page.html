@@ -25,7 +25,9 @@
           </div>
 
           @if (item.notes) {
-            <div class="hc-prose hc-sm"><p>{{ item.notes }}</p></div>
+            <div class="hc-prose hc-sm">
+              <p>{{ item.notes }}</p>
+            </div>
           }
 
           <div class="hc-kv hc-mt-16">
@@ -37,7 +39,9 @@
 
             @if (caseLabel(item.caseId); as label) {
               <span class="hc-kv__k" hpmTranslate="patientPortal.visitations.column.case">Case</span>
-              <span class="hc-kv__v"><a role="link" tabindex="0" (click)="openCase(item.caseId)" (keydown.enter)="openCase(item.caseId)">{{ label }}</a></span>
+              <span class="hc-kv__v"
+                ><a role="link" tabindex="0" (click)="openCase(item.caseId)" (keydown.enter)="openCase(item.caseId)">{{ label }}</a></span
+              >
             }
           </div>
         </article>

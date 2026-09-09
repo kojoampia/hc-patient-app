@@ -537,12 +537,50 @@ instance fields before public, because `inject()` runs in field-initialiser orde
 on it. **No `pretest: lint` hook**: that is why `npm test` on web has been failing on lint for months and everyone
 uses `npx ng test` instead. Gate them separately in CI.
 
-**Prettier does not format `*.html`, and that is a decision — recorded 2026-09-08, backlog item 16.** Every Prettier
-release from 2.8.8 to 4.0.0-alpha.13 flattens the contents of an `@if`/`@for` block to the parent's indentation; the
-12 templates here are indented by hand because that is the readable form. So the `prettier:check` and
-`prettier:format` globs drop `html`, `.prettierignore` drops it again for a bare `prettier --check .`, and the
-templates keep their own shape. **There is no newer version to bump to** — that was the first thing checked, and the
-count of disagreeing templates is 12 at every version.
+**Prettier formats `*.html` with the `angular` parser — backlog item 23, 2026-09-09, reversing item 16.** This
+paragraph said the opposite until then, and the reason it gave was wrong in a way worth keeping: it read a real
+version sweep (2.8.8 → 4.0.0-alpha.13, every release flattening `@if`/`@for` to the parent's indentation) as proof
+that **no Prettier version indents Angular control flow**, and took the templates out of scope on that basis.
+**Flattening follows the parser Prettier infers from the FILENAME, not the version.** `*.component.html` infers the
+`angular` parser and is indented correctly; every other name infers the generic `html` parser and is flattened. The
+templates here are Ionic `*.page.html`, which is why the sweep saw the same result at every version and why `web`,
+whose templates are all `*.component.html`, never had the problem. The sweep was sound; the conclusion attached to it
+was not, and because it read as settled fact backed by a measurement, nobody re-tested it and it was copied into five
+places.
+
+The fix is one `overrides` block in `.prettierrc` naming the `angular` parser for every `.html` except
+`src/index.html`. `prettier:check`/`prettier:format` glob `html` again, `.prettierignore` no longer excludes it, and
+CI enforces template formatting for the first time. **Measured on `cfe4012` before it was taken:** 29 templates, 13
+disagreeing with the pin under the inferred parser and **19 under `angular`** — more files rewritten, but in the
+direction item 16 wanted. `profile.page.html`, the 210-line template item 16 existed to protect, keeps its
+hand-indentation **entirely** (22 changed lines, none of them an `@if`/`@for`), while `tabs.page.html` and
+`login.page.html` are re-indented **out** of the flattened state the exclusion had been preserving them in. Verify
+any claim about the inference with `--ignore-path /dev/null`, or Prettier answers `"ignored": true` and tells you
+nothing.
+
+**One change class in that reformat deserved care, and there was exactly one instance of it.** Prettier drops
+parentheses inside an interpolation: `tabs.page.html`'s `{{ (item.shortLabelKey ?? item.labelKey) | translate }}`
+became `{{ item.shortLabelKey ?? item.labelKey | translate }}`. Safe — Angular's pipe operator binds loosest, and the
+AST shows a `ParenthesizedExpression` wrapper removed with the identical `Binary` operand underneath — but it is a
+character change a `-w` diff cannot see, so the templates were compared with Angular's own `parseTemplate` before and
+after rather than by whitespace.
+
+**Be exact about what that proof does and does not say, because the first draft of this paragraph overclaimed it.**
+It said the ASTs were "compared, not the whitespace", which reads as _the ASTs are equal_. They are not. Compared
+**modulo collapsed whitespace** — `parseTemplate` with `preserveWhitespaces: false`, Angular's default — 26 of 29
+templates are identical and three differ: `tabs.page.html`'s parenthesis, and one text node each in
+`patient-finder.page.html` and `account-deletion.page.html` gaining an edge space where a line over 140 columns
+wrapped. **But this app sets `preserveWhitespaces: true` (`tsconfig.json:46`)**, so that is not the comparison that
+governs it: whitespace text nodes are not stripped here, they reach the DOM, and at the app's real setting **15 of
+the 29 templates differ**. Almost all of that is indentation _depth_ inside a text node, which cannot render — under
+`white-space: normal` any run containing a newline collapses to a single space. Reduced to whitespace that appears or
+disappears, it is **nine sites in nine templates**, and each was checked rather than counted: all nine are a
+container with one child going from `[X]` to `[blank, X, blank]`, whitespace at the _edge_ of the box and never
+between two inline siblings, in `<p>` and `<div>` elements whose classes (`hc-auth-foot`, `hc-sm`, `hc-prose`,
+`hc-mt-16`) set no `display` at all. So none of them can render. That is still a claim about this stylesheet rather
+than a property of the change, which is why `htmlWhitespaceSensitivity: strict` is now set on the override.
+`.prettierrc` carries the measurement, what `strict` buys, and the one thing it does not: it cuts the 15 to 10, and
+cannot reach zero while templates are being re-indented at all.
 
 **`core/i18n-templates.spec.ts` reads the templates against the bundles — backlog item 22, 2026-09-09.** The two
 i18n checks that existed before it both compare bundles: `merge-i18n.mjs` fails on unequal key sets, and
@@ -615,11 +653,11 @@ gate in an app read by patients. The shape:
   locales. That is backlog item 22, closed 2026-09-09 — see §7.7.
 
 Dropping `*.html` from prettier in item 16 removed a _whitespace_ check that was never passing anyway,
-and did not cause any of the above.
+and did not cause any of the above. Item 23 put it back, and it passes now.
 
-Everything else Prettier is pointed at **is** formatted to the pinned 3.1.0 and **checked in CI**, which is the half
-that matters: 61 files disagreed with the pin for months because nothing ran `prettier:check` — no CI step, no
-`lint-staged`, no `.husky/`. A pin nothing enforces is not a pin. The version itself is now arbitrary; 3.1.0 is kept
+Everything Prettier is pointed at — templates included, since item 23 — **is** formatted to the pinned 3.1.0 and
+**checked in CI**, which is the half that matters: 61 files disagreed with the pin for months because nothing ran
+`prettier:check` — no CI step, no `lint-staged`, no `.husky/`. A pin nothing enforces is not a pin. The version itself is now arbitrary; 3.1.0 is kept
 only because `web` and `api` pin it too (`gateway` is on 3.2.5, and nobody has written down why).
 
 CI is one workflow on push and PR to `master`: a node job (`npm ci`, lint, `test:ci`, `build:prod`) and an Android

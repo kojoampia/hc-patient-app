@@ -51,7 +51,9 @@
           @for (d of delegations(); track d.id) {
             <div class="hc-lrow">
               <div class="hc-grow">
-                <div class="hc-sm"><b>{{ d.angelName ?? d.angelEmail }}</b></div>
+                <div class="hc-sm">
+                  <b>{{ d.angelName ?? d.angelEmail }}</b>
+                </div>
                 <div class="hc-muted hc-tiny">{{ d.angelEmail }}</div>
               </div>
               <span class="hc-pill hc-pill--grey">{{ d.status | hpmStatus }}</span>
@@ -77,7 +79,12 @@
           <div class="hc-auth-error" role="alert">{{ err | translate }}</div>
         }
 
-        <hpm-stream [resource]="membershipsState()" emptyTitleKey="patientPortal.profile.plan.none" emptyIcon="card-outline" [skeletonRows]="1">
+        <hpm-stream
+          [resource]="membershipsState()"
+          emptyTitleKey="patientPortal.profile.plan.none"
+          emptyIcon="card-outline"
+          [skeletonRows]="1"
+        >
           @if (membership(); as m) {
             <div class="hc-card hc-card-pad">
               <div class="hc-row hc-between hc-gap-8 hc-wrap">
@@ -140,13 +147,20 @@
       }
 
       @case ('careTeam') {
-        <hpm-stream [resource]="careTeamState()" emptyTitleKey="patientPortal.profile.careTeam.none" emptyIcon="people-outline" [skeletonRows]="3">
+        <hpm-stream
+          [resource]="careTeamState()"
+          emptyTitleKey="patientPortal.profile.careTeam.none"
+          emptyIcon="people-outline"
+          [skeletonRows]="3"
+        >
           <div class="hc-card">
             @for (member of careTeam(); track member.id) {
               <div class="hc-lrow">
                 <hpm-avatar [name]="member.name" [initials]="member.initials" [imageUrl]="member.imageUrl" [size]="40" />
                 <div class="hc-grow">
-                  <div class="hc-sm"><b>{{ member.name }}</b></div>
+                  <div class="hc-sm">
+                    <b>{{ member.name }}</b>
+                  </div>
                   <div class="hc-muted hc-tiny">{{ member.role }}</div>
                 </div>
               </div>

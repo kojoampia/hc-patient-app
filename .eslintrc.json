@@ -202,6 +202,24 @@
       // All 10 were fixed in the templates, not silenced; there is no eslint-disable in any of them.
       // The 10 rules NOT enabled are listed at the bottom with the count still behind each, because
       // a rule quietly switched off to keep a build green is the defect items 16 and 17 were about.
+      //
+      // TWO LIMITS OF THIS PLUGIN, so nobody reads more assurance into the rules below than they
+      // carry. It is @angular-eslint 17 against Angular 20, and it does not visit expressions in
+      // `@if`/`@for`/`@switch` BLOCK HEADERS, nor the bodies of `@empty` and `@defer`'s
+      // `@placeholder`/`@loading`/`@error`. So `eqeqeq` is at error and cannot see `@if (a() == 1)`,
+      // and a keyboardless `(click)` inside an `@empty` block lints clean — measured, not assumed.
+      // This repo has 97 `@if` and five `@empty` blocks, and `prefer-control-flow` is on, so it
+      // actively encourages putting conditions where the checks cannot reach. Upgrading the plugin
+      // is the fix. This paragraph lived in `.prettierignore` until backlog item 23 (2026-09-09)
+      // removed the block it sat in; it belongs beside the rules it qualifies, not beside a
+      // formatting glob.
+      //
+      // NOTE THE SCOPE IS NOT THE SAME AS PRETTIER'S. `.prettierrc` has an `*.html` override too,
+      // and it carries `excludeFiles: 'src/index.html'`; this one does not. Harmless — the template
+      // parser reads the shell without complaint and every rule below finds nothing in it — so it
+      // is left alone rather than given a second exclusion to keep in step. Said here because two
+      // overrides matching the same glob differently is the kind of thing that reads as an
+      // oversight later.
       "files": ["*.html"],
       "extends": [
         // banana-in-box, eqeqeq, no-negated-async. 0 violations, so this costs nothing today, and
@@ -225,9 +243,12 @@
         // A positive tabindex reorders the whole document's tab sequence, not just its own
         // element — an a11y rule in everything but name. 0 violations.
         "@angular-eslint/template/no-positive-tabindex": "error",
-        // Every template here is already @if/@for, and .prettierignore's whole reason for excluding
-        // *.html is that no prettier version indents inside those blocks. This keeps the repo on
-        // the syntax that argument was made about. 0 violations.
+        // Every template here is already @if/@for; this keeps them there. 0 violations. This
+        // comment used to justify itself by .prettierignore's exclusion of *.html — "no prettier
+        // version indents inside those blocks" — which was false: flattening follows the parser
+        // prettier infers from the filename, not the version, and .prettierrc now names the
+        // `angular` parser so the blocks are indented. Backlog item 23, 2026-09-09. The rule stands
+        // on its own reason: @if/@for is the syntax Angular 20 wants and *ngIf is on the way out.
         "@angular-eslint/template/prefer-control-flow": "error",
         // 0 violations because @for makes `track` mandatory; this covers a reintroduced *ngFor.
         "@angular-eslint/template/use-track-by-function": "error",
@@ -258,10 +279,14 @@
         // because it appears only inside @if headers, which this plugin version never visits.)
         "@angular-eslint/template/no-call-expression": "off",
         // 60. A sort order for attributes: structural, then inputs, then outputs. No defect sits
-        // behind any of them, and these templates are hand-formatted on purpose.
+        // behind any of them, and reordering 60 sites buys nothing a reader would notice. Prettier
+        // owns these files as of backlog item 23 but does not reorder attributes, so this is a
+        // judgement about churn and not a conflict with the formatter.
         "@angular-eslint/template/attributes-order": "off",
-        // 41. A preference for <tag /> over <tag></tag>. Formatting, and prettier is deliberately
-        // pointed away from these files.
+        // 41. A preference for <tag /> over <tag></tag>. Formatting, and prettier does not do it
+        // either — so this would be 41 hand edits for a style nothing else in the repo enforces.
+        // (Until backlog item 23 this said prettier was "deliberately pointed away from these
+        // files". It no longer is; the conclusion is unchanged, the reason was not.)
         "@angular-eslint/template/prefer-self-closing-tags": "off",
         // 22. Every one is `class="hc-pill" [class]="pill(x)"` — a static class beside a bound one,
         // which Angular merges, and which is the idiom these pages use for status colouring. The

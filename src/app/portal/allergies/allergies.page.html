@@ -80,7 +80,12 @@
   }
 
   <hpm-panel class="hc-mt-16" titleKey="patientPortal.allergies.conditions" icon="stetho">
-    <hpm-stream [resource]="conditionsState()" emptyTitleKey="patientPortal.allergies.noConditions" emptyIcon="pulse-outline" [skeletonRows]="2">
+    <hpm-stream
+      [resource]="conditionsState()"
+      emptyTitleKey="patientPortal.allergies.noConditions"
+      emptyIcon="pulse-outline"
+      [skeletonRows]="2"
+    >
       @for (item of conditions(); track item.id) {
         <div class="hc-drow">
           <span class="hc-drow__date">{{ formatDay(item.createdDate) }}</span>

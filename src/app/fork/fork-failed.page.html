@@ -15,9 +15,9 @@
     <ion-button expand="block" color="primary" (click)="retry()">{{ 'patientPortal.stream.retry' | translate }}</ion-button>
     <ion-button expand="block" fill="clear" color="dark" (click)="signOut()">
       @if (isAuthProblem()) {
-      {{ 'patientPortal.forkFailed.signInAgain' | translate }}
+        {{ 'patientPortal.forkFailed.signInAgain' | translate }}
       } @else {
-      {{ 'patientPortal.nav.signOut' | translate }}
+        {{ 'patientPortal.nav.signOut' | translate }}
       }
     </ion-button>
   </div>
