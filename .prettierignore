@@ -1,8 +1,9 @@
 # hc-patient-app — what Prettier does not format
 #
-# Two jobs. The first is the ordinary one: keep generated and vendored files out of scope. The
-# second is the deliberate exclusion of `*.html`, which is a decision and not an oversight — read
-# the second block before "fixing" it.
+# One job: keep generated and vendored files out of scope. It had a second one until backlog item 23
+# (2026-09-09) — the deliberate exclusion of `*.html` — and that block is gone because the reason
+# under it was wrong. See `.prettierrc`, which now formats templates with the `angular` parser, and
+# the note at the bottom of this file.
 #
 # This file exists so that a bare `npx prettier --check .` agrees with `npm run prettier:check`.
 # Before it, the two disagreed: the npm scripts glob narrowly enough to miss `android/**/build/**`,
@@ -15,49 +16,33 @@
 # Prettier's output shape, not because anything missed them. They are listed below as generated
 # output, which is a different and better reason.
 
-# --- deliberate: Angular templates are hand-formatted ------------------------
+# --- NOT a rule any more: `*.html` was here, and the reason under it was wrong ------------------
 #
-# NO PRETTIER VERSION INDENTS INSIDE ANGULAR CONTROL FLOW. Measured 2026-09-08 against every
-# release from 2.8.8 to 4.0.0-alpha.13: all of them flatten the contents of an `@if`/`@for` block
-# to the parent's level, so
+# `*.html` was excluded from Prettier by backlog item 16 (2026-09-08) under the claim that "NO
+# PRETTIER VERSION INDENTS INSIDE ANGULAR CONTROL FLOW", measured against every release from 2.8.8
+# to 4.0.0-alpha.13. The sweep was real; the conclusion drawn from it was not. Flattening is a
+# PARSER-INFERENCE property, not a version one: `*.component.html` infers Prettier's `angular`
+# parser, which indents `@if`/`@for` correctly, and every other name infers the generic `html`
+# parser, which flattens. This repo's templates are Ionic `*.page.html`, so they took the flattening
+# parser at every version — which is exactly what the sweep measured, and exactly what it did not
+# explain. Backlog item 23 (2026-09-09) is the correction; `.prettierrc` now carries a one-line
+# `overrides` block naming the `angular` parser, and the templates are formatted again.
 #
-#     @if (item.notes) {                 becomes    @if (item.notes) {
-#       <div class="hc-prose">…</div>               <div class="hc-prose">…</div>
-#     }                                             }
+# This paragraph stays because the exclusion was placed here deliberately, at the point somebody
+# would come to undo it, and it argued hard against being undone. Anybody arriving with that memory
+# should find out here that it went, and why, rather than concluding the glob was widened carelessly.
 #
-# and a nested block loses its structure entirely. The 12 templates here are indented by hand and
-# that is the readable form, so Prettier is pointed away from them rather than allowed to degrade
-# them. This is not a stale pin waiting to be bumped: there is no newer version that fixes it, and
-# raising the pin changes nothing about this file.
+# The measurement that mattered, before it was widened: 29 templates, 13 disagreeing with the pin
+# under the inferred parser and 19 under `angular` — more files moving, but in the direction item 16
+# wanted. `profile.page.html`, the 210-line template item 16 existed to protect, keeps its
+# hand-indentation ENTIRELY under `angular` (22 changed lines, not one of them an `@if`/`@for`),
+# while `tabs.page.html` and `login.page.html` are re-indented OUT of the flattened state the
+# exclusion had been preserving them in. Measured on cfe4012 with prettier 3.1.0.
 #
-# `src/index.html` has no control flow and does conform — it is excluded with the rest so there is
-# one rule about HTML here rather than two.
-#
-# BE CLEAR ABOUT WHAT THIS COSTS: formatting, and only formatting. Template CORRECTNESS is gated,
-# as of backlog item 21 (2026-09-08). `.eslintrc.json` has an `*.html` override that parses
-# templates with @angular-eslint/template-parser and runs @angular-eslint/eslint-plugin-template
-# over them; `npm run lint` is `eslint . --ext .js,.mjs,.ts,.html`; and CI runs `npm run lint`.
-# All eleven a11y rules, `banana-in-box`, `no-negated-async` and template `eqeqeq` are at error, and
-# `process-inline-templates` extends them to the twelve components in shared/ui that declare their
-# markup inline rather than in an .html file. Eleven of the plugin's 29 rules are deliberately off —
-# each named in `.eslintrc.json` with its reason and the count still behind it, which is the right
-# place for that list rather than here.
-#
-# TWO LIMITS OF THE PLUGIN, so nobody reads more assurance into the line above than it carries. It is
-# @angular-eslint 17 against Angular 20, and it does not visit expressions in `@if`/`@for`/`@switch`
-# BLOCK HEADERS, nor the bodies of `@empty` and `@defer`'s `@placeholder`/`@loading`/`@error`. So
-# `eqeqeq` is at error and cannot see `@if (a() == 1)`, and a keyboardless `(click)` inside an
-# `@empty` block lints clean — measured, not assumed. This repo has 97 `@if` and five `@empty`
-# blocks, and `prefer-control-flow` is on, so it actively encourages putting conditions where the
-# checks cannot reach. Upgrading the plugin is the fix; it is not this item's.
-#
-# The paragraph above replaces one that was wrong in both directions on the same subject. Item 16's
-# first draft claimed this gate already existed when the plugin was in `devDependencies` and wired
-# to nothing; the correction then over-swung and said templates were checked by nothing but the AOT
-# compiler, which stopped being true the moment item 21 landed. It is spelled out here rather than
-# deleted because this is where somebody comes looking for the reassurance, and the file has now
-# misled a reader once in each direction.
-*.html
+# Template CORRECTNESS is a separate gate and always was: `.eslintrc.json` has an `*.html` override
+# running @angular-eslint/eslint-plugin-template, `npm run lint` is `eslint . --ext
+# .js,.mjs,.ts,.html`, and CI runs it. Its two blind spots are recorded in `.eslintrc.json`, next to
+# the rules they qualify, rather than here.
 
 # --- generated: build output -------------------------------------------------
 node_modules/

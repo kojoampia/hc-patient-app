@@ -7,6 +7,9 @@
 # Divergence: the `plugins` block is dropped. The web loads prettier-plugin-java (there is no Java
 # in this repo) and prettier-plugin-packagejson (not installed here). Neither affects the formatting
 # of any file this project actually has.
+#
+# Second divergence: the `overrides` block at the bottom, which the web does not need. Read it
+# before touching anything about how templates are formatted here.
 
 printWidth: 140
 singleQuote: true
@@ -18,3 +21,32 @@ arrowParens: avoid
 
 # jsx and tsx rules:
 bracketSameLine: false
+
+# --- Angular templates take the `angular` parser, not the generic `html` one -------------------
+#
+# THIS IS THE WHOLE OF WHY `*.html` WAS ONCE EXCLUDED FROM PRETTIER, AND IT IS A ONE-LINE FIX.
+# Prettier picks its parser from the FILENAME: `*.component.html` infers `angular`, everything else
+# infers `html`. The `angular` parser understands `@if`/`@for`/`@switch` and indents their contents;
+# the generic `html` parser does not, and flattens them to the parent's level — it will even put
+# `@switch (x) { @case ('a') {` on one line. This repo's templates are Ionic `*.page.html`, so they
+# inferred `html` and were flattened, and backlog item 16 read that as a property of the prettier
+# VERSION and pointed prettier away from every template. It is a property of parser inference. Item
+# 23 (2026-09-09) corrected it and this block is the fix; `.prettierignore` no longer excludes html.
+#
+# Verify the inference rather than trusting this comment, and pass `--ignore-path /dev/null` or
+# prettier reports `"ignored": true` and tells you nothing:
+#
+#     npx prettier --ignore-path /dev/null --file-info src/app/portal/profile/profile.page.html
+#     → { "ignored": false, "inferredParser": "angular" }        (with this block)
+#     → { "ignored": false, "inferredParser": "html" }           (without it)
+#
+# `excludeFiles` rather than `files: '*.page.html'`, which is what item 23 proposed: every .html in
+# this repo IS an Angular template except the document shell, and naming the one exception closes the
+# hole that listing the conventions would leave — a template called anything else would silently take
+# the flattening parser again, which is the exact defect this block exists to end. `src/index.html`
+# conforms under either parser today, so the exclusion costs nothing and is about intent.
+overrides:
+  - files: '*.html'
+    excludeFiles: 'src/index.html'
+    options:
+      parser: angular
