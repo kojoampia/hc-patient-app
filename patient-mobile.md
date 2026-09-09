@@ -560,10 +560,27 @@ nothing.
 
 **One change class in that reformat deserved care, and there was exactly one instance of it.** Prettier drops
 parentheses inside an interpolation: `tabs.page.html`'s `{{ (item.shortLabelKey ?? item.labelKey) | translate }}`
-became `{{ item.shortLabelKey ?? item.labelKey | translate }}`. Safe — Angular's pipe operator binds loosest, so the
-parse is unchanged — but it is a character change a `-w` diff cannot see, so the reformat was proved semantically
-null the way item 20's was: every template parsed with Angular's own `parseTemplate` before and after and the ASTs
-compared, not the whitespace.
+became `{{ item.shortLabelKey ?? item.labelKey | translate }}`. Safe — Angular's pipe operator binds loosest, and the
+AST shows a `ParenthesizedExpression` wrapper removed with the identical `Binary` operand underneath — but it is a
+character change a `-w` diff cannot see, so the templates were compared with Angular's own `parseTemplate` before and
+after rather than by whitespace.
+
+**Be exact about what that proof does and does not say, because the first draft of this paragraph overclaimed it.**
+It said the ASTs were "compared, not the whitespace", which reads as _the ASTs are equal_. They are not. Compared
+**modulo collapsed whitespace** — `parseTemplate` with `preserveWhitespaces: false`, Angular's default — 26 of 29
+templates are identical and three differ: `tabs.page.html`'s parenthesis, and one text node each in
+`patient-finder.page.html` and `account-deletion.page.html` gaining an edge space where a line over 140 columns
+wrapped. **But this app sets `preserveWhitespaces: true` (`tsconfig.json:46`)**, so that is not the comparison that
+governs it: whitespace text nodes are not stripped here, they reach the DOM, and at the app's real setting **15 of
+the 29 templates differ**. Almost all of that is indentation _depth_ inside a text node, which cannot render — under
+`white-space: normal` any run containing a newline collapses to a single space. Reduced to whitespace that appears or
+disappears, it is **nine sites in nine templates**, and each was checked rather than counted: all nine are a
+container with one child going from `[X]` to `[blank, X, blank]`, whitespace at the _edge_ of the box and never
+between two inline siblings, in `<p>` and `<div>` elements whose classes (`hc-auth-foot`, `hc-sm`, `hc-prose`,
+`hc-mt-16`) set no `display` at all. So none of them can render. That is still a claim about this stylesheet rather
+than a property of the change, which is why `htmlWhitespaceSensitivity: strict` is now set on the override.
+`.prettierrc` carries the measurement, what `strict` buys, and the one thing it does not: it cuts the 15 to 10, and
+cannot reach zero while templates are being re-indented at all.
 
 **`core/i18n-templates.spec.ts` reads the templates against the bundles — backlog item 22, 2026-09-09.** The two
 i18n checks that existed before it both compare bundles: `merge-i18n.mjs` fails on unequal key sets, and

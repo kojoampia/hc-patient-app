@@ -4,6 +4,13 @@
 # reformats to the same bytes — that is what keeps `npm run provenance:check` reporting real
 # divergences rather than whitespace.
 #
+# THAT BYTE-PARITY NO LONGER HOLDS FOR TEMPLATES, since backlog item 23 (2026-09-09). The overrides
+# block at the bottom gives every `.html` here the `angular` parser and `htmlWhitespaceSensitivity:
+# strict`; `web` has neither, so it formats anything that is not a `*.component.html` with the
+# generic `html` parser and the default `css` sensitivity. A `*.page.html` moved between the repos
+# will NOT round-trip to the same bytes, and `provenance:check` should be read with that in mind.
+# Every other file type is unaffected.
+#
 # Divergence: the `plugins` block is dropped. The web loads prettier-plugin-java (there is no Java
 # in this repo) and prettier-plugin-packagejson (not installed here). Neither affects the formatting
 # of any file this project actually has.
@@ -43,10 +50,64 @@ bracketSameLine: false
 # `excludeFiles` rather than `files: '*.page.html'`, which is what item 23 proposed: every .html in
 # this repo IS an Angular template except the document shell, and naming the one exception closes the
 # hole that listing the conventions would leave — a template called anything else would silently take
-# the flattening parser again, which is the exact defect this block exists to end. `src/index.html`
-# conforms under either parser today, so the exclusion costs nothing and is about intent.
+# the flattening parser again, which is the exact defect this block exists to end.
+#
+# THE TRADE THAT CHOICE MAKES, because it is not free. `files: '*.page.html'` could only ever miss a
+# template; this can only ever CATCH A NON-TEMPLATE. Add a plain HTML file under src/ — an email
+# body, a static legal page — and it gets the angular parser, which parses `{{ … }}` as an Angular
+# interpolation and will rewrite the inside of it, with `prettier:check` calling the result correct.
+# The remedy is one line: add it to `excludeFiles` alongside the shell. There is no such file today;
+# `src/index.html` is the only non-template `.html` in the repo.
+#
+# `src/index.html` is EXCLUDED FROM THIS OVERRIDE, NOT FROM PRETTIER. It is still checked and still
+# formatted — with the generic `html` parser and the default whitespace sensitivity, which is right
+# for a document that is not an Angular template. A stray space in it fails `prettier:check` today,
+# where under item 16's `*.html` ignore rule it did not.
+#
+# --- htmlWhitespaceSensitivity: strict, and what it does and does not buy ----------------------
+#
+# THIS APP SETS `angularCompilerOptions.preserveWhitespaces: true` (tsconfig.json:46). Whitespace
+# text nodes are NOT stripped at compile time here — they reach the DOM, and only CSS decides
+# whether they render. So "the reformat was whitespace-only" is not on its own an argument that
+# nothing changed, and the default `css` sensitivity is the setting that makes it one only by
+# coincidence: prettier decides where it may add or remove whitespace from a BUILT-IN TABLE OF TAG
+# display defaults, while this stylesheet carries 52 `display:` declarations, seven of which make an
+# element inline-level (.hc-btn, .hc-pill, .hc-chip, .hc-fchip, .hc-select, .hc-legend,
+# .hc-viz__tip-key). Prettier cannot see any of them, and the gate would not report a collision.
+#
+# NOTHING COLLIDES TODAY, and that was checked site by site rather than in aggregate. Of the 15
+# templates whose AST moves, almost all of it is indentation DEPTH inside a text node, which cannot
+# render — any whitespace run containing a newline collapses to one space. Reduced to changes of
+# PRESENCE, there are NINE sites in nine templates: two text/interpolation edges and seven
+# containers gaining a whitespace node. Every one of the nine is the same shape — a container with a
+# single child going from `[X]` to `[BLANK, X, BLANK]`, whitespace at the EDGE of the box, never
+# between two element siblings, which is the only arrangement that renders. The containers are
+# `<p>` and `<div>` carrying .hc-auth-foot, .hc-sm, .hc-prose and .hc-mt-16; none of those four sets
+# `display` at all, so all nine are block boxes and CSS strips edge whitespace in every one.
+#
+# `strict` tells prettier every element is whitespace-sensitive, so it wraps with the
+# `<div class="x"\n  >text</div\n>` form rather than by inserting a newline inside the tag. MEASURED
+# ON THE COMMITTED TREE: adopting it changes ZERO FILES. It costs nothing now and constrains every
+# future reflow, which is the whole reason it is here.
+#
+# BE PRECISE ABOUT THE LIMIT, because the obvious claim for it is wrong. `strict` does NOT make the
+# reformat semantically null. Re-indenting the body of an `@if` moves whitespace text nodes whatever
+# this option says, so parsing the pre-item-23 templates with `preserveWhitespaces: true` and
+# comparing: `css` changes 15 of 29 templates, `strict` changes 10. It cuts the exposure by a third
+# and does not remove it, and no prettier setting can while templates are being re-indented at all.
+#
+# WHY THE COMMITTED TREE WAS NOT REFORMATTED AGAIN UNDER IT. Re-running from the pre-item-23
+# templates with `strict` would leave those five extra templates' DOM untouched — profile.page.html
+# among them, the one item 16 existed to protect — at the price of 9 more files rewritten and the
+# bracket form spreading from 76 lines to 97. All nine renderable sites have been checked and none
+# can render, so that trade spends real readability to buy down a risk already measured as null.
+# Recorded here so the option stays visible rather than forgotten: if a `display:` override ever
+# does collide with prettier's table, re-running the reformat under `strict` is the lever.
 overrides:
   - files: '*.html'
     excludeFiles: 'src/index.html'
     options:
       parser: angular
+      # See the block above — NOT cosmetic. This is what stops a future reflow from silently
+      # moving a whitespace text node into or out of the DOM under `preserveWhitespaces: true`.
+      htmlWhitespaceSensitivity: strict

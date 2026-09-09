@@ -39,6 +39,16 @@
 # while `tabs.page.html` and `login.page.html` are re-indented OUT of the flattened state the
 # exclusion had been preserving them in. Measured on cfe4012 with prettier 3.1.0.
 #
+# DO NOT READ THAT AS "NOTHING CHANGED". It says no CONTROL-FLOW line moved, which is the thing item
+# 16 cared about. Whitespace did change, and this app sets `preserveWhitespaces: true`
+# (tsconfig.json:46), so whitespace text nodes reach the DOM rather than being stripped at compile
+# time. Parsed with Angular's own `parseTemplate` at that setting, 15 of the 29 templates differ
+# across the reformat. Almost all of that is indentation DEPTH, which cannot render; reduced to
+# whitespace that appears or disappears, it is NINE sites, every one of them at the edge of a
+# block-level box with a single child and none between two inline siblings, so none can render.
+# That is a fact about this stylesheet, though, not about the change — `.prettierrc` sets
+# `htmlWhitespaceSensitivity: strict` for that reason and explains what it does and does not buy.
+#
 # Template CORRECTNESS is a separate gate and always was: `.eslintrc.json` has an `*.html` override
 # running @angular-eslint/eslint-plugin-template, `npm run lint` is `eslint . --ext
 # .js,.mjs,.ts,.html`, and CI runs it. Its two blind spots are recorded in `.eslintrc.json`, next to

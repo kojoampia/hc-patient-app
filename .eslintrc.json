@@ -213,6 +213,13 @@
       // is the fix. This paragraph lived in `.prettierignore` until backlog item 23 (2026-09-09)
       // removed the block it sat in; it belongs beside the rules it qualifies, not beside a
       // formatting glob.
+      //
+      // NOTE THE SCOPE IS NOT THE SAME AS PRETTIER'S. `.prettierrc` has an `*.html` override too,
+      // and it carries `excludeFiles: 'src/index.html'`; this one does not. Harmless — the template
+      // parser reads the shell without complaint and every rule below finds nothing in it — so it
+      // is left alone rather than given a second exclusion to keep in step. Said here because two
+      // overrides matching the same glob differently is the kind of thing that reads as an
+      // oversight later.
       "files": ["*.html"],
       "extends": [
         // banana-in-box, eqeqeq, no-negated-async. 0 violations, so this costs nothing today, and
