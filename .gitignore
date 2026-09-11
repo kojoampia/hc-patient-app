@@ -46,6 +46,11 @@ node_modules/
 /android/keystore.properties
 *.keystore
 *.jks
+# …and any renamed copy of one. `*.jks` does not match `hc-patient.jks.orphaned-20260911`, which is
+# exactly the name a keystore gets while being replaced — so the one moment the rule is needed most
+# was the one moment it did not fire. `git status` listed a signing key as untracked on 2026-09-11.
+*.jks.*
+*.keystore.*
 
 # --- archaeology ------------------------------------------------------------
 # A JHipster-Ionic 8.2.1 generator installed 2024-06-06 and never run. patient-mobile.md §6
