@@ -8,8 +8,10 @@
  *   SSE response for ever, silently. See {@link resolveStreamFetch}. (2) The token comes from
  *   `SessionTokenService`'s signal rather than `StateStorageService`, because on this app the token
  *   LEAVES MEMORY on every lock: the stream suspends while it is gone and resumes when it returns,
- *   where the web client treats a missing token as the end of the session. Started and stopped by
- *   `TabsPage` rather than `ShellComponent`.
+ *   where the web client treats a missing token as the end of the session — including a
+ *   post-headers re-check inside connect(), because a lock landing between the response settling
+ *   and its continuation would otherwise turn into a sign-out. Started and stopped by `TabsPage`
+ *   rather than `ShellComponent`.
  * Re-sync: see PROVENANCE.md.
  */
 
@@ -291,10 +293,26 @@ export class MembershipStreamService {
     }
 
     if (this.controller !== controller) {
-      // Suspended between the headers arriving and this continuation running — the token left memory. The one
-      // thing that must not happen past this point is the reload below firing without a token: it would go out
-      // through HttpClient unauthenticated, which is the exact failure the suspension exists to prevent. The web
-      // client has the same microtask-sized window against stop() and wears it; here a lock makes it real.
+      // Superseded, stopped, or a lock whose suspension has already flushed. Whoever nulled the field also
+      // aborted this connection, so there is nothing left to close — only a continuation that must not act. The
+      // web client has the same microtask-sized window against stop() and wears it; here a lock makes it real.
+      return;
+    }
+
+    if (!this.sessionToken.hasToken()) {
+      // The token left memory between the headers arriving and this continuation running, and the suspension has
+      // NOT flushed yet: lock() clears the signal synchronously, but the effect that suspends runs on the
+      // scheduler's tick, and nothing here may depend on which of the two beats a microtask. The identity check
+      // above only detects a suspension that already happened; this one holds regardless of ordering.
+      //
+      // What it prevents is not a stale screen but a destroyed session: the reload below would go out through
+      // HttpClient with no token to attach, the gateway would 401, and auth-expired.interceptor.ts treats any 401
+      // while the account still looks signed in as an expired session — clearing the token FROM THE STORE, not
+      // merely from memory. A lock deliberately leaves the store intact so the unlock restores the session; this
+      // path would silently turn every unluckily-timed lock into a sign-out, and the user would biometric-unlock
+      // into /login. Suspending here rather than bare-returning also closes the connection this attempt just
+      // opened, so a lock-and-unlock that coalesces into a single effect run cannot leave it dangling unread.
+      this.suspend();
       return;
     }
 

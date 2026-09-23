@@ -606,6 +606,116 @@ describe('MembershipStreamService', () => {
     service.stop();
   });
 
+  it('never reloads when a lock lands between the headers arriving and the continuation running', async () => {
+    /**
+     * THE WINDOW THE FIRST COMMIT LEFT UNPINNED, found in review by mutation: the guard existed,
+     * deleting it left all 22 tests green, and what it guards against is not a stale screen but a
+     * DESTROYED SESSION. A reload fired in this window goes out with no token; the gateway 401s;
+     * auth-expired.interceptor.ts reads any 401 while the account still looks signed in as an
+     * expired session and clears the token FROM THE STORE — so a lock, which deliberately leaves
+     * the store intact, silently becomes a sign-out and the user biometric-unlocks into /login.
+     */
+    let requestInit: { signal: AbortSignal } | null = null;
+    let respond: ((response: unknown) => void) | null = null;
+    fetchMock.mockImplementationOnce((_url: string, init: { signal: AbortSignal }) => {
+      requestInit = init;
+      return new Promise(resolve => {
+        respond = resolve;
+      });
+    });
+
+    service.start();
+    await settle();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+
+    // The response settles and the lock lands in the same task — after the fetch promise resolves,
+    // before the awaiting continuation can run.
+    const body = new FakeBody(requestInit!.signal);
+    opened.push(body);
+    respond!({ ok: true, status: 200, body });
+    sessionToken.set(null);
+
+    // Microtasks only, deliberately no TestBed.tick(): the suspending effect has NOT flushed when
+    // the continuation runs, so the identity check sees its own controller still in place and only
+    // the token re-check stands between reload() and the wire. lock() clears the signal
+    // synchronously, so that re-check holds however the effect scheduler orders things.
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(reload).not.toHaveBeenCalled();
+
+    // And the connection this attempt opened was closed, not left dangling unread — the guard
+    // suspends rather than bare-returning, so nothing depends on the effect getting there later.
+    expect(body.cancelled).toBe(true);
+
+    await settle();
+    await advance(10 * 60_000);
+    expect(reload).not.toHaveBeenCalled();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+
+    // The positive half: the unlock still resumes and re-fetches, so "nothing happened" above is
+    // a guarded client, not a dead one.
+    sessionToken.set('after.unlock.jwt');
+    await settle();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(reload).toHaveBeenCalledTimes(1);
+
+    service.stop();
+  });
+
+  it('never reloads when the shell is torn down in that same window', async () => {
+    // The identity half of the guard, pinned separately: here the token is STILL PRESENT, so the
+    // token re-check waves the continuation through and only the controller comparison stops a
+    // reload firing on behalf of a shell that no longer exists.
+    let respond: ((response: unknown) => void) | null = null;
+    fetchMock.mockImplementationOnce((_url: string, init: { signal: AbortSignal }) => {
+      opened.push(new FakeBody(init.signal));
+      return new Promise(resolve => {
+        respond = resolve;
+      });
+    });
+
+    service.start();
+    await settle();
+    const body = latest();
+
+    respond!({ ok: true, status: 200, body });
+    service.stop();
+
+    await settle();
+    await advance(60_000);
+
+    expect(reload).not.toHaveBeenCalled();
+    expect(body.cancelled).toBe(true);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('retries at the first rung after an unlock, not where the ladder left off', async () => {
+    answers = 'unreachable';
+    service.start();
+    await settle();
+    await advance(1000);
+    await advance(2000);
+    // Three failures: the next retry would wait 15s.
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+
+    sessionToken.set(null);
+    await settle();
+    // Unlocked, still offline. An unlock is a human act, not a retry loop, and the failures the
+    // ladder was climbing about belonged to a connection that no longer exists — so the resume
+    // attempt fails onto the FIRST rung, not the fourth. The regression this pins is small (an
+    // unlock while offline waiting 15-30s instead of 1s) but the reset in suspend() was otherwise
+    // unpinned: deleting it left every other test green.
+    sessionToken.set('a.jwt.value');
+    await settle();
+    expect(fetchMock).toHaveBeenCalledTimes(4);
+
+    await advance(1000);
+    expect(fetchMock).toHaveBeenCalledTimes(5);
+
+    service.stop();
+  });
+
   it('resumes with the fresh token when the unlock puts one back, and re-fetches what it missed', async () => {
     service.start();
     await settle();
