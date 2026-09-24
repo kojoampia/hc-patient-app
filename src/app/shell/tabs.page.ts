@@ -4,12 +4,13 @@
  * The shell, and the reason the banner lives here rather than on thirteen pages (§7.4).
  */
 
-import { AfterViewInit, ChangeDetectionStrategy, Component, computed, effect, inject, signal, viewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs, IonModal, ModalController, NavController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { ActingAsService } from 'app/core/auth/acting-as.service';
+import { MembershipStreamService } from 'app/portal/data/membership-stream.service';
 import { PortalDataService } from 'app/portal/data/portal-data.service';
 import { SessionBootstrapService } from 'app/fork/session-bootstrap.service';
 import { ActingAsBannerComponent } from './acting-as-banner.component';
@@ -45,6 +46,8 @@ export class TabsPage implements AfterViewInit {
   private readonly moreSheetBus = inject(MoreSheetBus);
   private readonly navController = inject(NavController);
   private readonly backButton = inject(BackButtonService);
+  private readonly membershipStream = inject(MembershipStreamService);
+  private readonly destroyRef = inject(DestroyRef);
 
   /**
    * The outlet whose per-tab stack the hardware back button pops (§8.4.8).
@@ -104,6 +107,18 @@ export class TabsPage implements AfterViewInit {
       document.addEventListener('ionBackButton', block, { capture: true });
       onCleanup(() => document.removeEventListener('ionBackButton', block, { capture: true }));
     });
+
+    /**
+     * The patient's open line to their own membership, so a verified plan reaches the screen
+     * without a restart (backlog item 39 cycle 3). Started here because this frame is the portal,
+     * so the stream's lifetime is the portal's — and stopped on destroy for the same reason: a
+     * reader left running holds a connection open and goes on reloading a service every screen
+     * shares, failing nothing while it does. Locks are not handled here and must not be: the
+     * service follows the token itself, so whether Ionic destroys this page on the /lock
+     * navigation does not decide whether a locked app keeps issuing requests.
+     */
+    this.membershipStream.start();
+    this.destroyRef.onDestroy(() => this.membershipStream.stop());
   }
 
   ngAfterViewInit(): void {

@@ -98,7 +98,20 @@ jobs:
           distribution: temurin
           java-version: '21'
 
+      # `packages` is pinned because the action's DEFAULT broke this job, not because we want anything
+      # unusual. v3 defaults to installing `tools platform-tools`, and Google has removed the obsolete
+      # `tools` package from the SDK repository — so sdkmanager exits non-zero with `Failed to find
+      # package 'tools'` and the job dies in setup, before a single line of this app is compiled.
+      #
+      # It broke with no change on our side: assembleDebug last passed on 2026-09-11 and failed on
+      # 2026-09-23 on a commit touching only TypeScript. That is the shape to recognise — a required
+      # check that starts failing because an upstream default moved underneath it, not because the
+      # branch did anything.
+      #
+      # Naming the packages explicitly is also what stops the next default from doing this again.
       - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools'
 
       - run: npm ci
       - run: npm run i18n
