@@ -115,9 +115,9 @@ export class RegisterPage {
         },
         error: (response: HttpErrorResponse) => {
           this.submitting.set(false);
-          // `response.error` is the parsed problem+json body — but it is null for an EMPTY body
-          // (a bare 502 from nginx, say), and reading .type off null would throw inside an RxJS
-          // error handler and leave the screen blank. Hence the optional access.
+          // `response.error` is the parsed problem+json body — but it is null for an EMPTY body,
+          // and reading .type off null would throw inside an RxJS error handler and leave the
+          // screen blank. Hence the optional access.
           // Gated on 400 as well as the type, as web's processError is: a 5xx whose body happened
           // to carry one of these URIs is a server fault, not a taken login or email.
           const type = (response.error as { type?: string } | null)?.type;

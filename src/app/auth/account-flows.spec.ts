@@ -193,9 +193,9 @@ describe('RegisterPage', () => {
   });
 
   it('treats an empty error body as a generic failure rather than throwing', () => {
-    // Angular delivers error: null for an EMPTY body — a bare 502 from nginx, say. This pins the
-    // optional access in the handler: without it, reading .type off null throws inside the RxJS
-    // error callback and the screen shows nothing at all.
+    // Angular delivers error: null for an EMPTY body. This pins the optional access in the
+    // handler: without it, reading .type off null throws inside the RxJS error callback and the
+    // screen shows nothing at all.
     register.mockReturnValue(throwError(() => new HttpErrorResponse({ error: null, status: 502 })));
     fill();
 
