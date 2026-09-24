@@ -15,10 +15,16 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { BrandmarkComponent } from 'app/shared/ui/brandmark/brandmark.component';
 import TranslateDirective from 'app/shared/language/translate.directive';
+import { EMAIL_ALREADY_USED_TYPE, LOGIN_ALREADY_USED_TYPE } from 'app/config/error.constants';
 
 import { AccountApiService } from '../account-api.service';
 
-/** What the gateway answers with when the login or the email is already spoken for. */
+/**
+ * `register.messages.error.*` fragments — which message to show, NOT what the gateway sends.
+ * The gateway identifies the refusal by the problem body's `type` URI (error.constants.ts);
+ * conflating the two is the defect item 57 closed: the old code read `response.error.errorKey`,
+ * a field the body has never carried, so every refusal rendered the generic message.
+ */
 const LOGIN_TAKEN = 'userexists';
 const EMAIL_TAKEN = 'emailexists';
 
@@ -47,7 +53,10 @@ export class RegisterPage {
   readonly submitting = signal(false);
   readonly success = signal(false);
 
-  /** One of the gateway's error keys, or null. Never a raw error string — a patient cannot use one. */
+  /**
+   * The `register.messages.error.*` fragment to show, or null. Never a raw error string —
+   * a patient cannot use one. (A display key, not the server's — see the constants above.)
+   */
   readonly errorKey = signal<string | null>(null);
 
   readonly form = new FormGroup({
@@ -106,8 +115,19 @@ export class RegisterPage {
         },
         error: (response: HttpErrorResponse) => {
           this.submitting.set(false);
-          const type = (response.error as { errorKey?: string } | null)?.errorKey;
-          this.errorKey.set(type === LOGIN_TAKEN || type === EMAIL_TAKEN ? type : 'fail');
+          // `response.error` is the parsed problem+json body — but it is null for an EMPTY body,
+          // and reading .type off null would throw inside an RxJS error handler and leave the
+          // screen blank. Hence the optional access.
+          // Gated on 400 as well as the type, as web's processError is: a 5xx whose body happened
+          // to carry one of these URIs is a server fault, not a taken login or email.
+          const type = (response.error as { type?: string } | null)?.type;
+          if (response.status === 400 && type === LOGIN_ALREADY_USED_TYPE) {
+            this.errorKey.set(LOGIN_TAKEN);
+          } else if (response.status === 400 && type === EMAIL_ALREADY_USED_TYPE) {
+            this.errorKey.set(EMAIL_TAKEN);
+          } else {
+            this.errorKey.set('fail');
+          }
         },
       });
   }
